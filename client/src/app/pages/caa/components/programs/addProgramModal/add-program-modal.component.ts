@@ -14,6 +14,9 @@ import {DisplayProgramExerciseImageComponent} from './displayProgramExerciseImag
 import DataSource from 'devextreme/data/data_source';
 import ArrayStore from 'devextreme/data/array_store';
 
+/**
+ * This is PersonList Entery Interface, used in dxAutoCompleter
+ */
 interface SearchData {
   item: string;
   value: any;
@@ -30,29 +33,33 @@ interface ExerciseAsString {
   styleUrls: ['./add-program-modal.component.css'],
 })
 
+/**
+ *
+ */
 export class AddProgramModalComponent implements OnInit {
 
-
-
-
+  /**
+   * used in dxAutoCompleter
+   * this code initialized again in init method  **/
   dataSource =  new DataSource({
       store: new ArrayStore({
         key: 'item',
         data: [],
       }),
     });
-  names: string[] = ['first name', 'second name', 'third name', 'forth name'];
-  firstName: string;
 
-
+  /** ng2-smart-table source **/
   source: LocalDataSource = new LocalDataSource();
+  /** TODO should remove **/
   public dataService: CompleterData;
+  /** now it is not used but may in future i need it in dxAutoCompleter for [Person List]**/
   public searchData: SearchData[] = [];
 
   program: ProgramView;
 
   exerciseList: SelectedIExerciseItems[] = [];
 
+  /** ng2-smart-table setting **/
   settings = {
     mode: 'external',
     actions: {
@@ -109,8 +116,9 @@ export class AddProgramModalComponent implements OnInit {
     const personList = [];
     this.personService.getPersonShortList().subscribe((data: Person[]) => {
       data.forEach((p: Person, index, array) => {
-        this.searchData.push({item : p.firstName + ' ' + p.lastName, value : p.id});
-        personList.push(p.firstName + ' ' + p.lastName + '(' + p.mobileNumber + ')');
+        const pItem = p.firstName + ' ' + p.lastName + '(' + p.mobileNumber + ')';
+        this.searchData.push({item : pItem, value : p.id});
+        personList.push(pItem);
       });
 
       this.dataSource =  new DataSource({
@@ -273,9 +281,19 @@ export class AddProgramModalComponent implements OnInit {
     })
   }
 
+  preparePersonId() {
+    this.searchData.forEach((personSearchData: SearchData, index, array) => {
+      if (this.program.personName === personSearchData.item) {
+        this.program.person.id = personSearchData.value;
+      }
+    })
+  }
+
   confirmClick() {
     this.prepareExerciseList();
-    this.programService.addProgram(this.program).subscribe((result : ProgramView) => {
+    this.preparePersonId();
+
+    this.programService.addProgram(this.program).subscribe((result: ProgramView) => {
       this.program.id = result.id;
       this.helperService.showSuccess('اطلاعات با موفقیت ثبت گردید')
       this.ngbActiveModal.close(this.program);

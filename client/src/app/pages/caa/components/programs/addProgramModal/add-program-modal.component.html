@@ -22,18 +22,11 @@
 
                       <dx-autocomplete
                         placeholder="Type first name..."
-                        [(value)]="firstName"
+                        [(value)]="program.personName"
                         [dataSource]="dataSource"
                         (onValueChanged)="personCompleterSelected($event)">
                       </dx-autocomplete>
 
-
-                      <ng2-completer  (selected)="personCompleterSelected($event)"
-                                      [inputClass]="'form-control'"
-                                      placeholder="شخص"
-                                      [(ngModel)]="program.personName"
-                                      [datasource]="dataService"
-                                      [minSearchLength]="0"></ng2-completer>
                     </div>
                   </div>
 
