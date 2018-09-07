@@ -100,12 +100,13 @@ export class AddExerciseItemModalComponent implements OnInit {
   }
 
   getExerciseId(name: string) {
+    let exercixeId = 0;
     this.searchData.forEach((programItem: SearchData, index, array) => {
       if (programItem.item === name) {
-        return programItem.value;
+        exercixeId = programItem.value;
       }
     });
-    return 0;
+    return exercixeId;
   }
   addClick() {
     if (!this.validateAdd()) {
@@ -133,9 +134,15 @@ export class AddExerciseItemModalComponent implements OnInit {
         }
       }
     }
+    const exerciseId = this.getExerciseId(this.inputExercise);
+    if (exerciseId === 0) {
+      this.helperService.showError('خطای پیاده ساز. شماره حرکت پیدا نشد!!!')
+      return;
+    }
+
     const subItem: ExerciseItemsSubList = {
       exerciseItemDesc: this.inputExercise,
-      exerciseItemId: this.getExerciseId(this.inputExercise),
+      exerciseItemId: exerciseId,
       repeat: parseInt(this.helperService.convertToLatinNumbers(this.inputRepeat + '') + ''),
       repeatType: this.inputRepeatType,
       repeatTypeDesc: this.exerciseService.getExerciseRepeatTypeDesc(this.inputRepeatType),

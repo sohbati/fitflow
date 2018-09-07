@@ -21,7 +21,8 @@ import {ShareButtonsModule} from 'ngx-sharebuttons';
 import {HttpClientJsonpModule} from '@angular/common/http';
 import {TemperatureDraggerComponent} from './dashboard/temperature/temperature-dragger/temperature-dragger.component';
 import {TreeComponent} from './components/tree/tree.component';
-import {AddExerciseItemModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComponent/add-exercise-item.component';
+import {AddExerciseItemModalComponent} from
+  './caa/components/programs/addProgramModal/addExerciseItemComponent/add-exercise-item.component';
 import {DxAutocompleteModule, DxTemplateModule} from 'devextreme-angular';
 const PAGES_COMPONENTS = [
   PagesComponent,

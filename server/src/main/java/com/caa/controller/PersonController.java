@@ -25,7 +25,7 @@ public class PersonController {
     @Autowired
     private PersonDao personDao;
 
-    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
+   /* @RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public HttpEntity<String> sanityCheck() {
     	
     	logger.info("SanityCheck entered...");
@@ -38,7 +38,7 @@ public class PersonController {
     	String msg = "It's alive! It's alive!";
     	
     	return new HttpEntity<String>(msg, headers);	
-    }
+    }*/
 
     @RequestMapping(method = RequestMethod.GET, value = "/getPerson/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
