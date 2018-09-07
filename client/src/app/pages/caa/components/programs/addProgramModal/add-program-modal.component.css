@@ -1,0 +1,10 @@
+:host >>> .col-sm-2 {
+  height: 32px;
+}
+
+
+modalWindowClass {
+  width: auto;
+  height: auto;
+  border : solid 1px;
+}

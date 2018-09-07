@@ -1,0 +1,194 @@
+    <nb-tabset fullWidth>
+      <nb-tab tabTitle="  برنامه  ">
+        <div class="row">
+
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="inputProgramName">نام برنامه </label>
+                  <input [(ngModel)]="program.programName" type="text" class="form-control" id="inputProgramName"
+                         placeholder="نام برنامه ">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label >شخص</label>
+
+                      <dx-autocomplete
+                        placeholder="Type first name..."
+                        [(value)]="firstName"
+                        [dataSource]="dataSource"
+                        (onValueChanged)="personCompleterSelected($event)">
+                      </dx-autocomplete>
+
+
+                      <ng2-completer  (selected)="personCompleterSelected($event)"
+                                      [inputClass]="'form-control'"
+                                      placeholder="شخص"
+                                      [(ngModel)]="program.personName"
+                                      [datasource]="dataService"
+                                      [minSearchLength]="0"></ng2-completer>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inputDate">تاریخ برنامه</label>
+                      <input [(ngModel)]="program.shamsiProgramDate" type="text" class="form-control" id="inputDate" placeholder="تاریخ">
+                    </div>
+                  </div>
+                </div>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <ng2-smart-table [settings]="settings"
+                                 [source]="source"
+                                 (create)="addExerciseClick($event)"
+                                 (edit)="editExerciseClick($event)">
+                </ng2-smart-table>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="inputDesc">شرح</label>
+                  <textarea [(ngModel)]="program.description" id="inputDesc" rows="2" placeholder="شرح" class="form-control"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </nb-tab>
+
+          <nb-tab tabTitle="سایز">
+        <div class="row">
+          <div class="col-lg-12">
+            <nb-card>
+             <nb-card-body>
+
+                  <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputAge">سن</label>
+                      <input [(ngModel)]="program.personAge" type="email" class="form-control" id="inputAge" placeholder="سن">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputTall">قد</label>
+                      <input [(ngModel)]="program.personTall" type="text" class="form-control" id="inputTall" placeholder="قد">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputWeight">وزن</label>
+                      <input [(ngModel)]="program.personWeight" type="text" class="form-control" id="inputWeight" placeholder="وزن">
+                    </div>
+                  </div>
+                </div>
+
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputAge">سینه</label>
+                        <input [(ngModel)]="program.personChest" type="email" class="form-control" id="inputAge" placeholder="سینه">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputTall">کمر</label>
+                        <input [(ngModel)]="program.personWaist" type="text" class="form-control" id="inputTall" placeholder="کمر">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputWeight">شکم</label>
+                        <input [(ngModel)]="program.personAbdomen" type="text" class="form-control" id="inputWeight" placeholder="شکم">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputAge">بازو</label>
+                        <input [(ngModel)]="program.personArm" type="email" class="form-control" id="inputAge" placeholder="بازو">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputTall">ساعد</label>
+                        <input [(ngModel)]="program.personForeArm" type="text" class="form-control" id="inputTall" placeholder="ساعد">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputWeight">ران</label>
+                        <input [(ngModel)]="program.personThigh" type="text" class="form-control" id="inputWeight" placeholder="ران">
+                      </div>
+                    </div>
+
+                  </div>
+
+               <div class="row">
+                     <div class="col-sm-4">
+                       <div class="form-group">
+                         <label for="inputWeight">ساق</label>
+                         <input [(ngModel)]="program.personShin" type="text" class="form-control" id="inputWeight" placeholder="ساق">
+                       </div>
+                 </div>
+               </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputAge">درصد چربی</label>
+                        <input [(ngModel)]="program.personFatPercentage" type="email" class="form-control" id="inputAge" placeholder="درصد چربی">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputTall">وزن چربی</label>
+                        <input [(ngModel)]="program.personFatWeight" type="text" class="form-control" id="inputTall" placeholder="وزن چربی">
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputWeight">وزن عضله</label>
+                        <input [(ngModel)]="program.personMuscleWeight" type="text" class="form-control" id="inputWeight" placeholder="وزن عضله">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputAge">امتیاز</label>
+                        <input [(ngModel)]="program.personScore" type="email" class="form-control" id="inputAge" placeholder="امتیاز">
+                      </div>
+                    </div>
+                  </div>
+
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+    </nb-tab>
+    </nb-tabset>
+
+<br/>
+<div style="text-align: center" class="row">
+  <div class="col-sm-12">
+    <button style="margin-left: 10px; margin-right: 10px" (click)="confirmClick()" type="submit" class="btn btn-primary">تایید</button>
+    <button (click)="exportProgramClick()" type="submit" class="btn btn-primary">Export</button>
+  </div>
+</div>
+
