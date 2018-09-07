@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import {CompleterService, CompleterData, CompleterItem} from 'ng2-completer';
 import {Exercise} from '../../../../datamodel/Exercise';
 import {ExerciseService} from '../../../../services/exercise.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {HelperService} from '../../../../services/helper.service';
 import {NotificationsService, NotificationType} from 'angular2-notifications';
+import DataSource from 'devextreme/data/data_source';
+import ArrayStore from 'devextreme/data/array_store';
 
 interface SearchData {
   item: string;
@@ -20,10 +21,19 @@ interface SearchData {
 })
 
 export class AddExerciseItemModalComponent implements OnInit {
+  /**
+   * used in dxAutoCompleter
+   * this code initialized again in init method  **/
+  dataSource =  new DataSource({
+    store: new ArrayStore({
+      key: 'item',
+      data: [],
+    }),
+  });
+
   source: LocalDataSource = new LocalDataSource();
-  public dataService: CompleterData;
   public inputExercise: string;
-  public inputExerciseValue: number;
+
 
   public inputSet: number;
   public inputRepeat: number;
@@ -38,14 +48,21 @@ export class AddExerciseItemModalComponent implements OnInit {
   constructor(private exerciseService: ExerciseService,
               private ngbActiveModal: NgbActiveModal ,
               private helperService: HelperService,
-              private completerService: CompleterService,
               private notificationService: NotificationsService) {
-    this.dataService = completerService.local(this.searchData, 'value', 'item');
   }
   ngOnInit() {
+    const programList = [];
     this.exerciseService.getExerciseShortList().subscribe((data: Exercise[]) => {
       data.forEach((e, index, array) => {
         this.searchData.push({item : e.name, value : e.id});
+        programList.push(e.name);
+      });
+
+      this.dataSource =  new DataSource({
+        store: new ArrayStore({
+          key: 'item',
+          data: programList,
+        }),
       });
     });
 
@@ -81,6 +98,15 @@ export class AddExerciseItemModalComponent implements OnInit {
     }
     return r;
   }
+
+  getExerciseId(name: string) {
+    this.searchData.forEach((programItem: SearchData, index, array) => {
+      if (programItem.item === name) {
+        return programItem.value;
+      }
+    });
+    return 0;
+  }
   addClick() {
     if (!this.validateAdd()) {
       return;
@@ -109,7 +135,7 @@ export class AddExerciseItemModalComponent implements OnInit {
     }
     const subItem: ExerciseItemsSubList = {
       exerciseItemDesc: this.inputExercise,
-      exerciseItemId: this.inputExerciseValue,
+      exerciseItemId: this.getExerciseId(this.inputExercise),
       repeat: parseInt(this.helperService.convertToLatinNumbers(this.inputRepeat + '') + ''),
       repeatType: this.inputRepeatType,
       repeatTypeDesc: this.exerciseService.getExerciseRepeatTypeDesc(this.inputRepeatType),
@@ -130,9 +156,6 @@ export class AddExerciseItemModalComponent implements OnInit {
     for (let i = 0; i < this.selectedExcercisesList.length; i++) {
       this.selectedExcercisesList[i].id = i + 1;
     }
-  }
-  completerSelected(event: CompleterItem) {
-    this.inputExerciseValue = event.originalObject.value;
   }
 
   confirmClick() {

@@ -96,7 +96,8 @@ public class ProgramController {
 		for(Program p : list) {
 			ProgramView pv = new ProgramView(p);
 			pv.setShamsiProgramDate(DateUtil.getShamsiDate(p.getProgramDate()));
-			pv.setPersonName(p.getPerson().getFirstName() + " " + p.getPerson().getLastName());
+			pv.setPersonName(p.getPerson().getFirstName() + " " + p.getPerson().getLastName()
+			 + "(" + p.getPerson().getMobileNumber() + ")");
 
 			List<ProgramExerciseItem> exerciseItems = programExerciseItemDao.findByProgramId(p.getId());
 			//TODO improve code

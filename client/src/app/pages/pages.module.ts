@@ -13,7 +13,6 @@ import {PersonService} from './caa/services/person.service';
 import {ProgramService} from './caa/services/program.service';
 import {ProgramsComponent} from './caa/components/programs/programs.component';
 import {AddProgramModalComponent} from './caa/components/programs/addProgramModal/add-program-modal.component';
-import { Ng2CompleterModule } from 'ng2-completer';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { DisplayProgramExerciseImageComponent } from
@@ -35,7 +34,6 @@ const PAGES_COMPONENTS = [
     DashboardModule,
     MiscellaneousModule,
     Ng2SmartTableModule,
-    Ng2CompleterModule,
 
     HttpClientJsonpModule,
     ShareButtonsModule.forRoot(),

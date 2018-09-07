@@ -54,7 +54,12 @@ public class ExerciseController {
 	@ResponseBody
 	@Transactional
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
-    	
+
+		List<Exercise> list = exerciseDao.findByName(exercise.getName());
+		if (list != null && list.size() > 0) {
+			throw new RuntimeException("نام حرکت تکراری است");
+		}
+
     	logger.info("saveExercise entered...");
     	exerciseDao.save(exercise);
 		return exercise;

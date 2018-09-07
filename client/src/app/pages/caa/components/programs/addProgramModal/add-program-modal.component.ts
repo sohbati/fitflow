@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HelperService} from '../../../services/helper.service';
 import { LocalDataSource } from 'ng2-smart-table';
-import {CompleterService, CompleterData, CompleterItem} from 'ng2-completer';
 import {PersonService} from '../../../services/person.service';
 import {Person} from '../../../datamodel/Person';
 import {AddExerciseItemModalComponent} from './addExerciseItemComponent/add-exercise-item.component';
@@ -50,8 +49,6 @@ export class AddProgramModalComponent implements OnInit {
 
   /** ng2-smart-table source **/
   source: LocalDataSource = new LocalDataSource();
-  /** TODO should remove **/
-  public dataService: CompleterData;
   /** now it is not used but may in future i need it in dxAutoCompleter for [Person List]**/
   public searchData: SearchData[] = [];
 
@@ -108,9 +105,7 @@ export class AddProgramModalComponent implements OnInit {
         private helperService: HelperService,
         private programService: ProgramService,
         private exerciseService: ExerciseService,
-        private personService: PersonService,
-              private completerService: CompleterService) {
-    this.dataService = completerService.local(this.searchData, 'value', 'item');
+        private personService: PersonService) {
   }
   ngOnInit() {
     const personList = [];
@@ -252,10 +247,6 @@ export class AddProgramModalComponent implements OnInit {
       }
     }
     this.source.load(exerciseAsStringList);
-  }
-
-  personCompleterSelected(event: CompleterItem) {
-    this.program.person.id = event.originalObject ?  event.originalObject.value : '' ;
   }
 
   prepareExerciseList() {

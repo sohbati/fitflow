@@ -12,8 +12,12 @@
                   <div class="col-sm-4">
                     <div class="form-group">
                       <label >حرکت</label>
-                      <ng2-completer [inputClass]="'form-control'"  placeholder="حرکت"
-                                    [(ngModel)]="inputExercise" (selected)="completerSelected($event)" [datasource]="dataService" [minSearchLength]="0"></ng2-completer>
+                      <dx-autocomplete
+                        placeholder="حرکت"
+                        [(value)]="inputExercise"
+                        [dataSource]="dataSource">
+                      </dx-autocomplete>
+
                     </div>
                   </div>
                   <div class="col-sm-2">
