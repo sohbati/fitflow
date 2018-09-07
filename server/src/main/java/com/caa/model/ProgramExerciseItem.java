@@ -28,6 +28,9 @@ public class ProgramExerciseItem {
     @Column(name = "exercise_id", unique = false, updatable = true, insertable = true, nullable = false)
     private long exerciseId;
 
+    @Column(name = "sub_exercise_id", unique = false, updatable = true, insertable = true, nullable = false)
+    private int subExerciseId;
+
     @Column(name = "exercise_set", unique = false, updatable = true, insertable = true, nullable = false)
     private int exerciseSet;
 

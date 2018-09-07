@@ -9,7 +9,10 @@ export class ProgramView {
   programDate: Date;
   description: string = '';
 
-  programExerciseItems: ProgramExerciseItem[];
+  programExercise1Items: ProgramExerciseItem[];
+  programExercise2Items: ProgramExerciseItem[];
+  programExercise3Items: ProgramExerciseItem[];
+  programExercise4Items: ProgramExerciseItem[];
 
   personAge: number;
   personTall: number;

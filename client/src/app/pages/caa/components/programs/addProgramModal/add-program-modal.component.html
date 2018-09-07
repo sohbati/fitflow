@@ -21,7 +21,7 @@
                       <label >شخص</label>
 
                       <dx-autocomplete
-                        placeholder="Type first name..."
+                        placeholder="نام فرد را وارد نمایید..."
                         [(value)]="program.personName"
                         [dataSource]="dataSource">
                       </dx-autocomplete>
@@ -39,11 +39,36 @@
 
             <div class="row">
               <div class="col-sm-12">
-                <ng2-smart-table [settings]="settings"
-                                 [source]="source"
-                                 (create)="addExerciseClick($event)"
-                                 (edit)="editExerciseClick($event)">
-                </ng2-smart-table>
+                <nb-tabset fullWidth>
+                  <nb-tab tabTitle="  تمرین شماره ۱  ">
+                    <ng2-smart-table [settings]="settings"
+                                     [source]="source1"
+                                     (create)="addExerciseClick($event, 1)"
+                                     (edit)="editExerciseClick($event, 1)">
+                    </ng2-smart-table>
+                  </nb-tab>
+                  <nb-tab tabTitle="  تمرین شماره ۲  ">
+                    <ng2-smart-table [settings]="settings"
+                                     [source]="source2"
+                                     (create)="addExerciseClick($event, 2)"
+                                     (edit)="editExerciseClick($event, 2)">
+                    </ng2-smart-table>
+                  </nb-tab>
+                  <nb-tab tabTitle="  تمرین شماره ۳  ">
+                    <ng2-smart-table [settings]="settings"
+                                     [source]="source3"
+                                     (create)="addExerciseClick($event, 3)"
+                                     (edit)="editExerciseClick($event, 3)">
+                    </ng2-smart-table>
+                  </nb-tab>
+                  <nb-tab tabTitle="  تمرین شماره ۴  ">
+                    <ng2-smart-table [settings]="settings"
+                                     [source]="source4"
+                                     (create)="addExerciseClick($event, 4)"
+                                     (edit)="editExerciseClick($event,4)">
+                    </ng2-smart-table>
+                  </nb-tab>
+                </nb-tabset>
               </div>
             </div>
 

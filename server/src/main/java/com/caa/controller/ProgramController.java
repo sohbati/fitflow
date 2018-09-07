@@ -112,7 +112,12 @@ public class ProgramController {
 			}
 
 			viewList.stream().forEach(exerciseItem -> {
-				pv.getProgramExerciseItems().add(exerciseItem);
+				switch (exerciseItem.getSubExerciseId()) {
+					case 1 : pv.getProgramExercise1Items().add(exerciseItem); break;
+					case 2 : pv.getProgramExercise2Items().add(exerciseItem); break;
+					case 3 : pv.getProgramExercise3Items().add(exerciseItem); break;
+					case 4 : pv.getProgramExercise4Items().add(exerciseItem); break;
+				}
 			});
 			result.add(pv);
 		}
@@ -126,13 +131,34 @@ public class ProgramController {
     	
     	logger.info("saveProgram entered...");
     	Program p = getProgramFromView(programView);
-		List<ProgramExerciseItemView> items = programView.getProgramExerciseItems();
+		List<ProgramExerciseItemView> items1 = programView.getProgramExercise1Items();
+		List<ProgramExerciseItemView> items2 = programView.getProgramExercise2Items();
+		List<ProgramExerciseItemView> items3 = programView.getProgramExercise3Items();
+		List<ProgramExerciseItemView> items4 = programView.getProgramExercise4Items();
 
-    	programDao.save(p);
-    	programExerciseItemDao.deleteByProgramId(p.getId());
+
+		programDao.save(p);
+
+		List<ProgramExerciseItem> allEntityList = new ArrayList<>();
+		allEntityList.addAll(getSubExerciseItems(items1 , 1, p.getId()));
+		allEntityList.addAll(getSubExerciseItems(items2 , 2, p.getId()));
+		allEntityList.addAll(getSubExerciseItems(items3 , 3, p.getId()));
+		allEntityList.addAll(getSubExerciseItems(items4 , 4, p.getId()));
+
+		programExerciseItemDao.deleteByProgramId(p.getId());
+
+
+
+		programExerciseItemDao.save(allEntityList);
+		programView.setId(p.getId());
+		return programView;
+	}
+
+	private List<ProgramExerciseItem> getSubExerciseItems(List<ProgramExerciseItemView> items,
+														  int subExerciseIndex, Long pid) {
 		if (items != null && items.size() > 0) {
 			items.forEach(programExerciseItem -> {
-				programExerciseItem.setProgramId(p.getId());
+				programExerciseItem.setProgramId(pid);
 			});
 		}
 
@@ -142,18 +168,15 @@ public class ProgramController {
 			item.setId(programExerciseItemView.getId());
 			item.setProgramId(programExerciseItemView.getProgramId());
 			item.setExerciseId(programExerciseItemView.getExerciseId());
+			item.setSubExerciseId(subExerciseIndex);
 			item.setExerciseSet(programExerciseItemView.getExerciseSet());
 			item.setExerciseRepeat(programExerciseItemView.getExerciseRepeat());
 			item.setExerciseRepeatType(programExerciseItemView.getExerciseRepeatType());
 			item.setDescription(programExerciseItemView.getDescription());
 			entityList.add(item);
 		});
-
-		programExerciseItemDao.save(entityList);
-		programView.setId(p.getId());
-		return programView;
+		return entityList;
 	}
-
 	private Program getProgramFromView(ProgramView view) {
     	Program program = new Program();
     	program.setId(view.getId());
@@ -175,7 +198,6 @@ public class ProgramController {
     	program.setPersonWaist(view.getPersonWaist());
     	program.setPersonWeight(view.getPersonWeight());
     	program.setProgramDate(DateUtil.getGregorianDate(view.getShamsiProgramDate()));
-    	//program.setProgramExerciseItems(view.getProgramExerciseItems());
     	program.setProgramName(view.getProgramName());
     	return program;
 	}
@@ -185,6 +207,7 @@ public class ProgramController {
 	@ResponseBody
 	public void deleteProgram(@PathVariable("id") long id) {
 		logger.info("delete entered: id= " + id);
+		 programExerciseItemDao.deleteByProgramId(id);
 		 programDao.delete(id);
 	}
 

@@ -4,6 +4,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AddProgramModalComponent} from './addProgramModal/add-program-modal.component';
 import {ProgramService} from '../../services/program.service';
 import {ProgramView} from '../../datamodel/ProgramView';
+import {HelperService} from '../../services/helper.service';
 
 @Component({
   selector: 'ngx-programs',
@@ -57,6 +58,7 @@ export class ProgramsComponent implements OnInit {
   source: LocalDataSource = new LocalDataSource();
 
   constructor(private modalService: NgbModal,
+              private helperService: HelperService,
               private programService: ProgramService) { }
 
   ngOnInit() {
@@ -94,4 +96,30 @@ export class ProgramsComponent implements OnInit {
     });
   }
 
+  onDeleteConfirm(event): void {
+    if (window.confirm('Are you sure you want to delete?')) {
+      this.doDelete(event);
+    } else {
+      event.confirm.reject();
+    }
+  }
+
+  doDelete(event): void {
+    this.programService.deleteProgram(event.data).subscribe((data: any) => {
+      this.helperService.showSuccess('اطلاعات حذف گردید');
+      let index = -1;
+      for (let i = 0; i < this.programList.length; i++) {
+        if (this.programList[i].id === event.data.id) {
+          index = i;
+          break;
+        }
+      }
+      if (index >= 0) {
+        this.programList.splice(index, 1);
+        this.source.refresh();
+      }
+    }, (error) => {
+      this.helperService.showError('در حذف برنامه ایرادی بوجود آمد لطفا با پشتیبانی سیستم تماس بگیرید')
+    });
+  }
 }

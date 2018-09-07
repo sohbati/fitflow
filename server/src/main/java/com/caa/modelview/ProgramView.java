@@ -41,6 +41,9 @@ public class ProgramView extends Program {
 
     private String shamsiProgramDate;
     private String personName;
-    private List<ProgramExerciseItemView> programExerciseItems = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise1Items = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise2Items = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise3Items = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise4Items = new ArrayList<>();
 
 }

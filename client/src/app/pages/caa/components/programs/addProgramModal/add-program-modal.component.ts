@@ -48,13 +48,21 @@ export class AddProgramModalComponent implements OnInit {
     });
 
   /** ng2-smart-table source **/
-  source: LocalDataSource = new LocalDataSource();
+  source1: LocalDataSource = new LocalDataSource();
+  source2: LocalDataSource = new LocalDataSource();
+  source3: LocalDataSource = new LocalDataSource();
+  source4: LocalDataSource = new LocalDataSource();
+
+  exercise1List: SelectedIExerciseItems[] = [];
+  exercise2List: SelectedIExerciseItems[] = [];
+  exercise3List: SelectedIExerciseItems[] = [];
+  exercise4List: SelectedIExerciseItems[] = [];
+
   /** now it is not used but may in future i need it in dxAutoCompleter for [Person List]**/
   public searchData: SearchData[] = [];
 
   program: ProgramView;
 
-  exerciseList: SelectedIExerciseItems[] = [];
 
   /** ng2-smart-table setting **/
   settings = {
@@ -147,9 +155,17 @@ export class AddProgramModalComponent implements OnInit {
       this.program.personMuscleWeight = 0;
       this.program.personScore = 0;
 
-      this.exerciseList = [];
+      this.exercise1List = [];
+      this.exercise2List = [];
+      this.exercise3List = [];
+      this.exercise4List = [];
     }else {
-      if (this.program.programExerciseItems == null || this.program.programExerciseItems.length <= 0) {
+      this.intiExerciseItems(this.program.programExercise1Items, this.exercise1List, 1);
+      this.intiExerciseItems(this.program.programExercise2Items, this.exercise2List, 2);
+      this.intiExerciseItems(this.program.programExercise3Items, this.exercise3List, 3);
+      this.intiExerciseItems(this.program.programExercise4Items, this.exercise4List, 4);
+
+/*      if (this.program.programExerciseItems == null || this.program.programExerciseItems.length <= 0) {
         this.exerciseList = [];
       }else {
         this.program.programExerciseItems.forEach((item: ProgramExerciseItem, index, array) => {
@@ -159,30 +175,45 @@ export class AddProgramModalComponent implements OnInit {
           value.id  = index + 1;
         })
       }
-      this.prepareGridRows(this.exerciseList);
+      this.prepareGridRows(this.exerciseList);*/
     }
   }
 
-  addItemToList(id: number, item: ProgramExerciseItem) {
-    if (this.exerciseList == null || this.exerciseList.length === 0) {
-      this.addNewItem(item);
+  intiExerciseItems(programExerciseItems: ProgramExerciseItem[],
+                    exerciseList: SelectedIExerciseItems[], exerciseIndex: number) {
+    if (programExerciseItems == null || programExerciseItems.length <= 0) {
+      exerciseList = [];
+    }else {
+      programExerciseItems.forEach((item: ProgramExerciseItem, index, array) => {
+        this.addItemToList(exerciseList, item.id, item)
+      });
+      exerciseList.forEach((value, index, array) => {
+        value.id  = index + 1;
+      })
+    }
+    this.prepareGridRows(exerciseList, exerciseIndex);
+  }
+
+  addItemToList(exerciseList: SelectedIExerciseItems[], id: number, item: ProgramExerciseItem) {
+    if (exerciseList == null || exerciseList.length === 0) {
+      this.addNewItem(exerciseList, item);
     }else {
       let isnew: boolean = true;
-      for (let i = 0; i < this.exerciseList.length; i++) {
-        if (this.exerciseList[i].id === id) {
+      for (let i = 0; i < exerciseList.length; i++) {
+        if (exerciseList[i].id === id) {
           isnew = false;
           const subItem = this.getSubListItem(item);
-          this.exerciseList[i].subListItems.push(subItem);
+          exerciseList[i].subListItems.push(subItem);
         }
       }
       if (isnew) {
-        this.addNewItem(item);
+        this.addNewItem(exerciseList, item);
       }
     }
   }
-  addNewItem(item: ProgramExerciseItem) {
-    if (this.exerciseList == null) {
-      this.exerciseList = [];
+  addNewItem(exerciseList: SelectedIExerciseItems[], item: ProgramExerciseItem) {
+    if (exerciseList == null) {
+      exerciseList = [];
     }
 
     const subListItem: ExerciseItemsSubList = this.getSubListItem(item);
@@ -191,7 +222,7 @@ export class AddProgramModalComponent implements OnInit {
     }
     e.subListItems = [];
     e.subListItems.push(subListItem);
-    this.exerciseList.push(e);
+    exerciseList.push(e);
   }
 
   getSubListItem(item: ProgramExerciseItem): ExerciseItemsSubList {
@@ -206,33 +237,53 @@ export class AddProgramModalComponent implements OnInit {
     return subListItem;
   }
 ////////////////////////////////////////////////////////////////////////////
-  addExerciseClick(event): void {
+  addExerciseClick(event, exerciseIndex: number): void {
     const activeModal = this.modalService.open(AddExerciseItemModalComponent, { size: 'lg', container: 'nb-layout' });
-    activeModal.componentInstance.selectedExcercisesList = this.exerciseList;
+    activeModal.componentInstance.selectedExcercisesList = this.getCurrentExercise(exerciseIndex);
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
     activeModal.result.then((exerciseList: SelectedIExerciseItems[]) => {
-      this.exerciseList = exerciseList;
-      this.prepareGridRows(exerciseList);
+      switch (exerciseIndex) {
+        case 1 : this.exercise1List = exerciseList; break;
+        case 2 : this.exercise2List = exerciseList; break;
+        case 3 : this.exercise3List = exerciseList; break;
+        case 4 : this.exercise4List = exerciseList; break;
+      }
+      this.prepareGridRows(exerciseList, exerciseIndex);
     }).catch(e => {
       // this.helperService.showError('error on modal add program : ' + e)
     });
   }
 
-  editExerciseClick(event) {
+  getCurrentExercise(index: number) {
+    switch (index) {
+      case 1 : return this.exercise1List;
+      case 2 : return this.exercise2List;
+      case 3 : return this.exercise3List;
+      case 4 : return this.exercise4List;
+    }
+  }
+
+  editExerciseClick(event, exerciseIndex: number) {
     const activeModal = this.modalService.open(AddExerciseItemModalComponent, { size: 'lg', container: 'nb-layout' });
-    activeModal.componentInstance.selectedExcercisesList = this.exerciseList;
+    activeModal.componentInstance.selectedExcercisesList = this.getCurrentExercise(exerciseIndex);
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
     activeModal.result.then((exerciseList: SelectedIExerciseItems[]) => {
-      this.exerciseList = exerciseList;
-      this.prepareGridRows(exerciseList);
+      switch (exerciseIndex) {
+        case 1 : this.exercise1List = exerciseList; break;
+        case 2 : this.exercise2List = exerciseList; break;
+        case 3 : this.exercise3List = exerciseList; break;
+        case 4 : this.exercise4List = exerciseList; break;
+      }
+
+      this.prepareGridRows(exerciseList, exerciseIndex);
     }).catch(e => {
      // this.helperService.showError('error on modal edit program : ' + e)
     });
   }
 
-  prepareGridRows(exerciseList: SelectedIExerciseItems[]) {
+  prepareGridRows(exerciseList: SelectedIExerciseItems[], exerciseIndex: number) {
     const exerciseAsStringList: ExerciseAsString[] = [];
     if (exerciseList != null && exerciseList.length > 0) {
       let str = '';
@@ -246,19 +297,27 @@ export class AddProgramModalComponent implements OnInit {
         exerciseAsStringList.push({rowId: exerciseList[i].id,  exercises: str});
       }
     }
-    this.source.load(exerciseAsStringList);
+    switch (exerciseIndex) {
+      case 1 : this.source1.load(exerciseAsStringList); break;
+      case 2 : this.source2.load(exerciseAsStringList); break;
+      case 3 : this.source3.load(exerciseAsStringList); break;
+      case 4 : this.source4.load(exerciseAsStringList); break;
+    }
   }
 
-  prepareExerciseList() {
-    if (this.exerciseList == null || this.exerciseList.length === 0) {
-      return;
+  prepareExerciseList(exerciseList: SelectedIExerciseItems[]) {
+    if (exerciseList == null || exerciseList.length === 0) {
+      return [];
     }
-    // clean container
-    this.program.programExerciseItems = [];
+    const programExerciseItems: ProgramExerciseItem[] = [];
     let id: number = 0;
-    this.exerciseList.forEach((item, index, array) => {
+    for (let i = 0; i < exerciseList.length; i++) {
+      const item = exerciseList[i];
+    // exerciseList.forEach((item, index, array) => {
       id++;
-      item.subListItems.forEach((value, index2, array2) => {
+      for (let j = 0; j < item.subListItems.length; j++) {
+        const value = item.subListItems[j];
+      // item.subListItems.forEach((value, index2, array2) => {
         const ex: ProgramExerciseItem = new ProgramExerciseItem();
         ex.id = id;
         ex.exerciseId = value.exerciseItemId;
@@ -267,9 +326,10 @@ export class AddProgramModalComponent implements OnInit {
         ex.exerciseRepeat = value.repeat;
         ex.exerciseRepeatType = value.repeatType;
 
-        this.program.programExerciseItems.push(ex);
-      })
-    })
+        programExerciseItems.push(ex);
+      }
+    }
+    return programExerciseItems;
   }
 
   preparePersonId() {
@@ -281,7 +341,12 @@ export class AddProgramModalComponent implements OnInit {
   }
 
   confirmClick() {
-    this.prepareExerciseList();
+    debugger;
+    this.program.programExercise1Items = this.prepareExerciseList(this.exercise1List);
+    this.program.programExercise2Items = this.prepareExerciseList(this.exercise2List);
+    this.program.programExercise3Items = this.prepareExerciseList(this.exercise3List);
+    this.program.programExercise4Items = this.prepareExerciseList(this.exercise4List);
+
     this.preparePersonId();
 
     this.programService.addProgram(this.program).subscribe((result: ProgramView) => {
@@ -298,6 +363,5 @@ export class AddProgramModalComponent implements OnInit {
       const activeModal = this.modalService.open(DisplayProgramExerciseImageComponent, {windowClass : 'modalWindowClass', container: 'nb-layout'});
       activeModal.componentInstance.programId = this.program.id;
       activeModal.componentInstance.modalHeader = 'Large Modal';
-
   }
 }

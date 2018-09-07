@@ -16,6 +16,7 @@ public class ProgramExerciseItemView extends ProgramExerciseItem{
         //this.setExerciseName(p.getE);
         this.setDescription(p.getDescription());
         this.setExerciseId(p.getExerciseId());
+        this.setSubExerciseId(p.getSubExerciseId());
         this.setExerciseRepeat(p.getExerciseRepeat());
         this.setExerciseRepeatType(p.getExerciseRepeatType());
         this.setExerciseSet(p.getExerciseSet());
