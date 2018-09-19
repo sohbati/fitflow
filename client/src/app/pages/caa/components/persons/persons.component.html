@@ -1,13 +1,59 @@
-<nb-card>
-  <nb-card-header>
-    لیست اشخاص
-  </nb-card-header>
 
+<nb-card>
   <nb-card-body>
-    <ng2-smart-table [settings]="settings" [source]="source"
-                     (createConfirm)="onCreateConfirm($event)"
-                     (editConfirm)="onEditConfirm($event)"
-                     (deleteConfirm)="onDeleteConfirm($event)">
-    </ng2-smart-table>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-md-1">
+            <nb-actions size="medium">
+              <nb-action (click)="addPersonClick()" icon="nb-plus"></nb-action>
+            </nb-actions>
+          </div>
+          <div class="col-md-6">
+            <input [(ngModel)]="searchText" type="text" class="form-control" placeholder="نام . نام خانوادگی . شماره موبایل">
+          </div>
+          <div class="col-md-2">
+            <button (click)="searchClick()" class="btn btn-danger input-group-text">جستجو
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
   </nb-card-body>
 </nb-card>
+<div class="row show-grid">
+  <div class="col-md-2" *ngFor="let person of personList">
+    <nb-card>
+      <nb-card-header>
+        {{person.firstName + ' ' + person.lastName}}
+      </nb-card-header>
+      <nb-card-body>
+        <img [src]="person.shrinkedImage" class="radius-round"
+             style="width: 110px; height: 100px; cursor: pointer" (dblclick)="editButtonClick(person.id)"
+             title="{{person.firstName + ' ' + person.lastName}}" onclick="pic.click()"/>
+
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="row icon-buttons">
+          <div class="col-md-12">
+            <div class="btn-group" >
+              <button type="button" (click)="editButtonClick(person.id)" class="btn btn-outline-primary btn-icon" style="width: 37px !important;">
+                <i class="nb-edit"> </i>
+              </button>
+              <button type="button" (click)="OpenProgramClick(person)" class="btn btn-outline-primary btn-icon " style="width: 37px !important;">
+                <i class="nb-layout-two-column"> </i>
+              </button>
+              <button type="button" (click)="deleteClick(person.id)" class="btn btn-outline-primary btn-icon " style="width: 37px !important;">
+                <i class="nb-trash"> </i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</div>
+
+

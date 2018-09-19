@@ -17,11 +17,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'nb-exercise',
     link: '/pages/exercises',
   },
-  {
-    title: 'برنامه ها',
-    icon: 'nb-person',
-    link: '/pages/programs',
-  },
+  // {
+  //   title: 'فایل برنامه های اشخاص',
+  //   icon: 'nb-person',
+  //   link: '/pages/programs',
+  // },
   {
     title: 'FEATURES',
     group: true,

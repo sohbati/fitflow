@@ -32,6 +32,7 @@ public class ProgramView extends Program {
         this.setPersonForeArm(p.getPersonForeArm());
         this.setPersonThigh(p.getPersonThigh());
         this.setPersonShin(p.getPersonShin());
+        this.setPersonButt(p.getPersonButt());
         this.setPersonFatPercentage(p.getPersonFatPercentage());
         this.setPersonFatWeight(p.getPersonFatWeight());
         this.setPersonMuscleWeight(p.getPersonMuscleWeight());

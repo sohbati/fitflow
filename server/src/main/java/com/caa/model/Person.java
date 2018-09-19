@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.persistence.*;
+import java.sql.Blob;
+import java.util.Date;
 
 @Data
 @EntityScan
@@ -26,6 +28,26 @@ public class Person {
 	private String mobileNumber;
 
 	// Getters and setters
+
+	@Column(name = "address", unique = false, updatable = true, insertable = true, nullable = true)
+	private String address;
+
+	@Column(name = "father_name", unique = false, updatable = true, insertable = true, nullable = true)
+	private String fatherName;
+
+	@Column(name = "disability", unique = false, updatable = true, insertable = true, nullable = true)
+	private String disability;
+
+	@Column(name = "birth_date", unique = false, updatable = true, insertable = true, nullable = true)
+	private Date birthDate;
+
+
+	@Lob
+	@Column(name = "shrinked_image", unique = false, updatable = true, insertable = true, nullable = true)
+	private byte[] shrinkedImage;
+
+	@Column(name = "image_suffix", unique = false, updatable = true, insertable = true, nullable = true)
+	private String imageSuffix;
 
 	public Person() {
 	}

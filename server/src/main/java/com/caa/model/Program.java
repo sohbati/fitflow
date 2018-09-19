@@ -64,6 +64,9 @@ public class Program {
     @Column(name = "person_shin", unique = false, updatable = true, insertable = true, nullable = false)
     private int personShin;
 
+    @Column(name = "person_butt", unique = false, updatable = true, insertable = true, nullable = false)
+    private int personButt;
+
     @Column(name = "person_fat_percentage", unique = false, updatable = true, insertable = true, nullable = false)
     private double personFatPercentage;
 

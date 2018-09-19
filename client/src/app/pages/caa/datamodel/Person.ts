@@ -3,7 +3,11 @@ export class Person {
   id: number;
   firstName: string;
   lastName: string;
+  fatherName: string;
+  disability: string;
   mobileNumber: string;
   address: string;
-  birthDate: number;
+  birthDate: string;
+  originalImage: any;
+  shrinkedImage: any;
 }

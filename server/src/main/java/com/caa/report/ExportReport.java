@@ -1,18 +1,10 @@
 package com.caa.report;
 
-import com.caa.model.ProgramExerciseItem;
-import com.caa.modelview.ProgramExerciseItemView;
-import com.caa.util.ImageEncode;
+import com.caa.util.ImageUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.Base64Utils;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,7 +25,7 @@ public class ExportReport {
      */
     public static String getProgramExerciseAsImage(List<ProgramExercisesReportDTO> exerciseItems) {
         ByteArrayOutputStream out = getImageStream(exerciseItems);
-        String imageString = ImageEncode.encodeImage(out);
+        String imageString = ImageUtil.encodeImage(out);
         return imageString;
     }
 

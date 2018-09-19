@@ -11,14 +11,16 @@ export class ProgramService {
   public GET_PROGRAM_LIST: string  = '/getPrograms';
   public GET_PROGRAM_EXERCISE_IMAGE: string  = '/getProgramExerciseImage';
 
+  private GET_PERSON_PROGRAMS_ALL_SIZES: string  = '/getPersonProgramsAllSizes';
+
   public SAVE_PROGRAM: string  = '/saveProgram';
   public DELETE_PROGRAM: string  = '/deleteProgram';
 
   constructor(private http: HttpClient,
               private helperService: HelperService) { }
 
-  public getProgramList() {
-    return this.http.get<ProgramView[]>(this.helperService.SERVER_URL + this.GET_PROGRAM_LIST);
+  public getProgramList(personId: number) {
+    return this.http.get<ProgramView[]>(this.helperService.SERVER_URL + this.GET_PROGRAM_LIST + '/' + personId);
   }
 
   public getProgramExerciseImage(id: number) {
@@ -36,6 +38,10 @@ export class ProgramService {
 
   public addProgram(program: ProgramView) {
     return this.http.post(this.helperService.SERVER_URL + this.SAVE_PROGRAM, program);
+  }
+
+  public getPersonProgramsAllSizes(programId: number) {
+    return this.http.get(this.helperService.SERVER_URL + this.GET_PERSON_PROGRAMS_ALL_SIZES + '/' +  programId);
   }
 
 }

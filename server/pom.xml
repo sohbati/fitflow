@@ -82,6 +82,14 @@
 			<version>3.0.0-alpha-3</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-core -->
+		<!-- https://mvnrepository.com/artifact/com.sun.media/jai_imageio -->
+		<!--<dependency>-->
+			<!--<groupId>com.sun.media</groupId>-->
+			<!--<artifactId>jai_imageio</artifactId>-->
+			<!--<version>1.1</version>-->
+		<!--</dependency>-->
+
 		<!--&lt;!&ndash; https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all &ndash;&gt;-->
 		<!--<dependency>-->
 			<!--<groupId>org.codehaus.groovy</groupId>-->

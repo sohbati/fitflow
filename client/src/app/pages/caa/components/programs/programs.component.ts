@@ -5,6 +5,7 @@ import {AddProgramModalComponent} from './addProgramModal/add-program-modal.comp
 import {ProgramService} from '../../services/program.service';
 import {ProgramView} from '../../datamodel/ProgramView';
 import {HelperService} from '../../services/helper.service';
+import {PersonView} from "../../datamodel/PersonView";
 
 @Component({
   selector: 'ngx-programs',
@@ -13,6 +14,9 @@ import {HelperService} from '../../services/helper.service';
 })
 export class ProgramsComponent implements OnInit {
 
+  // imput params
+  person: PersonView;
+  //
   settings = {
     mode: 'external',
     add: {
@@ -66,7 +70,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   initProgramList() {
-    this.programService.getProgramList().subscribe((data: ProgramView[]) => {
+    this.programService.getProgramList(this.person.id).subscribe((data: ProgramView[]) => {
       this.programList = data;
       this.source.load(this.programList);
     });
@@ -75,6 +79,7 @@ export class ProgramsComponent implements OnInit {
   addClick(event): void {
     const activeModal = this.modalService.open(AddProgramModalComponent, { size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.modalHeader = 'Large Modal';
+    activeModal.componentInstance.person = this.person;
     activeModal.result.then((program: ProgramView) => {
         this.programList.push(program);
         this.source.load(this.programList);
@@ -84,6 +89,7 @@ export class ProgramsComponent implements OnInit {
   editClick(event): void {
     const activeModal = this.modalService.open(AddProgramModalComponent, { size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.program = event.data;
+    activeModal.componentInstance.person = this.person;
     activeModal.componentInstance.modalHeader = 'Large Modal';
     activeModal.result.then((program: ProgramView) => {
       for (let i = 0; i < this.programList.length; i++) {

@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {PersonService} from '../../services/person.service';
 import {HelperService} from '../../services/helper.service';
 import {Person} from '../../datamodel/Person';
-import { LocalDataSource } from 'ng2-smart-table';
+import {AddPersonModalComponent} from './addpersonmodal/add-person-modal.component';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {PersonView} from '../../datamodel/PersonView';
+import {ProgramsComponent} from '../programs/programs.component';
 @Component({
   selector: 'ngx-person-list',
   templateUrl: './persons.component.html',
@@ -12,124 +15,118 @@ import { LocalDataSource } from 'ng2-smart-table';
 export class PersonsComponent implements OnInit {
 
 
-  settings = {
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmCreate: true,
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmSave: true,
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    columns: {
-      firstName: {
-        title: 'نام ',
-        type: 'string',
-      },
-      lastName: {
-        title: 'نام خانوادگی',
-        type: 'string',
-      },
-      mobileNumber: {
-        title: 'شماره موبایل',
-        type: 'string',
-      },
-    },
-  };
-
-  source: LocalDataSource = new LocalDataSource();
-
-
   constructor(private personService: PersonService,
-              private helperService: HelperService) {
-
-    const data =  [{
-      id: 1,
-      firstName: 'Mark',
-      lastName: 'Otto',
-      username: '@mdo',
-      email: 'mdo@gmail.com',
-      age: '28',
-    }, {
-      id: 2,
-      firstName: 'Jacob',
-      lastName: 'Thornton',
-      username: '@fat',
-      email: 'fat@yandex.ru',
-      age: '45',
-    }, {
-      id: 3,
-      firstName: 'Larry',
-      lastName: 'Bird',
-      username: '@twitter',
-      email: 'twitter@outlook.com',
-      age: '18',
-    }];
-
-    //this.source.load(data);
-
+              private helperService: HelperService,
+              private modalService: NgbModal) {
   }
 
+  searchText: string = '';
   private personList: Person[] = [];
+
   ngOnInit() {
       this.initPersonList();
   }
-
+  ///////////////////////////////////////////////////////////////////////////
   initPersonList() {
     this.personService.getPersonList().subscribe((data: Person[]) => {
-      console.log(data);
       this.personList = data;
-      this.source.load(this.personList);
+      this.personList.forEach((person, index, array) => {
+        this.manageImage(person);
+      });
     });
   }
 
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      this.doDelete(event);
-    } else {
-      event.confirm.reject();
+  manageImage(person: PersonView) {
+    const img = person.shrinkedImage;
+    if (img === undefined || img === null || img.length === 0)
+      person.shrinkedImage = 'assets/images/dummy-person.png';
+    else
+      person.shrinkedImage = 'data:image/png;base64,' + person.shrinkedImage;
+    // return person;
+  }
+
+  addPersonClick() {
+    const activeModal = this.modalService.open(AddPersonModalComponent, { size: 'lg', container: 'nb-layout' });
+    activeModal.componentInstance.personId = 0;
+    activeModal.componentInstance.modalHeader = 'Large Modal';
+
+    activeModal.result.then((result: any) => {
+      this.manageImage(result);
+      this.personList.push(result);
+    }).catch(e => {
+      // this.helperService.showError('error on modal edit program : ' + e)
+    });
+  }
+
+  editButtonClick(id: number) {
+    const activeModal = this.modalService.open(AddPersonModalComponent, { size: 'lg', container: 'nb-layout' });
+    activeModal.componentInstance.personId = id;
+    activeModal.componentInstance.modalHeader = 'Large Modal';
+
+    activeModal.result.then((result: PersonView) => {
+      for (let i = 0; i < this.personList.length; i++) {
+          if (this.personList[i].id === id) {
+            this.manageImage(result);
+            this.personList[i] = result;
+            break;
+          }
+      }
+    }).catch(e => {
+      // this.helperService.showError('error on modal edit program : ' + e)
+    });
+  }
+
+  OpenProgramClick(person: PersonView) {
+    const activeModal = this.modalService.open(ProgramsComponent, { size: 'lg', container: 'nb-layout' });
+    activeModal.componentInstance.person = person;
+    activeModal.componentInstance.modalHeader = 'Large Modal';
+
+    activeModal.result.then((result: PersonView) => {
+
+    }).catch(e => {
+      // this.helperService.showError('error on modal edit program : ' + e)
+    });
+  }
+  deleteClick(id: number): void {
+    if (window.confirm('آیا از حذف فرد مورد نظر اطمینان دارید؟')) {
+      this.doDelete(id);
     }
   }
 
-  doDelete(event): void {
-    this.personService.deletePerson(event.data).subscribe((data: any) => {
-      event.confirm.resolve();
+  doDelete(id: number): void {
+    this.personService.deletePerson(id).subscribe((data: any) => {
+      let index = -1;
+      for (let i = 0; i < this.personList.length; i++) {
+        if (this.personList[i].id === id) {
+          index = i;
+          break;
+        }
+      }
+      if (index >= 0) {
+        this.personList.splice(index, 1);
+      }
       this.helperService.showSuccess('اطلاعات حذف گردید');
     }, (error) => {
       this.helperService.showError('اگر برای  فرد برنامه ای تنظیم شده است نمی توان آن شخص را حذف نمود')
-      event.confirm.reject()
     });
   }
 
-  onEditConfirm(event): void {
-    console.log(event);
-    this.personService.editPerson(event.newData).subscribe((data: any) => {
-      event.confirm.resolve();
-      this.helperService.showSuccess('اطلاعات ذخیره گردید');
-    }), error => {
-      console.log('Error' + error);
-      this.helperService.showError('خطا در ذخیره اطلاعات در بانک اطلاعاتی')
-      event.confirm.reject()
-    };
-  }
 
-  onCreateConfirm(event): void {
-    console.log(event);
-    this.personService.addPerson(event.newData).subscribe((data: any) => {
-      event.confirm.resolve();
-      this.helperService.showSuccess('اطلاعات ذخیره گردید');
-    }), error => {
-      console.log('Error' + error);
-      this.helperService.showError('خطا در ذخیره اطلاعات در بانک اطلاعاتی')
-      event.confirm.reject()
-    };
+  public searchClick() {
+    let s = this.searchText;
+    if (s ===  '' || s.length === 0 ) {
+      s = 'EMPTY';
+    }
+    this.personService.findByNameFamilyPhone(s).subscribe((list: PersonView[]) => {
+        this.personList = list;
+        if (this.personList && this.personList.length > 0) {
+          this.personList.forEach((person, index, array) => {
+            this.manageImage(person);
+          });
+        }
+    }, err => {
+      this.helperService.showError2(' خطا در جستجو', err);
+    })
+
   }
 }

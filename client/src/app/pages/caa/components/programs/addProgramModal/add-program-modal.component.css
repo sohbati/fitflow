@@ -8,3 +8,7 @@ modalWindowClass {
   height: auto;
   border : solid 1px;
 }
+
+:host /deep/ ng2-smart-table {
+  height: 200px;
+}

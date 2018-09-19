@@ -5,7 +5,6 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {PersonsComponent} from './caa/components/persons/persons.component';
 import {ExercisesComponent} from './caa/components/exercise/exercises.component';
-import {ProgramsComponent} from './caa/components/programs/programs.component';
 
 const routes: Routes = [{
   path: '',
@@ -23,10 +22,10 @@ const routes: Routes = [{
       path: 'exercises',
       component: ExercisesComponent,
     },
-    {
-      path: 'programs',
-      component: ProgramsComponent,
-    },
+    // {
+    //   path: 'programs',
+    //   component: ProgramsComponent,
+    // },
     {
       path: '',
       redirectTo: 'dashboard',

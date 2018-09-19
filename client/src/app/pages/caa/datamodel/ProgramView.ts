@@ -1,11 +1,12 @@
 
 import {Person} from './Person';
 import {Exercise} from './Exercise';
+import {PersonView} from "./PersonView";
 
 export class ProgramView {
   id: number;
   programName: string;
-  person: Person;
+  person: PersonView;
   programDate: Date;
   description: string = '';
 
@@ -24,6 +25,7 @@ export class ProgramView {
   personForeArm: number;
   personThigh: number;
   personShin: number;
+  personButt: number;
   personFatPercentage: number;
   personFatWeight: number;
   personMuscleWeight: number;

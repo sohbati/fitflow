@@ -11,6 +11,7 @@ import com.caa.modelview.ProgramView;
 import com.caa.report.ExportReport;
 import com.caa.report.ProgramExercisesReportDTO;
 import com.caa.services.ExerciseService;
+import com.caa.services.ProgramService;
 import com.caa.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,12 @@ public class ProgramController {
     @Autowired
     private ProgramExerciseItemDao programExerciseItemDao;
 
-    @Autowired ExerciseService exerciseService;
+    @Autowired
+	ExerciseService exerciseService;
+
+    @Autowired
+	ProgramService programService;
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/getProgram/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -84,13 +90,12 @@ public class ProgramController {
 		return viewList;
 	}
 
-	@RequestMapping(value="/getPrograms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	//@RequestMapping(value="/getPrograms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/getPrograms/{personId}")
 	@ResponseBody
-	public Iterable<ProgramView> getPrograms() {
-    	
-    	logger.info("findAll entered...");
-    	
-		List<Program> list = programDao.findAll();
+	public Iterable<ProgramView> getPrograms(@PathVariable("personId") long personId) {
+
+		List<Program> list = programDao.findByPersonId(personId);
 		List<ProgramView> result = new ArrayList<>();
 
 		for(Program p : list) {
@@ -193,6 +198,7 @@ public class ProgramController {
     	program.setPersonMuscleWeight(view.getPersonMuscleWeight());
     	program.setPersonScore(view.getPersonScore());
     	program.setPersonShin(view.getPersonShin());
+    	program.setPersonButt(view.getPersonButt());
     	program.setPersonTall(view.getPersonTall());
     	program.setPersonThigh(view.getPersonThigh());
     	program.setPersonWaist(view.getPersonWaist());
@@ -224,4 +230,14 @@ public class ProgramController {
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		StreamUtils.copy(ExportReport.getProgramExerciseAsImageInBytes(reportDTOList), response.getOutputStream());
 	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/getPersonProgramsAllSizes/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String[][] getPersonProgramsAllSizes(@PathVariable("id") long id) {
+
+		logger.info("getPersonAllSizes entered: id= " + id);
+
+		return programService.getPersonAllSizes(id);
+	}
+
 }

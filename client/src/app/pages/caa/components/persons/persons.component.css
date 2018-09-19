@@ -1,0 +1,20 @@
+:host >>> nb-card-header {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+:host >>> nb-card-footer {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+.host >>> btn-group {
+  padding: 1px;
+}
+
+.host >>> btn.btn-outline-primary{
+  width: 40px;
+
+}
+customWidth{
+  width: 40px;
+
+}

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HelperService} from '../../../services/helper.service';
 import { LocalDataSource } from 'ng2-smart-table';
-import {PersonService} from '../../../services/person.service';
-import {Person} from '../../../datamodel/Person';
 import {AddExerciseItemModalComponent} from './addExerciseItemComponent/add-exercise-item.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProgramService} from '../../../services/program.service';
@@ -10,16 +8,9 @@ import {ProgramExerciseItem, ProgramView} from '../../../datamodel/ProgramView';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {ExerciseService} from '../../../services/exercise.service';
 import {DisplayProgramExerciseImageComponent} from './displayProgramExerciseImageComponent/display-program-exercise-image.component';
-import DataSource from 'devextreme/data/data_source';
-import ArrayStore from 'devextreme/data/array_store';
+import {DisplayAllSizesForOnePersonComponent} from './displayAllSizesForOnePerson/display-all-sizes-for-one-person.component';
+import {PersonView} from '../../../datamodel/PersonView';
 
-/**
- * This is PersonList Entery Interface, used in dxAutoCompleter
- */
-interface SearchData {
-  item: string;
-  value: any;
-}
 
 interface ExerciseAsString {
   rowId: number;
@@ -37,15 +28,6 @@ interface ExerciseAsString {
  */
 export class AddProgramModalComponent implements OnInit {
 
-  /**
-   * used in dxAutoCompleter
-   * this code initialized again in init method  **/
-  dataSource =  new DataSource({
-      store: new ArrayStore({
-        key: 'item',
-        data: [],
-      }),
-    });
 
   /** ng2-smart-table source **/
   source1: LocalDataSource = new LocalDataSource();
@@ -58,11 +40,8 @@ export class AddProgramModalComponent implements OnInit {
   exercise3List: SelectedIExerciseItems[] = [];
   exercise4List: SelectedIExerciseItems[] = [];
 
-  /** now it is not used but may in future i need it in dxAutoCompleter for [Person List]**/
-  public searchData: SearchData[] = [];
-
   program: ProgramView;
-
+  person: PersonView;
 
   /** ng2-smart-table setting **/
   settings = {
@@ -112,34 +91,14 @@ export class AddProgramModalComponent implements OnInit {
               private ngbActiveModal: NgbActiveModal,
         private helperService: HelperService,
         private programService: ProgramService,
-        private exerciseService: ExerciseService,
-        private personService: PersonService) {
+        private exerciseService: ExerciseService) {
   }
   ngOnInit() {
-    const personList = [];
-    this.personService.getPersonShortList().subscribe((data: Person[]) => {
-      data.forEach((p: Person, index, array) => {
-        const pItem = p.firstName + ' ' + p.lastName + '(' + p.mobileNumber + ')';
-        this.searchData.push({item : pItem, value : p.id});
-        personList.push(pItem);
-      });
-
-      this.dataSource =  new DataSource({
-        store: new ArrayStore({
-          key: 'item',
-          data: personList,
-        }),
-      });
-    });
-
     if (this.program == null) {
       this.program = new ProgramView();
       this.program.programName = '';
       this.program.shamsiProgramDate = '';
-      this.program.person = new Person();
-      this.program.personName = '';
       this.program.description = '';
-
       this.program.personAge = 0;
       this.program.personTall = 0;
       this.program.personWeight = 0;
@@ -150,6 +109,7 @@ export class AddProgramModalComponent implements OnInit {
       this.program.personForeArm = 0;
       this.program.personThigh = 0;
       this.program.personShin = 0;
+      this.program.personButt = 0;
       this.program.personFatPercentage = 0;
       this.program.personFatWeight = 0;
       this.program.personMuscleWeight = 0;
@@ -164,19 +124,14 @@ export class AddProgramModalComponent implements OnInit {
       this.intiExerciseItems(this.program.programExercise2Items, this.exercise2List, 2);
       this.intiExerciseItems(this.program.programExercise3Items, this.exercise3List, 3);
       this.intiExerciseItems(this.program.programExercise4Items, this.exercise4List, 4);
-
-/*      if (this.program.programExerciseItems == null || this.program.programExerciseItems.length <= 0) {
-        this.exerciseList = [];
-      }else {
-        this.program.programExerciseItems.forEach((item: ProgramExerciseItem, index, array) => {
-            this.addItemToList(item.id, item)
-        });
-        this.exerciseList.forEach((value, index, array) => {
-          value.id  = index + 1;
-        })
-      }
-      this.prepareGridRows(this.exerciseList);*/
     }
+
+    this.program.personName = this.person.firstName + ' ' + this.person.lastName;
+    this.program.person = new PersonView();
+    this.program.person.id = this.person.id;
+    this.program.person.firstName = this.person.firstName;
+    this.program.person.lastName = this.person.lastName;
+
   }
 
   intiExerciseItems(programExerciseItems: ProgramExerciseItem[],
@@ -331,24 +286,62 @@ export class AddProgramModalComponent implements OnInit {
     }
     return programExerciseItems;
   }
+  validate(): boolean {
+    if (this.program.programName == null || this.program.programName === '') {
+      this.helperService.showError('لطفا نام برنامه را وارد نمایید')
+      return false;
+    }
+    if (!this.validateNumberField(this.program.personAge, 'سن')) { return; }
+    if (!this.validateNumberField(this.program.personTall, 'قد')) { return; }
+    if (!this.validateNumberField(this.program.personWeight, 'وزن')) { return; }
+    if (!this.validateNumberField(this.program.personChest, 'سینه')) { return; }
+    if (!this.validateNumberField(this.program.personWaist, 'کمر')) { return; }
+    if (!this.validateNumberField(this.program.personAbdomen, 'شکم')) { return; }
+    if (!this.validateNumberField(this.program.personArm, 'بازو')) { return; }
+    if (!this.validateNumberField(this.program.personForeArm, 'ساعد')) { return; }
+    if (!this.validateNumberField(this.program.personThigh, 'ران')) { return; }
+    if (!this.validateNumberField(this.program.personShin, 'ساق')) { return; }
+    if (!this.validateNumberField(this.program.personButt, 'باسن')) { return; }
+    if (!this.validateNumberField(this.program.personFatPercentage, 'درصد چربی')) { return; }
+    if (!this.validateNumberField(this.program.personFatWeight, 'وزن چربی')) { return; }
+    if (!this.validateNumberField(this.program.personMuscleWeight, 'وزن عضله')) { return; }
+    if (!this.validateNumberField(this.program.personScore, 'امتیاز')) { return; }
+    // if (!this.validateNumberField(this.program.personAge, 'سن')) { return; }
 
-  preparePersonId() {
-    this.searchData.forEach((personSearchData: SearchData, index, array) => {
-      if (this.program.personName === personSearchData.item) {
-        this.program.person.id = personSearchData.value;
-      }
-    })
+    return true;
   }
-
+  validateNumberField(f: any, fieldLabel: string) {
+    let num: number = parseInt(this.helperService.convertToLatinNumbers(f + ''));
+    if (isNaN(num)) {
+      this.helperService.showError('لطفا ' + fieldLabel + ' را عددی وارد کنید');
+      return false;
+    }
+    return true;
+  }
   confirmClick() {
-    debugger;
+    if (!this.validate()) {
+      return;
+    }
+    this.program.personAge = parseInt(this.helperService.convertToLatinNumbers(this.program.personAge + ''));
+    this.program.personTall = parseInt(this.helperService.convertToLatinNumbers(this.program.personTall + ''));
+    this.program.personWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personWeight + ''));
+    this.program.personChest = parseInt(this.helperService.convertToLatinNumbers(this.program.personChest + ''));
+    this.program.personWaist = parseInt(this.helperService.convertToLatinNumbers(this.program.personWaist + ''));
+    this.program.personAbdomen = parseInt(this.helperService.convertToLatinNumbers(this.program.personAbdomen + ''));
+    this.program.personArm = parseInt(this.helperService.convertToLatinNumbers(this.program.personArm + ''));
+    this.program.personForeArm = parseInt(this.helperService.convertToLatinNumbers(this.program.personForeArm + ''));
+    this.program.personThigh = parseInt(this.helperService.convertToLatinNumbers(this.program.personThigh + ''));
+    this.program.personShin = parseInt(this.helperService.convertToLatinNumbers(this.program.personShin + ''));
+    this.program.personButt = parseInt(this.helperService.convertToLatinNumbers(this.program.personButt + ''));
+    this.program.personFatPercentage = parseInt(this.helperService.convertToLatinNumbers(this.program.personFatPercentage + ''));
+    this.program.personFatWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personFatWeight + ''));
+    this.program.personMuscleWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personMuscleWeight + ''));
+    this.program.personScore = parseInt(this.helperService.convertToLatinNumbers(this.program.personScore + ''));
+
     this.program.programExercise1Items = this.prepareExerciseList(this.exercise1List);
     this.program.programExercise2Items = this.prepareExerciseList(this.exercise2List);
     this.program.programExercise3Items = this.prepareExerciseList(this.exercise3List);
     this.program.programExercise4Items = this.prepareExerciseList(this.exercise4List);
-
-    this.preparePersonId();
-
     this.programService.addProgram(this.program).subscribe((result: ProgramView) => {
       this.program.id = result.id;
       this.helperService.showSuccess('اطلاعات با موفقیت ثبت گردید')
@@ -360,8 +353,28 @@ export class AddProgramModalComponent implements OnInit {
   }
 
   exportProgramClick() {
-      const activeModal = this.modalService.open(DisplayProgramExerciseImageComponent, {windowClass : 'modalWindowClass', container: 'nb-layout'});
+      const activeModal = this.modalService.open(DisplayProgramExerciseImageComponent,
+        {windowClass : 'modalWindowClass', container: 'nb-layout'});
       activeModal.componentInstance.programId = this.program.id;
       activeModal.componentInstance.modalHeader = 'Large Modal';
+  }
+
+  /**
+   * Display All Sizes for one person
+   */
+  displayPersonsAllSizes() {
+    if (this.program.person.id == null || this.program.person.id <= 0) {
+      this.helperService.showWarning('شخص مورد نظر جهت نمایش اطلاعات سایز تعیین نشده است.');
+      return;
+    }
+    const activeModal = this.modalService.open(DisplayAllSizesForOnePersonComponent, { size: 'lg', container: 'nb-layout' });
+    activeModal.componentInstance.personId = this.program.person.id;
+    activeModal.componentInstance.personName = this.program.personName;
+    activeModal.componentInstance.modalHeader = 'Large Modal';
+
+    activeModal.result.then((resutl: any) => {
+    }).catch(e => {
+      // this.helperService.showError('error on modal edit program : ' + e)
+    });
   }
 }

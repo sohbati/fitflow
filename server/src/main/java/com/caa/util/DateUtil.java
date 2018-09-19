@@ -25,7 +25,10 @@ public class DateUtil {
     }
 
     public static Date getGregorianDate(String d) {
-        String arr[] = d.split("/");
+        if (d == null || d.trim().length() == 0) {
+            return new Date(0);
+        }
+        String arr[] = d.trim().split("/");
         JalaliCalendar jalaliCalendar =
                 new JalaliCalendar(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
         return jalaliCalendar.toGregorian().getTime();
