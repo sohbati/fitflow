@@ -9,6 +9,8 @@ modalWindowClass {
   border : solid 1px;
 }
 
-:host /deep/ ng2-smart-table {
-  height: 200px;
+
+:host >>> nb-card-header {
+  padding-bottom: 0px;
+  padding-top: 0px;
 }

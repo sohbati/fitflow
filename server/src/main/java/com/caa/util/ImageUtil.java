@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Base64;
 
 /**
@@ -115,5 +116,26 @@ public class ImageUtil {
             case "image/gif" : return "gif";
         }
         return "jpg";
+    }
+
+    public static String loadImageInEncodedString(String relativePath, String fileName) throws IOException {
+        String fileFullPath = PublicUtil.getProjectConfigFolder() + "/" +
+                relativePath + "/" + fileName;
+        File f = new File(fileFullPath);
+        if (!f.exists()) {
+            return "";
+        }
+        byte[] bytes = Files.readAllBytes(f.toPath());
+        return ImageUtil.encodeImage(bytes);
+    }
+
+    public static byte[] loadImageInbytes(String relativePath, String fileName) throws IOException {
+        String fileFullPath = PublicUtil.getProjectConfigFolder() + "/" +
+                relativePath + "/" + fileName;
+        File f = new File(fileFullPath);
+        if (!f.exists()) {
+            return new byte[0];
+        }
+        return  Files.readAllBytes(f.toPath());
     }
 }

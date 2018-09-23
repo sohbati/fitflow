@@ -1,5 +1,7 @@
 package com.caa.report;
 
+import com.caa.model.Person;
+import com.caa.model.Program;
 import com.caa.util.ImageUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -23,39 +25,60 @@ public class ExportReport {
      * @param exerciseItems
      * @return BASE64 encoded string
      */
-    public static String getProgramExerciseAsImage(List<ProgramExercisesReportDTO> exerciseItems) {
-        ByteArrayOutputStream out = getImageStream(exerciseItems);
+    public static String getProgramExerciseAsImage(List<ProgramExercisesReportDTO> exerciseItems,
+                                                   Program program, Person person) {
+        ByteArrayOutputStream out = getImageStream(exerciseItems, program, person);
         String imageString = ImageUtil.encodeImage(out);
         return imageString;
     }
 
-    public static byte[] getProgramExerciseAsImageInBytes(List<ProgramExercisesReportDTO> exerciseItems) {
-        ByteArrayOutputStream out = getImageStream(exerciseItems);
+    public static byte[] getProgramExerciseAsImageInBytes(
+            List<ProgramExercisesReportDTO> exerciseItems,
+            Program program, Person person) {
+        ByteArrayOutputStream out = getImageStream(exerciseItems, program, person);
         return out.toByteArray();
     }
 
 
-    private static ByteArrayOutputStream getImageStream(List<ProgramExercisesReportDTO> exerciseItems) {
+    private static ByteArrayOutputStream getImageStream(
+            List<ProgramExercisesReportDTO> exerciseItems, Program program, Person person) {
         try {
             if (exerciseItems.size() == 0) {
                 return null;
             }
+            /**
+             * Recognize sub-program count
+             */
+            int subProgramCount = 0;
+             if (exerciseItems.get(0).getProgram4Id() != null && exerciseItems.get(0).getProgram4Id()  >0) {
+                 subProgramCount = 4;
+             }else if (exerciseItems.get(0).getProgram3Id() != null && exerciseItems.get(0).getProgram3Id()  >0) {
+                 subProgramCount = 3;
+             }else if (exerciseItems.get(0).getProgram2Id() != null && exerciseItems.get(0).getProgram2Id()  >0) {
+                 subProgramCount = 2;
+             }else {
+                 subProgramCount = 1;
+             }
+
             InputStream inputStream = new FileInputStream(
                     new java.io.File(
                            exerciseItems.get(0).getClass().getClassLoader().getResource(
-                                   "report/report1.jrxml").getFile()));
+                                   "report/PersonProgramExercises" + subProgramCount + "Session.jrxml").getFile()));
 
             JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
             JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 
             Map<String, Object> parameters = new HashMap();
-
+            parameters.put("personName", person.getFirstName() + ' ' + person.getLastName());
+            parameters.put("age", program.getPersonAge());
+            parameters.put("tall", program.getPersonTall());
+            parameters.put("weight", program.getPersonWeight());
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
                     new JRBeanCollectionDataSource(exerciseItems));
 
             final String extension = "jpg";
-            final float zoom = 1f;
+            final float zoom = 2f;
 
             if (jasperPrint.getPages().size() == 0) {
                 return null;

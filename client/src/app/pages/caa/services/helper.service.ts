@@ -28,6 +28,7 @@ export class HelperService {
   form: FormGroup;
 
   public SERVER_URL = 'http://localhost:9000';
+  public BASE_64_IMAGE_PREFIX: string = 'data:image/png;base64,';
 
   private showNotification(content: string, type: NotificationType) {
     const temp = this.form.getRawValue();
@@ -69,5 +70,9 @@ export class HelperService {
     return numberAsStr.replace(/[۰-۹]/g, function (w: string) {
       return ( w.charCodeAt(0) - charCodeZero) + '';
     });
+  }
+
+  public toInt(s: string): number {
+    return parseInt(s);
   }
 }

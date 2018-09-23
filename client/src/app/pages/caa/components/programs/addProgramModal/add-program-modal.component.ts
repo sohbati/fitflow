@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HelperService} from '../../../services/helper.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import {AddExerciseItemModalComponent} from './addExerciseItemComponent/add-exercise-item.component';
@@ -28,7 +28,7 @@ interface ExerciseAsString {
  */
 export class AddProgramModalComponent implements OnInit {
 
-
+  clickedPictureIndex: number;
   /** ng2-smart-table source **/
   source1: LocalDataSource = new LocalDataSource();
   source2: LocalDataSource = new LocalDataSource();
@@ -39,6 +39,9 @@ export class AddProgramModalComponent implements OnInit {
   exercise2List: SelectedIExerciseItems[] = [];
   exercise3List: SelectedIExerciseItems[] = [];
   exercise4List: SelectedIExerciseItems[] = [];
+
+  bodyPicture: string[] = ['', '', '', '', '', ''];
+
 
   program: ProgramView;
   person: PersonView;
@@ -96,6 +99,7 @@ export class AddProgramModalComponent implements OnInit {
   ngOnInit() {
     if (this.program == null) {
       this.program = new ProgramView();
+      this.program.id = 0;
       this.program.programName = '';
       this.program.shamsiProgramDate = '';
       this.program.description = '';
@@ -119,19 +123,34 @@ export class AddProgramModalComponent implements OnInit {
       this.exercise2List = [];
       this.exercise3List = [];
       this.exercise4List = [];
+
     }else {
+      this.initPictures();
+
       this.intiExerciseItems(this.program.programExercise1Items, this.exercise1List, 1);
       this.intiExerciseItems(this.program.programExercise2Items, this.exercise2List, 2);
       this.intiExerciseItems(this.program.programExercise3Items, this.exercise3List, 3);
       this.intiExerciseItems(this.program.programExercise4Items, this.exercise4List, 4);
     }
 
+
     this.program.personName = this.person.firstName + ' ' + this.person.lastName;
     this.program.person = new PersonView();
     this.program.person.id = this.person.id;
     this.program.person.firstName = this.person.firstName;
     this.program.person.lastName = this.person.lastName;
+  }
 
+  initPictures() {
+    for (let i = 1; i <= 6; i++) {
+      this.bodyPicture[i] = 'assets/images/dummy-body.png';
+    }
+    const ver = new Date().getTime();
+    for (let i = 1; i <= 6; i++) {
+      this.bodyPicture[i] = this.helperService.SERVER_URL + this.programService.DOWNLOAD_PROGRAM_PICTURES_SHRINKED +
+        '/' + this.person.mobileNumber + '/' + this.program.id + '/' + i + '?ver=' + ver;
+    /// this.downloadPicture(i);
+    }
   }
 
   intiExerciseItems(programExerciseItems: ProgramExerciseItem[],
@@ -311,32 +330,32 @@ export class AddProgramModalComponent implements OnInit {
     return true;
   }
   validateNumberField(f: any, fieldLabel: string) {
-    let num: number = parseInt(this.helperService.convertToLatinNumbers(f + ''));
+    const num: number = this.helperService.toInt(this.helperService.convertToLatinNumbers(f + ''));
     if (isNaN(num)) {
       this.helperService.showError('لطفا ' + fieldLabel + ' را عددی وارد کنید');
       return false;
     }
     return true;
   }
-  confirmClick() {
+  saveProgramClick() {
     if (!this.validate()) {
       return;
     }
-    this.program.personAge = parseInt(this.helperService.convertToLatinNumbers(this.program.personAge + ''));
-    this.program.personTall = parseInt(this.helperService.convertToLatinNumbers(this.program.personTall + ''));
-    this.program.personWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personWeight + ''));
-    this.program.personChest = parseInt(this.helperService.convertToLatinNumbers(this.program.personChest + ''));
-    this.program.personWaist = parseInt(this.helperService.convertToLatinNumbers(this.program.personWaist + ''));
-    this.program.personAbdomen = parseInt(this.helperService.convertToLatinNumbers(this.program.personAbdomen + ''));
-    this.program.personArm = parseInt(this.helperService.convertToLatinNumbers(this.program.personArm + ''));
-    this.program.personForeArm = parseInt(this.helperService.convertToLatinNumbers(this.program.personForeArm + ''));
-    this.program.personThigh = parseInt(this.helperService.convertToLatinNumbers(this.program.personThigh + ''));
-    this.program.personShin = parseInt(this.helperService.convertToLatinNumbers(this.program.personShin + ''));
-    this.program.personButt = parseInt(this.helperService.convertToLatinNumbers(this.program.personButt + ''));
-    this.program.personFatPercentage = parseInt(this.helperService.convertToLatinNumbers(this.program.personFatPercentage + ''));
-    this.program.personFatWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personFatWeight + ''));
-    this.program.personMuscleWeight = parseInt(this.helperService.convertToLatinNumbers(this.program.personMuscleWeight + ''));
-    this.program.personScore = parseInt(this.helperService.convertToLatinNumbers(this.program.personScore + ''));
+    this.program.personAge = this.toLatinNumbers(this.program.personAge + '');
+    this.program.personTall = this.toLatinNumbers(this.program.personTall + '');
+    this.program.personWeight = this.toLatinNumbers(this.program.personWeight + '');
+    this.program.personChest = this.toLatinNumbers(this.program.personChest + '');
+    this.program.personWaist = this.toLatinNumbers(this.program.personWaist + '');
+    this.program.personAbdomen = this.toLatinNumbers(this.program.personAbdomen + '');
+    this.program.personArm = this.toLatinNumbers(this.program.personArm + '');
+    this.program.personForeArm = this.toLatinNumbers(this.program.personForeArm + '');
+    this.program.personThigh = this.toLatinNumbers(this.program.personThigh + '');
+    this.program.personShin = this.toLatinNumbers(this.program.personShin + '');
+    this.program.personButt = this.toLatinNumbers(this.program.personButt + '');
+    this.program.personFatPercentage = this.toLatinNumbers(this.program.personFatPercentage + '');
+    this.program.personFatWeight = this.toLatinNumbers(this.program.personFatWeight + '');
+    this.program.personMuscleWeight = this.toLatinNumbers(this.program.personMuscleWeight + '');
+    this.program.personScore = this.toLatinNumbers(this.program.personScore + '');
 
     this.program.programExercise1Items = this.prepareExerciseList(this.exercise1List);
     this.program.programExercise2Items = this.prepareExerciseList(this.exercise2List);
@@ -344,17 +363,47 @@ export class AddProgramModalComponent implements OnInit {
     this.program.programExercise4Items = this.prepareExerciseList(this.exercise4List);
     this.programService.addProgram(this.program).subscribe((result: ProgramView) => {
       this.program.id = result.id;
-      this.helperService.showSuccess('اطلاعات با موفقیت ثبت گردید')
+      this.helperService.showSuccess('مشخصات برنامه با موفقیت ثبت گردید')
       this.ngbActiveModal.close(this.program);
     },
     error2 => {
        this.helperService.showError(' : خطا در ذخیره اطلاعات ' + error2);
     });
+    if (this.program.id > 0) {
+      [1, 2, 3, 4, 3, 5, 6].forEach((value, index, array) => {
+        this.uploadProgramPictures(this.program.id, this.programService.PROGRAM_PICTURE_NAME + value, value)
+      })
+    }
+  }
+
+  toLatinNumbers(s: string): number {
+    return this.helperService.toInt(this.helperService.convertToLatinNumbers(s));
+  }
+
+  async uploadProgramPictures(programId: number, pictureName: string, pictureIndex: number) {
+
+    this.inputElements.forEach((item: ElementRef, index2, array) => {
+      if (index2 === pictureIndex - 1) {
+        let inputElement: HTMLInputElement;
+        inputElement = item.nativeElement;
+        const formData: FormData = new FormData();
+        const file = inputElement.files.item(0);
+
+        if (file !== null) {
+          formData.append('pic', file, 'filename');
+          this.programService.uploadProgramPicture(this.person.mobileNumber , programId, pictureName, formData).subscribe(result => {
+
+          }, error => {
+            this.helperService.showError('خطا در اضافه کردن عکس های برنامه' + '--' + pictureName);
+          });
+        }
+      }
+    });
   }
 
   exportProgramClick() {
       const activeModal = this.modalService.open(DisplayProgramExerciseImageComponent,
-        {windowClass : 'modalWindowClass', container: 'nb-layout'});
+        { size: 'lg', container: 'nb-layout' });
       activeModal.componentInstance.programId = this.program.id;
       activeModal.componentInstance.modalHeader = 'Large Modal';
   }
@@ -376,5 +425,57 @@ export class AddProgramModalComponent implements OnInit {
     }).catch(e => {
       // this.helperService.showError('error on modal edit program : ' + e)
     });
+  }
+
+  @ViewChildren('fileInputComponent') inputElements: QueryList<ElementRef>;
+  @ViewChildren('bodyPicturesComponent') bodyPicturesComponents: QueryList<ElementRef>;
+
+  addPictureClick(rowIndex) {
+    this.clickedPictureIndex = rowIndex;
+    let inputElement: HTMLInputElement;
+    this.inputElements.forEach((item: ElementRef, index2, array) => {
+      if (index2 === rowIndex - 1) {
+        inputElement = item.nativeElement;
+      }
+    });
+    inputElement.click();
+  }
+  showPicture(index: number) {
+    let bodyPicturesComponent: HTMLInputElement ;
+    let inputEl: HTMLInputElement ;
+    this.bodyPicturesComponents.forEach((item: ElementRef, index2, array) => {
+      if (index2 === index - 1) {
+        bodyPicturesComponent = item.nativeElement;
+      }
+    });
+    this.inputElements.forEach((item: ElementRef, index2, array) => {
+      if (index2 === index - 1) {
+        inputEl = item.nativeElement;
+      }
+    });
+    if (inputEl.files && inputEl.files[0]) {
+      const imgSize = inputEl.files[0].size;
+      const MAX_IMAGE_SIZE = 3;
+      if (imgSize > 1024 * 1024 * 3) {
+        this.helperService.showError('عکس انتخاب شده نباید بیشتر از ۳ مگابایت باشد');
+        return;
+      }
+      const reader = new FileReader();
+
+      reader.onload = function (e: any) {
+        const target: any = e.target;
+        bodyPicturesComponent.src = target.result;
+        bodyPicturesComponent.width = '150px';
+        bodyPicturesComponent.height = '150px';
+        bodyPicturesComponent.style.display = '';
+      };
+
+      reader.readAsDataURL(inputEl.files[0]);
+    }
+
+  }
+
+  closeClick() {
+    this.ngbActiveModal.close();
   }
 }

@@ -100,7 +100,7 @@
               </div>
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >وزن</label>
+                  <label>وزن</label>
                   <input [(ngModel)]="program.personWeight" type="text" class="form-control" id="inputWeight"
                          placeholder="وزن">
                 </div>
@@ -124,7 +124,7 @@
               </div>
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >شکم</label>
+                  <label>شکم</label>
                   <input [(ngModel)]="program.personAbdomen" type="text" class="form-control"
                          placeholder="شکم">
                 </div>
@@ -148,7 +148,7 @@
               </div>
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >ران</label>
+                  <label>ران</label>
                   <input [(ngModel)]="program.personThigh" type="text" class="form-control"
                          placeholder="ران">
                 </div>
@@ -159,7 +159,7 @@
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >ساق</label>
+                  <label>ساق</label>
                   <input [(ngModel)]="program.personShin" type="text" class="form-control"
                          placeholder="ساق">
                 </div>
@@ -167,7 +167,7 @@
 
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >باسن</label>
+                  <label>باسن</label>
                   <input [(ngModel)]="program.personButt" type="text" class="form-control"
                          placeholder="باسن">
                 </div>
@@ -192,7 +192,7 @@
               </div>
               <div class="col-sm-4">
                 <div class="form-group">
-                  <label >وزن عضله</label>
+                  <label>وزن عضله</label>
                   <input [(ngModel)]="program.personMuscleWeight" type="text" class="form-control"
                          placeholder="وزن عضله">
                 </div>
@@ -214,12 +214,53 @@
       </div>
     </div>
   </nb-tab>
+
+  <nb-tab tabTitle="تصاویر">
+    <div class="row" *ngIf="program.id <= 0">
+      <div class="col-lg-12" style="overflow: scroll; max-height: 485px">
+        <nb-card>
+          <nb-card-body style="color: #FFD4AA; font-size: 15px">
+                  <div >جهت الصاق تصاویر برنامه نیاز است یک بار برنامه ثبت گردد. </div>
+                  <div >لطفا یک بار برنامه را ثبت نمایید. بعد از آن امکان اضافه نمودن تصاویر ممکن خواهد شد</div>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+    <div class="row" *ngIf="program.id > 0">
+      <div class="row show-grid">
+        <div class="col-md-4" *ngFor="let row_index of [1,2,3,4,5,6]">
+          <input id="file" accept=".png, .jpg" type="file" [multiple]="false" #fileInputComponent (change)="showPicture(clickedPictureIndex)"
+                 style="display: none;"/>
+          <nb-card>
+            <nb-card-header>
+              <nb-actions size="large" fullWidth>
+                <nb-action>
+                  <i (click)="addPictureClick(row_index);" style="font-size:20px "
+                     class="nb-plus-circled"></i><span>عکس</span>
+                </nb-action>
+              </nb-actions>
+            </nb-card-header>
+            <nb-card-body>
+              <img [src]="bodyPicture[row_index]" class="radius-round"
+                   alt="{{person.firstName + ' ' + person.lastName}}"
+                   style="width: 100%; height: 150px; cursor: pointer"
+                   #bodyPicturesComponent/>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </div>
+  </nb-tab>
+
 </nb-tabset>
 
 <br/>
 <div style="text-align: center" class="row">
   <div class="col-sm-12">
-    <button style="margin-left: 10px; margin-right: 10px" (click)="confirmClick()" type="submit"
+    <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
+            class="btn btn-primary">بستن
+    </button>
+    <button style="margin-left: 10px; margin-right: 10px" (click)="saveProgramClick()" type="submit"
             class="btn btn-primary">تایید
     </button>
     <button style="margin-left: 10px; margin-right: 10px" (click)="displayPersonsAllSizes()" type="submit"

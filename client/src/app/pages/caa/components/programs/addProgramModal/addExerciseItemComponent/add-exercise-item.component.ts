@@ -81,17 +81,17 @@ export class AddExerciseItemModalComponent implements OnInit {
       (this.inputRepeat == null)) {
       r = false;
     }
-    let num: number = parseInt(this.helperService.convertToLatinNumbers(this.inputRowNumber));
+    let num: number = this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputRowNumber));
     if (isNaN(num)) {
       this.helperService.showError('لطفا شماره ردیف را عددی وارد کنید');
       return false;
     }
-    num = parseInt(this.helperService.convertToLatinNumbers(this.inputSet + ''));
+    num = this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputSet + ''));
     if (isNaN(num)) {
       this.helperService.showError('لطفا  تعداد ست را عددی وارد کنید');
       return false;
     }
-    num = parseInt(this.helperService.convertToLatinNumbers(this.inputRepeat + ''));
+    num = this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputRepeat + ''));
     if (isNaN(num)) {
       this.helperService.showError('لطفا تعداد تکرار را عددی وارد کنید');
       return false;
@@ -118,7 +118,7 @@ export class AddExerciseItemModalComponent implements OnInit {
     }
     const rowNum: number = (
       this.inputRowNumber == null  ? this.selectedExcercisesList.length :
-        parseInt(this.helperService.convertToLatinNumbers(this.inputRowNumber)));
+        this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputRowNumber)));
     let isNewRow = true;
     if (this.selectedExcercisesList.length === 0 || rowNum > this.selectedExcercisesList.length) {
       item = {
@@ -143,10 +143,10 @@ export class AddExerciseItemModalComponent implements OnInit {
     const subItem: ExerciseItemsSubList = {
       exerciseItemDesc: this.inputExercise,
       exerciseItemId: exerciseId,
-      repeat: parseInt(this.helperService.convertToLatinNumbers(this.inputRepeat + '') + ''),
+      repeat: this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputRepeat + '') + ''),
       repeatType: this.inputRepeatType,
       repeatTypeDesc: this.exerciseService.getExerciseRepeatTypeDesc(this.inputRepeatType),
-      set: parseInt(this.helperService.convertToLatinNumbers(this.inputSet + '') + ''),
+      set: this.helperService.toInt(this.helperService.convertToLatinNumbers(this.inputSet + '') + ''),
     }
 
     if (item.subListItems == null) {

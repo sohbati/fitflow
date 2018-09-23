@@ -27,8 +27,8 @@ export class DisplayProgramExerciseImageComponent implements OnInit {
     this.styles = 'width: 20px; height: 20px';
       this.programService.getProgramExerciseImage(this.programId).subscribe((result: ImageView ) => {
         // this.styles = 'width: 595px; height: 842px';
-        this.styles = 'width: 100%; height: 100%';
-        this.imageBase64 =  'data:image/png;base64,' + result.content;
+        this.styles = 'width: 700px; height: 100%';
+        this.imageBase64 =  this.helperService.BASE_64_IMAGE_PREFIX + result.content;
         this.shareImageURL = this.helperService.SERVER_URL + '/shareProgramImage/' + this.programId
       });
   }
@@ -44,4 +44,9 @@ export class DisplayProgramExerciseImageComponent implements OnInit {
       '<img src="' + this.shareImageURL + '"></img></body></html>');
     popupWin.document.close();
   }
+
+  close() {
+    this.ngbActiveModal.close();
+  }
+
 }

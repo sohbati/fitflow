@@ -8,10 +8,16 @@ import {ProgramView} from '../datamodel/ProgramView';
 })
 
 export class ProgramService {
+
+  public PROGRAM_PICTURE_NAME: string = 'ProgramPicture';
+
   public GET_PROGRAM_LIST: string  = '/getPrograms';
   public GET_PROGRAM_EXERCISE_IMAGE: string  = '/getProgramExerciseImage';
 
   private GET_PERSON_PROGRAMS_ALL_SIZES: string  = '/getPersonProgramsAllSizes';
+  private UPLOAD_PROGRAM_PICTURES: string  = '/uploadProgramPictures';
+  public DOWNLOAD_PROGRAM_PICTURES_SHRINKED: string  = '/downloadProgramPicturesShrinked';
+  public DOWNLOAD_PROGRAM_PICTURES_ORIGINAL: string  = '/downloadProgramPicturesOriginal';
 
   public SAVE_PROGRAM: string  = '/saveProgram';
   public DELETE_PROGRAM: string  = '/deleteProgram';
@@ -44,4 +50,8 @@ export class ProgramService {
     return this.http.get(this.helperService.SERVER_URL + this.GET_PERSON_PROGRAMS_ALL_SIZES + '/' +  programId);
   }
 
+  uploadProgramPicture(personMobileNumber: string, programId: number, pictureName: string, formData: any) {
+    return this.http.post(this.helperService.SERVER_URL +
+        this.UPLOAD_PROGRAM_PICTURES + '/' + personMobileNumber + '/' + programId + '/' + pictureName, formData);
+  }
 }

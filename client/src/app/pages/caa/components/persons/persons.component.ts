@@ -41,7 +41,7 @@ export class PersonsComponent implements OnInit {
     if (img === undefined || img === null || img.length === 0)
       person.shrinkedImage = 'assets/images/dummy-person.png';
     else
-      person.shrinkedImage = 'data:image/png;base64,' + person.shrinkedImage;
+      person.shrinkedImage = this.helperService.BASE_64_IMAGE_PREFIX + person.shrinkedImage;
     // return person;
   }
 

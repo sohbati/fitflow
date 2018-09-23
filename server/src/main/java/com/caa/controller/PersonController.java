@@ -14,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -64,7 +65,7 @@ public class PersonController {
 	}
 
 	@PostMapping(value = "/savePersonWithImage", consumes = "multipart/form-data")
-	public PersonView savePersonWithImage(@RequestPart("person") PersonView personView,
+    public PersonView savePersonWithImage(@RequestPart("person") PersonView personView,
 									  @RequestPart("pic") MultipartFile picture) throws IOException {
 
     	byte[] img = ImageUtil.handleFileUpload(picture);
@@ -116,15 +117,10 @@ public class PersonController {
         });
 		return resultList;
 	}
+
 	private String loadOriginalPersonImage(Person p) throws IOException {
-		String fileFullPath = PublicUtil.getProjectConfigFolder() + "/" +
-				p.getMobileNumber() + "/" + PersonService.PERSON_MAIN_PICTURE + "." + p.getImageSuffix();
-		File f = new File(fileFullPath);
-		if (!f.exists()) {
-			return "";
-		}
-		byte[] bytes = Files.readAllBytes(f.toPath());
-		return ImageUtil.encodeImage(bytes);
+	    return ImageUtil.loadImageInEncodedString(p.getMobileNumber(),
+                PersonService.PERSON_MAIN_PICTURE + "." + p.getImageSuffix());
 	}
 
 	// Convert a predefined exception to an HTTP Status code

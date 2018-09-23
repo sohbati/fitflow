@@ -7,7 +7,21 @@ import lombok.Data;
  */
 @Data
 public class ProgramExercisesReportDTO {
-    private long id;
-    private String exercise;
-    private String description;
+    private Long program1Id;
+    private String program1Exercise;
+    private String program1ExerciseDscription;
+
+    private Long program2Id;
+    private String program2Exercise;
+    private String program2ExerciseDscription;
+
+    private Long program3Id;
+    private String program3Exercise;
+    private String program3ExerciseDscription;
+
+    private Long program4Id;
+    private String program4Exercise;
+    private String program4ExerciseDscription;
+
+
 }
