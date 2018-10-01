@@ -13,6 +13,7 @@ export class ProgramService {
 
   public GET_PROGRAM_LIST: string  = '/getPrograms';
   public GET_PROGRAM_EXERCISE_IMAGE: string  = '/getProgramExerciseImage';
+  public GET_PROGRAM_EXERCISE_PDF: string  = '/getProgramExercisePDF';
 
   private GET_PERSON_PROGRAMS_ALL_SIZES: string  = '/getPersonProgramsAllSizes';
   private UPLOAD_PROGRAM_PICTURES: string  = '/uploadProgramPictures';
@@ -32,6 +33,11 @@ export class ProgramService {
   public getProgramExerciseImage(id: number) {
     return this.http.get(
       this.helperService.SERVER_URL + this.GET_PROGRAM_EXERCISE_IMAGE + '/' + id + '');
+  }
+
+  public getProgramExercisePDF(id: number) {
+    return this.http.get(
+      this.helperService.SERVER_URL + this.GET_PROGRAM_EXERCISE_PDF + '/' + id + '');
   }
 
   public editProgram(program: ProgramView) {
@@ -54,4 +60,5 @@ export class ProgramService {
     return this.http.post(this.helperService.SERVER_URL +
         this.UPLOAD_PROGRAM_PICTURES + '/' + personMobileNumber + '/' + programId + '/' + pictureName, formData);
   }
+
 }

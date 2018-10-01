@@ -28,6 +28,7 @@ interface ExerciseAsString {
  */
 export class AddProgramModalComponent implements OnInit {
 
+  pictureNames: string[] = ['جلو', 'جفت بازو جلو', 'پهلو', 'پهلو با دست باز', 'پشت', 'جفت بازو پشت'];
   clickedPictureIndex: number;
   /** ng2-smart-table source **/
   source1: LocalDataSource = new LocalDataSource();

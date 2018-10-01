@@ -17,7 +17,10 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +86,30 @@ public class ProgramController {
 		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 		StreamUtils.copy(bytes, response.getOutputStream());
 	}
+
+	@RequestMapping(value = "/getProgramExercisePDF/{id:[\\d]+}", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<byte[]>  getProgramExerciseListAsPDF(@PathVariable("id") long id) throws IOException {
+		 byte[] bytes = programService.getProgramExerciseListAsPDF(id);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		// Here you have to set the actual filename of your pdf
+		String filename = "output.pdf";
+		headers.setContentDispositionFormData(filename, filename);
+		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+		ResponseEntity<byte[]> response = new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+		return response;
+    }
+
+//	@RequestMapping(value = "/getProgramExercisePDF/{id:[\\d]+}", method = RequestMethod.GET,
+//			produces = MediaType.APPLICATION_PDF_VALUE)
+//	public void getProgramExerciseListAsPDF(HttpServletResponse response, @PathVariable("id") long id) throws IOException {
+//		 byte[] bytes = programService.getProgramExerciseListAsPDF(id);
+//
+//		response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+//		StreamUtils.copy(bytes, response.getOutputStream());
+//	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getPersonProgramsAllSizes/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

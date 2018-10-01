@@ -69,6 +69,7 @@
               <label for="inputDesc">شرح</label>
               <textarea [(ngModel)]="program.description" id="inputDesc" rows="2" placeholder="شرح"
                         class="form-control"></textarea>
+              <div>{{program.id}}</div>
             </div>
           </div>
         </div>
@@ -236,7 +237,7 @@
               <nb-actions size="large" fullWidth>
                 <nb-action>
                   <i (click)="addPictureClick(row_index);" style="font-size:20px "
-                     class="nb-plus-circled"></i><span>عکس</span>
+                     class="nb-plus-circled"></i><span>{{pictureNames[row_index - 1]}}</span>
                 </nb-action>
               </nb-actions>
             </nb-card-header>

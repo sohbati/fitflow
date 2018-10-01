@@ -61,32 +61,49 @@ public class ExerciseService {
 //    }
 
     public List<ProgramExercisesReportDTO> convertProgramExerciseToReportDTO(List<ProgramExerciseItemView> list) {
-        Map<Integer, Map<Long, String>> mapList = new HashedMap();
+        Map<Integer, Map<Long, String>> exerciseNameMapList = new HashedMap();
+        Map<Integer, Map<Long, String>> exerciseRepeatSetMapList = new HashedMap();
 //        Map<Integer, Map<Long, String>> mapDescList = new HashedMap();
 
         list.forEach(programExerciseItemView -> {
-            String s = getExerciseItemString(programExerciseItemView);
+            String exerciseName = "";
+            exerciseName = programExerciseItemView.getExerciseName();
+            String set = programExerciseItemView.getExerciseSet() + "";
+            String repeat = programExerciseItemView.getExerciseRepeat() +
+                    getExerciseRepeatTypeSymbol(programExerciseItemView.getExerciseRepeatType());
             int subExerciseId = programExerciseItemView.getSubExerciseId();
             long id = programExerciseItemView.getId();
             String desc = programExerciseItemView.getDescription();
-            if (mapList.get(subExerciseId) == null) {
-                mapList.put(subExerciseId, new HashedMap());
+            // exercise name string
+            if (exerciseNameMapList.get(subExerciseId) == null) {
+                exerciseNameMapList.put(subExerciseId, new HashedMap());
             }
-            if (mapList.get(subExerciseId).get(id) == null) {
-                mapList.get(subExerciseId).put(id, id + " - " + s);
+            if (exerciseNameMapList.get(subExerciseId).get(id) == null) {
+                exerciseNameMapList.get(subExerciseId).put(id, id + " - " + exerciseName);
             }else {
-                mapList.get(subExerciseId).replace(id, mapList.get(subExerciseId).get(id) + " " +  s);
+                exerciseNameMapList.get(subExerciseId).replace(id, exerciseNameMapList.get(subExerciseId).get(id) + " + " +  exerciseName);
             }
+            //exercise repeat set String
+            if (exerciseRepeatSetMapList.get(subExerciseId) == null) {
+                exerciseRepeatSetMapList.put(subExerciseId, new HashedMap());
+            }
+            if (exerciseRepeatSetMapList.get(subExerciseId).get(id) == null) {
+                exerciseRepeatSetMapList.get(subExerciseId).put(id, set + ". " + repeat);
+            }else {
+                exerciseRepeatSetMapList.get(subExerciseId).replace(id, exerciseRepeatSetMapList.get(subExerciseId).get(id) + ", " +  repeat);
+            }
+
         });
         List<ProgramExercisesReportDTO> dtos = new ArrayList<>();
 
-        Map<Integer, TreeMap<Long, String>> sortedList = sortList(mapList);
+        Map<Integer, TreeMap<Long, String>> sortedList = sortList(exerciseNameMapList);
 
         for (Integer key : sortedList.keySet()) {
             TreeMap<Long, String> tmap = sortedList.get(key);
+            Map<Long, String> exerciseRepeatSetMapItemMap = exerciseRepeatSetMapList.get(key);
             if (tmap.size() > 0) {
                 for (Long subKey: tmap.keySet()) {
-                    addToPrintDtoList(dtos, key, subKey, tmap.get(subKey));
+                    addToPrintDtoList(dtos, key, subKey, tmap.get(subKey), exerciseRepeatSetMapItemMap.get(subKey));
                 }
             }
         }
@@ -94,24 +111,28 @@ public class ExerciseService {
     }
 
     private void addToPrintDtoList( List<ProgramExercisesReportDTO> dtos,
-                                    Integer subListIndex, Long id, String exercise ) {
+                                    Integer subListIndex, Long id, String exercise, String repeatSet ) {
         boolean found = false;
         for (ProgramExercisesReportDTO item: dtos) {
             if (subListIndex == 1 && (item.getProgram1Id() == null || item.getProgram1Id() == 0)){
-                addItem(item, subListIndex, id, exercise);
+                addItem(item, subListIndex, id, exercise, repeatSet);
                 found = true;
+                break;
             }else
             if (subListIndex == 2 && (item.getProgram2Id() == null || item.getProgram2Id() == 0)){
-                addItem(item, subListIndex, id, exercise);
+                addItem(item, subListIndex, id, exercise, repeatSet);
                 found = true;
+                break;
             }else
             if (subListIndex == 3 && (item.getProgram3Id() == null || item.getProgram3Id() == 0)){
-                addItem(item, subListIndex, id, exercise);
+                addItem(item, subListIndex, id, exercise, repeatSet);
                 found = true;
+                break;
             }else
             if (subListIndex == 4 && (item.getProgram4Id() == null || item.getProgram4Id() == 0)){
-                addItem(item, subListIndex, id, exercise);
+                addItem(item, subListIndex, id, exercise, repeatSet);
                 found = true;
+                break;
             }
         }
 
@@ -122,28 +143,32 @@ public class ExerciseService {
             newItem.setProgram2Exercise("");
             newItem.setProgram3Exercise("");
             newItem.setProgram4Exercise("");
-            addItem(newItem,subListIndex, id, exercise);
+            addItem(newItem, subListIndex, id, exercise, repeatSet);
         }
     }
 
     private void addItem(ProgramExercisesReportDTO reportDTOItem,
-            Integer subListIndex, Long id, String exercise) {
+            Integer subListIndex, Long id, String exercise, String repeatSet) {
         switch (subListIndex) {
             case 1 :
                 reportDTOItem.setProgram1Id(id);
                 reportDTOItem.setProgram1Exercise(exercise);
+                reportDTOItem.setProgram1ExerciseRepeatSet(repeatSet);
                 break;
             case 2 :
                 reportDTOItem.setProgram2Id(id);
                 reportDTOItem.setProgram2Exercise(exercise);
+                reportDTOItem.setProgram2ExerciseRepeatSet(repeatSet);
                 break;
             case 3 :
                 reportDTOItem.setProgram3Id(id);
                 reportDTOItem.setProgram3Exercise(exercise);
+                reportDTOItem.setProgram3ExerciseRepeatSet(repeatSet);
                 break;
             case 4 :
                 reportDTOItem.setProgram4Id(id);
                 reportDTOItem.setProgram4Exercise(exercise);
+                reportDTOItem.setProgram4ExerciseRepeatSet(repeatSet);
                 break;
         }
     }
@@ -162,21 +187,31 @@ public class ExerciseService {
         return newMap;
     }
 
-    private String getExerciseItemString(ProgramExerciseItemView view) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" ").
-                append(view.getExerciseName()).append("  ").
-                append(view.getExerciseSet()).append("*").
-                append(view.getExerciseRepeat()).append( "  ")
-                .append(getRepTypeStr(view.getExerciseRepeatType())).append(" ");
-        return sb.toString();
-    }
+//    private String getExerciseItemString(ProgramExerciseItemView view) {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(" ").
+//                append(view.getExerciseName()).append("  ").
+//                append(view.getExerciseSet()).append("*").
+//                append(view.getExerciseRepeat()).append( "  ")
+//                .append(getRepTypeStr(view.getExerciseRepeatType())).append(" ");
+//        return sb.toString();
+//    }
+//
+//    private String getRepTypeStr(String type) {
+//        switch (type) {
+//            case REPEAT_TYPE_SECOND : return REPEAT_TYPE_SECOND_DESC;
+//            case REPEAT_TYPE_MINUTE : return REPEAT_TYPE_MINUTE_DESC;
+//            case REPEAT_TYPE_REPEAT : return REPEAT_TYPE_REPEAT_DESC;
+//        }
+//        return "";
+//    }
+//
 
-    private String getRepTypeStr(String type) {
+    private String getExerciseRepeatTypeSymbol(String type) {
         switch (type) {
-            case REPEAT_TYPE_SECOND : return REPEAT_TYPE_SECOND_DESC;
-            case REPEAT_TYPE_MINUTE : return REPEAT_TYPE_MINUTE_DESC;
-            case REPEAT_TYPE_REPEAT : return REPEAT_TYPE_REPEAT_DESC;
+            case REPEAT_TYPE_SECOND : return "\"";
+            case REPEAT_TYPE_MINUTE : return "'";
+            case REPEAT_TYPE_REPEAT : return "";
         }
         return "";
     }

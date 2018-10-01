@@ -50,6 +50,9 @@ export class HelperService {
     if (err && err.error && err.error.message) {
       error = error + ' :  ' +  err.error.message;
     }
+    if (err && err.error && err.error.error && err.error.error.message) {
+      error = error + ' :  ' +  err.error.error.message;
+    }
     this.showError(error);
   }
 
@@ -66,6 +69,10 @@ export class HelperService {
   }
 
   public convertToLatinNumbers(numberAsStr: string): string {
+    if (numberAsStr == null || numberAsStr === '') {
+      return '';
+    }
+
     const charCodeZero: number = '۰'.charCodeAt(0);
     return numberAsStr.replace(/[۰-۹]/g, function (w: string) {
       return ( w.charCodeAt(0) - charCodeZero) + '';

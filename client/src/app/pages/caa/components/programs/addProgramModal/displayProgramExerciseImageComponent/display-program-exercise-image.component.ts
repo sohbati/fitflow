@@ -27,26 +27,37 @@ export class DisplayProgramExerciseImageComponent implements OnInit {
     this.styles = 'width: 20px; height: 20px';
       this.programService.getProgramExerciseImage(this.programId).subscribe((result: ImageView ) => {
         // this.styles = 'width: 595px; height: 842px';
-        this.styles = 'width: 700px; height: 100%';
+        this.styles = 'width: 800px; height: 100%';
         this.imageBase64 =  this.helperService.BASE_64_IMAGE_PREFIX + result.content;
-        this.shareImageURL = this.helperService.SERVER_URL + '/shareProgramImage/' + this.programId
+        this.shareImageURL = this.helperService.SERVER_URL +
+          this.programService.GET_PROGRAM_EXERCISE_PDF + '/' + this.programId
       });
   }
 
   print() {
-    let printContents, popupWin;
-    // printContents = document.getElementById('print-section').innerHTML;
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=100%');
-    popupWin.document.open();
-    popupWin.document.write(
-      '<html><head><title></title><style>*{display: hidden;}img{display: block; width: 100%; height: 100%;}</style>' +
-       '</head><body onload="window.print();window.close()">' +
-      '<img src="' + this.shareImageURL + '"></img></body></html>');
-    popupWin.document.close();
+    const url = this.helperService.SERVER_URL + this.programService.GET_PROGRAM_EXERCISE_PDF + '/' + this.programId;
+    window.open(url);
+
+    // const a: HTMLLinkElement = document.createElement('A');
+    // const filePath = url;
+    // a.href = filePath;
+    // // a.download = filePath.substr(filePath.lastIndexOf('/') + 1);
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
   }
 
   close() {
     this.ngbActiveModal.close();
   }
 
+  swipe() {
+    const largeImage = document.getElementById('largeImage');
+    largeImage.style.display = 'block';
+    largeImage.style.width = 200 + 'px';
+    largeImage.style.height = 200 + 'px';
+    const url = largeImage.getAttribute('src');
+    // window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
+    window.open(this.helperService.SERVER_URL + '/shareProgramImage' + '/' + this.programId);
+  }
 }

@@ -108,6 +108,28 @@ export class AddExerciseItemModalComponent implements OnInit {
     });
     return exercixeId;
   }
+
+  validateSuperItemSet(subListItems: ExerciseItemsSubList[] , inputSet: number) {
+    const set = this.helperService.convertToLatinNumbers(inputSet + '');
+    if (set == null || set.length === 0) {
+      return true;
+    }
+
+    if (subListItems == null || subListItems.length === 0) {
+      return true;
+    }
+    let found = false;
+    for (let i = 0; i < subListItems.length; i++) {
+      if (subListItems[i].set === this.helperService.toInt(set)) {
+         found = true;
+      }
+    }
+    if (!found) {
+      this.helperService.showError('برای حرکت سوپر تعداد ست ها نمی تواند متفاوت باشد');
+      return false;
+    }
+    return true;
+  }
   addClick() {
     if (!this.validateAdd()) {
       return;
@@ -129,6 +151,9 @@ export class AddExerciseItemModalComponent implements OnInit {
       for (let i = 0; i < this.selectedExcercisesList.length; i++) {
         if (this.selectedExcercisesList[i].id === rowNum) {
           item = this.selectedExcercisesList[i];
+          if (!this.validateSuperItemSet(item.subListItems, this.inputSet)) {
+            return;
+          }
           isNewRow = false;
           break;
         }

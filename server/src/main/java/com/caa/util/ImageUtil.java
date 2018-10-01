@@ -50,6 +50,9 @@ public class ImageUtil {
     }
 
     public static String encodeImage(ByteArrayOutputStream stream) {
+        if (stream == null) {
+            return  "";
+        }
         return Base64.getEncoder().withoutPadding().encodeToString(stream.toByteArray());
     }
 

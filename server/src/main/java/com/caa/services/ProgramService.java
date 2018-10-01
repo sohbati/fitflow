@@ -89,7 +89,7 @@ public class ProgramService {
             personAllSizes[7][i+1] = programs.get(i).getPersonForeArm() + "";
             personAllSizes[8][i+1] = programs.get(i).getPersonThigh() + "";
             personAllSizes[9][i+1] = programs.get(i).getPersonShin() + "";
-//            personAllSizes[0][i] = programs.get(i).getPerson() + "";
+            personAllSizes[10][i+1] = programs.get(i).getPersonButt() + "";
             personAllSizes[11][i+1] = programs.get(i).getPersonFatPercentage() + "";
             personAllSizes[12][i+1] = programs.get(i).getPersonFatWeight() + "";
             personAllSizes[13][i+1] = programs.get(i).getPersonMuscleWeight() + "";
@@ -105,14 +105,16 @@ public class ProgramService {
     }
 
     public ImageView getProgramexerciseImage(long programId) {
-        Program program = findOne(programId);
-        Person person =  personService.findOne(program.getPersonId());
-        List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
+        String imageBase64 = "";
+        if (programId > 0) {
+            Program program = findOne(programId);
+            Person person = personService.findOne(program.getPersonId());
+            List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
 
-        ExportReport exportReport = new ExportReport();
-        List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
-        String imageBase64 = exportReport.getProgramExerciseAsImage(reportDTOList, program, person);
-
+            ExportReport exportReport = new ExportReport();
+            List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
+            imageBase64 = exportReport.getProgramExerciseAsImage(reportDTOList, program, person);
+        }
         ImageView imageView = new ImageView();
         imageView.setContent(imageBase64);
         return imageView;
@@ -126,6 +128,16 @@ public class ProgramService {
         List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
         List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
         byte[] bytes = ExportReport.getProgramExerciseAsImageInBytes(reportDTOList, program, person);
+        return bytes;
+    }
+
+    public byte[] getProgramExerciseListAsPDF(long programId) throws IOException {
+        Program program = findOne(programId);
+        Person person = personService.findOne(program.getPersonId());
+
+        List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
+        List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
+        byte[] bytes = ExportReport.getProgramExerciseAsPDFInBytes(reportDTOList, program, person);
         return bytes;
     }
 

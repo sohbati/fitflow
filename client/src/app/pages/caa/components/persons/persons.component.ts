@@ -21,7 +21,7 @@ export class PersonsComponent implements OnInit {
   }
 
   searchText: string = '';
-  private personList: Person[] = [];
+  public personList: Person[] = [];
 
   ngOnInit() {
       this.initPersonList();

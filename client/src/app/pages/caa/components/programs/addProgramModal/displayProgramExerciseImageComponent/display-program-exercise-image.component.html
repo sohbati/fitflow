@@ -1,9 +1,9 @@
 <nb-card>
   <nb-card-body>
 
-    <div style="max-height: 550px;overflow: scroll;">
-      <a href="#" (click)="print()" class="navigation someMargin">Print<i class="nb-power-circled"></i></a>
-      <img [style]="styles" [src]="imageBase64"/>
+    <div style="max-width: 800px; max-height: 550px;overflow-y: scroll; overflow-x: visible">
+      <!--<a href="#" (click)="print()" class="navigation someMargin">Print<i class="nb-power-circled"></i></a>-->
+      <img id="largeImage" (click)="swipe()" [style]="styles" [src]="imageBase64"/>
     </div>
 
   </nb-card-body>
