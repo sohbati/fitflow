@@ -7,6 +7,15 @@
   /*box-shadow: 4px 4px 2px grey;*/
 }
 
-:host >>> col-sm-4{
-  padding: 3px;
+:host >>> col-sm-3{
+  padding: 1px !important;
+  flex-basis: 35% !important;
+}
+:host >>> .col-sm-2{
+  padding: 5px !important;
+  /*flex-basis: 12% !important;*/
+}
+:host >>> .col-sm-1{
+  padding: 5px !important;
+  flex-basis: 15% !important;
 }

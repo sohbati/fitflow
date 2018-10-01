@@ -1,81 +1,92 @@
 <div style="margin: 5px; border: solid 1px; max-height: 500px; overflow: scroll">
-<br/>
-        <div style="margin-right: 10px" class="row">
-          <div class="col-lg-12">
-                <div class="row">
-                  <div class="col-sm-2">
-                    <div class="form-group">
-                      <label for="inputRowNumber">ردیف</label>
-                      <input id="inputRowNumber" [(ngModel)]="inputRowNumber"  rows="2" placeholder="ردیف" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="form-group">
-                      <label >حرکت</label>
-                      <dx-autocomplete
-                        placeholder="حرکت"
-                        [(value)]="inputExercise"
-                        [dataSource]="dataSource">
-                      </dx-autocomplete>
+  <br/>
+  <div style="margin-right: 15px" class="row show-grid">
 
-                    </div>
-                  </div>
-                  <div class="col-sm-2">
-                    <div class="form-group">
-                      <label for="inputSet">ست</label>
-                      <input id="inputSet" [(ngModel)]="inputSet" rows="2" placeholder="ست" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-2">
-                    <div class="form-group">
-                      <label for="inputRepeat">تکرار</label>
-                      <input id="inputRepeat" [(ngModel)]="inputRepeat" rows="2" placeholder="تکرار" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-2">
-                  <div class="form-group">
-                    <label for="inputRepeatType">نوع تکرار</label>
-                    <select id="inputRepeatType" [(ngModel)]="inputRepeatType" class="form-control">
-                      <option value="S">{{exerciseRepeatTypeDesc[0]}}</option>
-                      <option value="M">{{exerciseRepeatTypeDesc[1]}}</option>
-                      <option value="C">{{exerciseRepeatTypeDesc[2]}}</option>
-                    </select>
-                    <button (click)="addClick()" type="button" class="btn btn-primary btn-with-icon">
-                      <i class="nb-plus"></i>
-                    </button>
-                  </div>
-            </div>
-
-                </div>
+      <div class="col-sm-1">
+        <label for="inputRowNumber">ردیف</label>
+        <input id="inputRowNumber" [(ngModel)]="inputRowNumber" rows="2" placeholder="ردیف" class="form-control">
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>حرکت</label>
+          <div style="padding-top: 7px">
+            <dx-autocomplete
+              placeholder="حرکت"
+              [(value)]="inputExercise"
+              [dataSource]="dataSource">
+            </dx-autocomplete>
           </div>
         </div>
+      </div>
+
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputSet">جستجو</label>
+          <button (click)="addClick()" type="button" class="btn btn-primary btn-with-icon">
+            <i class="nb-search"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputSet">ست</label>
+          <input id="inputSet" [(ngModel)]="inputSet" rows="2" placeholder="ست" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputRepeat">تکرار</label>
+          <input id="inputRepeat" [(ngModel)]="inputRepeat" rows="2" placeholder="تکرار" class="form-control">
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="inputRepeatType">نوع تکرار</label>
+          <select id="inputRepeatType" [(ngModel)]="inputRepeatType" class="form-control">
+            <option value="S">{{exerciseRepeatTypeDesc[0]}}</option>
+            <option value="M">{{exerciseRepeatTypeDesc[1]}}</option>
+            <option value="C">{{exerciseRepeatTypeDesc[2]}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputSet">اضافه</label>
+          <button (click)="addClick()" type="button" class="btn btn-primary btn-with-icon">
+            <i class="nb-plus"></i>
+          </button>
+        </div>
+      </div>
+
+  </div>
 
 
-<br/>
+  <div class="row">
+    <div class="col-sm-12">
 
-<div class="row">
-  <div  class="col-sm-12">
+      <div class="info" style="max-height:350px; overflow: scroll">
+        <div *ngFor="let item of selectedExcercisesList" class="exerciseItem">
 
-        <div class="info" style="max-height:300px; overflow: scroll">
-          <div *ngFor="let item of selectedExcercisesList" class="exerciseItem">
-
-            <span (click)="removeItem($event, item.id)" class="icon" style="margin-left: 5px"><i class="ion-trash-a" style="color: red; padding: 2px"></i></span>
-            <span>{{item.id}} {{'-'}}</span>
-            <span *ngFor="let subItems  of item.subListItems">
+          <span (click)="removeItem($event, item.id)" class="icon" style="margin-left: 5px"><i class="ion-trash-a"
+                                                                                               style="color: red; padding: 2px"></i></span>
+          <span>{{item.id}} {{'-'}}</span>
+          <span *ngFor="let subItems  of item.subListItems">
               {{'('}}
               <span>{{subItems.exerciseItemDesc + ' , ' + subItems.set + ' * ' + subItems.repeat + ' ' + subItems.repeatTypeDesc}}</span>
               {{')'}}
             </span>
-          </div>
-
         </div>
 
+      </div>
+
+    </div>
   </div>
-</div>
-<div style="text-align: center" class="row">
-  <div  class="col-sm-12">
-    <button (click)="confirmClick()" type="submit" class="btn btn-primary">تایید</button>
+  <div style="text-align: center" class="row">
+    <div class="col-sm-12">
+      <button (click)="confirmClick()" type="submit" class="btn btn-primary">تایید</button>
+    </div>
   </div>
-</div>
 
 </div>
