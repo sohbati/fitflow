@@ -201,9 +201,8 @@ export class AddExerciseItemModalComponent implements OnInit {
 
   removeItem (event, index: number) {
     this.selectedExcercisesList.splice(index - 1, 1);
-    for (let i = 0; i < this.selectedExcercisesList.length; i++) {
-      this.selectedExcercisesList[i].id = i + 1;
-    }
+
+    this.reindexSelectedExcercisesList();
   }
 
   confirmClick() {
@@ -224,4 +223,33 @@ export class AddExerciseItemModalComponent implements OnInit {
     this.ngbActiveModal.close(null);
   }
 
+  moveUpItem(event: any, index: number) {
+    if (index === 1) {
+      return;
+    }
+
+    const tmp = this.selectedExcercisesList[index - 1];
+    this.selectedExcercisesList[index - 1] = this.selectedExcercisesList[index - 2];
+    this.selectedExcercisesList[index - 2] = tmp;
+
+    this.reindexSelectedExcercisesList();
+  }
+
+  moveDownItem(event: any, index: number) {
+    if (index === this.selectedExcercisesList.length) {
+      return;
+    }
+
+    const tmp = this.selectedExcercisesList[index - 1];
+    this.selectedExcercisesList[index - 1] = this.selectedExcercisesList[index];
+    this.selectedExcercisesList[index] = tmp;
+
+    this.reindexSelectedExcercisesList();
+  }
+
+  reindexSelectedExcercisesList() {
+    for (let i = 0; i < this.selectedExcercisesList.length; i++) {
+      this.selectedExcercisesList[i].id = i + 1;
+    }
+  }
 }

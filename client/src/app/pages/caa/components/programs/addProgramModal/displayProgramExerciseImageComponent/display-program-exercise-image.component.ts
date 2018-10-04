@@ -52,11 +52,11 @@ export class DisplayProgramExerciseImageComponent implements OnInit {
   }
 
   swipe() {
-    const largeImage = document.getElementById('largeImage');
-    largeImage.style.display = 'block';
-    largeImage.style.width = 200 + 'px';
-    largeImage.style.height = 200 + 'px';
-    const url = largeImage.getAttribute('src');
+    // const largeImage = document.getElementById('largeImage');
+    // largeImage.style.display = 'block';
+    // largeImage.style.width = 200 + 'px';
+    // largeImage.style.height = 200 + 'px';
+    // const url = largeImage.getAttribute('src');
     // window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
     window.open(this.helperService.SERVER_URL + '/shareProgramImage' + '/' + this.programId);
   }

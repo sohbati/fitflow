@@ -69,8 +69,15 @@
       <div class="info" style="max-height:350px; overflow: scroll">
         <div *ngFor="let item of selectedExcercisesList" class="exerciseItem">
 
-          <span (click)="removeItem($event, item.id)" class="icon" style="margin-left: 5px"><i class="ion-trash-a"
-                                                                                               style="color: red; padding: 2px"></i></span>
+          <span (click)="moveUpItem($event, item.id)" class="icon" style="margin-left: 5px; cursor: pointer">
+            <i class="ion-android-arrow-up" style="color: greenyellow; padding: 2px"></i>
+          </span>
+          <span (click)="moveDownItem($event, item.id)" class="icon" style="margin-left: 5px; cursor: pointer">
+            <i class="ion-android-arrow-down" style="color: greenyellow; padding: 2px"></i>
+          </span>
+          <span (click)="removeItem($event, item.id)" class="icon" style="margin-left: 5px; cursor: pointer">
+            <i class="ion-trash-a" style="color: red; padding: 2px"></i>
+          </span>
           <span>{{item.id}} {{'-'}}</span>
           <span *ngFor="let subItems  of item.subListItems">
               {{'('}}
