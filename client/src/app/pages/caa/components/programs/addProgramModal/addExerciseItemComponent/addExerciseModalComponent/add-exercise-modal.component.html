@@ -4,7 +4,7 @@
   </nb-card-header>
 
   <nb-card-body>
-    <div style="max-height:350px; overflow: scroll">
+    <div style="max-height:450px; overflow: scroll">
     <ng2-smart-table [settings]="settings" [source]="source"
                      (userRowSelect)="onUserRowSelect($event)">
     </ng2-smart-table>
@@ -14,11 +14,11 @@
 
 <div style="text-align: center" class="row">
   <div class="col-sm-12">
-    <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
-            class="btn btn-primary">بستن
-    </button>
     <button style="margin-left: 10px; margin-right: 10px" (click)="selectExercise()" type="submit"
             class="btn btn-primary">تایید
+    </button>
+    <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
+            class="btn btn-primary">بستن
     </button>
   </div>
 </div>
