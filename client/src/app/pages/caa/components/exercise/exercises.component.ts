@@ -35,6 +35,10 @@ export class ExercisesComponent implements OnInit {
         title: 'نام ',
         type: 'string',
       },
+      code: {
+        title: 'کد حرکت',
+        type: 'string',
+      },
       latinName: {
         title: 'نام لاتین',
         type: 'string',
@@ -94,8 +98,9 @@ export class ExercisesComponent implements OnInit {
   }
 
   onCreateConfirm(event): void {
-    this.exerciseService.addExercise(event.newData).subscribe((data: any) => {
-      event.confirm.resolve();
+    this.exerciseService.addExercise(event.newData).subscribe((data: Exercise) => {
+      event.confirm.resolve(data);
+
       this.helperService.showSuccess('اطلاعات ذخیره گردید');
     }, error => {
       this.helperService.showError2('خطا در ذخیره اطلاعات در بانک اطلاعاتی', error)
