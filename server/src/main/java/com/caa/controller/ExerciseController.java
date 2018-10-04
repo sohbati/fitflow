@@ -55,11 +55,24 @@ public class ExerciseController {
 	@Transactional
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
 
+``    	// check repeated name
 		List<Exercise> list = exerciseDao.findByName(exercise.getName());
 		long currentId = exercise.getId();
 
 		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("نام حرکت تکراری است");
+		}
+
+		// check repeated code
+		list = exerciseDao.findByCode(exercise.getCode());
+		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
+			throw new RuntimeException("کد حرکت تکراری است");
+		}
+
+		// check repeated latin name
+		list = exerciseDao.findByLatinName(exercise.getLatinName());
+		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
+			throw new RuntimeException("نام لاتین حرکت تکراری است");
 		}
 
     	logger.info("saveExercise entered...");

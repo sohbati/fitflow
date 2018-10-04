@@ -14,4 +14,6 @@ import java.util.List;
 public interface ExerciseDao extends JpaRepository<Exercise, Long> {
 
     public List<Exercise> findByName(String name);
+    public List<Exercise> findByCode(String code);
+    public List<Exercise> findByLatinName(String latinName);
 }

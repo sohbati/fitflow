@@ -22,6 +22,9 @@ public class Exercise {
 	@Column(name = "latin_name", unique = false, updatable = true, insertable = true, nullable = false)
 	private String latinName;
 
+	@Column(name = "code", unique = false, updatable = true, insertable = true, nullable = false)
+	private String code;
+
 	@Column(name = "involved_muscel", unique = false, updatable = true, insertable = true, nullable = false)
 	private String involvedMuscel;
 

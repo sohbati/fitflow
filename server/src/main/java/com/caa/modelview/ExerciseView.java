@@ -13,8 +13,10 @@ public class ExerciseView  {
         this.setId(e.getId());
         this.setName(e.getName());
         this.setLatinName(e.getLatinName());
+        this.setCode(e.getCode());
     }
     private long id;
     private String name;
     private String latinName;
+    private String code;
 }
