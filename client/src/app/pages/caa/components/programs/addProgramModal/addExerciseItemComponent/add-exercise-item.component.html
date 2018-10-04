@@ -22,7 +22,7 @@
       <div class="col-sm-1">
         <div class="form-group">
           <label for="inputSet">جستجو</label>
-          <button (click)="addClick()" type="button" class="btn btn-primary btn-with-icon">
+          <button (click)="exerciseModalOpenclick()" type="button" class="btn btn-primary btn-with-icon">
             <i class="nb-search"></i>
           </button>
         </div>
@@ -86,6 +86,9 @@
   <div style="text-align: center" class="row">
     <div class="col-sm-12">
       <button (click)="confirmClick()" type="submit" class="btn btn-primary">تایید</button>
+      <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
+              class="btn btn-primary">بستن
+      </button>
     </div>
   </div>
 

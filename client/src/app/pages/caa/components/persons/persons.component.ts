@@ -46,7 +46,7 @@ export class PersonsComponent implements OnInit {
   }
 
   addPersonClick() {
-    const activeModal = this.modalService.open(AddPersonModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddPersonModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.personId = 0;
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
@@ -59,7 +59,7 @@ export class PersonsComponent implements OnInit {
   }
 
   editButtonClick(id: number) {
-    const activeModal = this.modalService.open(AddPersonModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddPersonModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.personId = id;
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
@@ -77,7 +77,7 @@ export class PersonsComponent implements OnInit {
   }
 
   OpenProgramClick(person: PersonView) {
-    const activeModal = this.modalService.open(ProgramsComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(ProgramsComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.person = person;
     activeModal.componentInstance.modalHeader = 'Large Modal';
 

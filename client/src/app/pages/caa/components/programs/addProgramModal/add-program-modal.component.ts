@@ -213,18 +213,28 @@ export class AddProgramModalComponent implements OnInit {
   }
 ////////////////////////////////////////////////////////////////////////////
   addExerciseClick(event, exerciseIndex: number): void {
-    const activeModal = this.modalService.open(AddExerciseItemModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddExerciseItemModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.selectedExcercisesList = this.getCurrentExercise(exerciseIndex);
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
     activeModal.result.then((exerciseList: SelectedIExerciseItems[]) => {
-      switch (exerciseIndex) {
-        case 1 : this.exercise1List = exerciseList; break;
-        case 2 : this.exercise2List = exerciseList; break;
-        case 3 : this.exercise3List = exerciseList; break;
-        case 4 : this.exercise4List = exerciseList; break;
+      if (exerciseList != null) {
+        switch (exerciseIndex) {
+          case 1 :
+            this.exercise1List = exerciseList;
+            break;
+          case 2 :
+            this.exercise2List = exerciseList;
+            break;
+          case 3 :
+            this.exercise3List = exerciseList;
+            break;
+          case 4 :
+            this.exercise4List = exerciseList;
+            break;
+        }
+        this.prepareGridRows(exerciseList, exerciseIndex);
       }
-      this.prepareGridRows(exerciseList, exerciseIndex);
     }).catch(e => {
       // this.helperService.showError('error on modal add program : ' + e)
     });
@@ -240,19 +250,29 @@ export class AddProgramModalComponent implements OnInit {
   }
 
   editExerciseClick(event, exerciseIndex: number) {
-    const activeModal = this.modalService.open(AddExerciseItemModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddExerciseItemModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.selectedExcercisesList = this.getCurrentExercise(exerciseIndex);
     activeModal.componentInstance.modalHeader = 'Large Modal';
 
     activeModal.result.then((exerciseList: SelectedIExerciseItems[]) => {
-      switch (exerciseIndex) {
-        case 1 : this.exercise1List = exerciseList; break;
-        case 2 : this.exercise2List = exerciseList; break;
-        case 3 : this.exercise3List = exerciseList; break;
-        case 4 : this.exercise4List = exerciseList; break;
-      }
+      if (exerciseList != null) {
+        switch (exerciseIndex) {
+          case 1 :
+            this.exercise1List = exerciseList;
+            break;
+          case 2 :
+            this.exercise2List = exerciseList;
+            break;
+          case 3 :
+            this.exercise3List = exerciseList;
+            break;
+          case 4 :
+            this.exercise4List = exerciseList;
+            break;
+        }
 
-      this.prepareGridRows(exerciseList, exerciseIndex);
+        this.prepareGridRows(exerciseList, exerciseIndex);
+      }
     }).catch(e => {
      // this.helperService.showError('error on modal edit program : ' + e)
     });
@@ -404,7 +424,7 @@ export class AddProgramModalComponent implements OnInit {
 
   exportProgramClick() {
       const activeModal = this.modalService.open(DisplayProgramExerciseImageComponent,
-        { size: 'lg', container: 'nb-layout' });
+        { backdrop: 'static', size: 'lg', container: 'nb-layout' });
       activeModal.componentInstance.programId = this.program.id;
       activeModal.componentInstance.modalHeader = 'Large Modal';
   }
@@ -417,7 +437,7 @@ export class AddProgramModalComponent implements OnInit {
       this.helperService.showWarning('شخص مورد نظر جهت نمایش اطلاعات سایز تعیین نشده است.');
       return;
     }
-    const activeModal = this.modalService.open(DisplayAllSizesForOnePersonComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(DisplayAllSizesForOnePersonComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.personId = this.program.person.id;
     activeModal.componentInstance.personName = this.program.personName;
     activeModal.componentInstance.modalHeader = 'Large Modal';

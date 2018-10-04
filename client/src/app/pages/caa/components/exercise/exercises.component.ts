@@ -60,7 +60,6 @@ export class ExercisesComponent implements OnInit {
 
   initExerciseList() {
     this.exerciseService.getExerciseList().subscribe((data: Exercise[]) => {
-      console.log(data);
       this.exerciseList = data;
       this.source.load(this.exerciseList);
     });
@@ -85,26 +84,22 @@ export class ExercisesComponent implements OnInit {
   }
 
   onEditConfirm(event): void {
-    console.log(event);
     this.exerciseService.editExercise(event.newData).subscribe((data: any) => {
       event.confirm.resolve();
       this.helperService.showSuccess('اطلاعات ذخیره گردید');
-    }), error => {
-      console.log('Error' + error);
-      this.helperService.showError('خطا در ذخیره اطلاعات در بانک اطلاعاتی')
+    }, error => {
+      this.helperService.showError2('خطا در ذخیره اطلاعات در بانک اطلاعاتی', error)
       event.confirm.reject()
-    };
+    });
   }
 
   onCreateConfirm(event): void {
-    console.log(event);
     this.exerciseService.addExercise(event.newData).subscribe((data: any) => {
       event.confirm.resolve();
       this.helperService.showSuccess('اطلاعات ذخیره گردید');
-    }), error => {
-      console.log('Error' + error);
-      this.helperService.showError('خطا در ذخیره اطلاعات در بانک اطلاعاتی')
+    }, error => {
+      this.helperService.showError2('خطا در ذخیره اطلاعات در بانک اطلاعاتی', error)
       event.confirm.reject()
-    };
+    });
   }
 }

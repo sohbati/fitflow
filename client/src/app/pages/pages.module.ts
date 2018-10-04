@@ -27,6 +27,7 @@ import {DxAutocompleteModule, DxTemplateModule} from 'devextreme-angular';
 import {DisplayAllSizesForOnePersonComponent} from './caa/components/programs/addProgramModal/displayAllSizesForOnePerson/display-all-sizes-for-one-person.component';
 import {AddPersonModalComponent} from './caa/components/persons/addpersonmodal/add-person-modal.component';
 import {MyloginComponent} from '../auth/mylogin.component';
+import {AddExerciseModalComponent} from "./caa/components/programs/addProgramModal/addExerciseItemComponent/addExerciseModalComponent/add-exercise-modal.component";
 const PAGES_COMPONENTS = [
   PagesComponent,
 ];
@@ -53,6 +54,7 @@ const PAGES_COMPONENTS = [
     PersonsComponent,
     AddPersonModalComponent,
     ExercisesComponent,
+    AddExerciseModalComponent,
     ProgramsComponent,
     AddProgramModalComponent,
     AddExerciseItemModalComponent,
@@ -69,6 +71,7 @@ const PAGES_COMPONENTS = [
     DisplayProgramExerciseImageComponent,
     ProgramsComponent,
     AddExerciseItemModalComponent,
+    AddExerciseModalComponent,
   ],
 })
 export class PagesModule {

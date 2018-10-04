@@ -77,7 +77,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   addClick(event): void {
-    const activeModal = this.modalService.open(AddProgramModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddProgramModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.modalHeader = 'Large Modal';
     activeModal.componentInstance.person = this.person;
     activeModal.result.then((program: ProgramView) => {
@@ -87,7 +87,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   editClick(event): void {
-    const activeModal = this.modalService.open(AddProgramModalComponent, { size: 'lg', container: 'nb-layout' });
+    const activeModal = this.modalService.open(AddProgramModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
     activeModal.componentInstance.program = event.data;
     activeModal.componentInstance.person = this.person;
     activeModal.componentInstance.modalHeader = 'Large Modal';

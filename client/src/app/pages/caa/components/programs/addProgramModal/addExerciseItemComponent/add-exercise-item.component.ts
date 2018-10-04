@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import {Exercise} from '../../../../datamodel/Exercise';
 import {ExerciseService} from '../../../../services/exercise.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HelperService} from '../../../../services/helper.service';
 import {NotificationsService, NotificationType} from 'angular2-notifications';
 import DataSource from 'devextreme/data/data_source';
 import ArrayStore from 'devextreme/data/array_store';
+import {AddExerciseModalComponent} from './addExerciseModalComponent/add-exercise-modal.component';
 
 interface SearchData {
   item: string;
@@ -33,6 +34,7 @@ export class AddExerciseItemModalComponent implements OnInit {
 
   source: LocalDataSource = new LocalDataSource();
   public inputExercise: string;
+  public inputExerciseId: number = 0;
 
 
   public inputSet: number;
@@ -45,7 +47,8 @@ export class AddExerciseItemModalComponent implements OnInit {
 
   public selectedExcercisesList: SelectedIExerciseItems[] = [];
 
-  constructor(private exerciseService: ExerciseService,
+  constructor(private modalService: NgbModal,
+              private exerciseService: ExerciseService,
               private ngbActiveModal: NgbActiveModal ,
               private helperService: HelperService,
               private notificationService: NotificationsService) {
@@ -96,6 +99,12 @@ export class AddExerciseItemModalComponent implements OnInit {
       this.helperService.showError('لطفا تعداد تکرار را عددی وارد کنید');
       return false;
     }
+
+    const t = this.inputRepeatType;
+    if (t === '' || t.length === 0) {
+      this.helperService.showError('نوع تکرار نمی تواند خالی باشد');
+      return false;
+    }
     return r;
   }
 
@@ -108,7 +117,6 @@ export class AddExerciseItemModalComponent implements OnInit {
     });
     return exercixeId;
   }
-
   validateSuperItemSet(subListItems: ExerciseItemsSubList[] , inputSet: number) {
     const set = this.helperService.convertToLatinNumbers(inputSet + '');
     if (set == null || set.length === 0) {
@@ -159,7 +167,10 @@ export class AddExerciseItemModalComponent implements OnInit {
         }
       }
     }
-    const exerciseId = this.getExerciseId(this.inputExercise);
+    if (this.inputExerciseId <= 0 && this.inputExercise.length > 0) {
+      this.inputExerciseId = this.getExerciseId(this.inputExercise);
+    }
+    const exerciseId = this.inputExerciseId;
     if (exerciseId === 0) {
       this.helperService.showError('خطای پیاده ساز. شماره حرکت پیدا نشد!!!')
       return;
@@ -181,6 +192,11 @@ export class AddExerciseItemModalComponent implements OnInit {
     if (isNewRow) {
       this.selectedExcercisesList.push(item);
     }
+
+    this.inputExercise = '';
+    this.inputSet = null;
+    this.inputRepeat = null;
+    this.inputRepeatType = '';
   }
 
   removeItem (event, index: number) {
@@ -192,6 +208,20 @@ export class AddExerciseItemModalComponent implements OnInit {
 
   confirmClick() {
     this.ngbActiveModal.close(this.selectedExcercisesList);
+  }
+
+  exerciseModalOpenclick() {
+    const activeModal = this.modalService.open(AddExerciseModalComponent, { backdrop: 'static', size: 'lg', container: 'nb-layout' });
+    activeModal.componentInstance.modalHeader = 'Large Modal';
+    activeModal.result.then((result: Exercise) => {
+      this.inputExercise = result.name;
+      this.inputExerciseId = result.id;
+    });
+
+  }
+
+  closeClick() {
+    this.ngbActiveModal.close(null);
   }
 
 }
