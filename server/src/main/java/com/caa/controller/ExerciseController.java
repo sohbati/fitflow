@@ -56,7 +56,9 @@ public class ExerciseController {
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
 
 		List<Exercise> list = exerciseDao.findByName(exercise.getName());
-		if (list != null && list.size() > 0) {
+		long currentId = exercise.getId();
+
+		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("نام حرکت تکراری است");
 		}
 
