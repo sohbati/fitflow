@@ -55,7 +55,7 @@ public class ExerciseController {
 	@Transactional
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
 
-``    	// check repeated name
+  	// check repeated name
 		List<Exercise> list = exerciseDao.findByName(exercise.getName());
 		long currentId = exercise.getId();
 
