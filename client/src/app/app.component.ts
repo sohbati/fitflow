@@ -5,6 +5,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
+import {TranslateService} from '@ngx-translate/core';
+
 @Component({
   selector: 'ngx-app',
   template: `
@@ -13,7 +15,13 @@ import { AnalyticsService } from './@core/utils/analytics.service';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private analytics: AnalyticsService) {
+  constructor(private analytics: AnalyticsService, public translate: TranslateService) {
+    translate.addLangs(['en', 'fa']);
+    translate.setDefaultLang('fa');
+
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
+
   }
 
   ngOnInit() {

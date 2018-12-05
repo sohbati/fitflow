@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-pages',
@@ -13,6 +14,15 @@ import { MENU_ITEMS } from './pages-menu';
 })
 export class PagesComponent {
   menu = MENU_ITEMS;
+
+  constructor(public translate: TranslateService) {
+    translate.addLangs(['en', 'fa']);
+    translate.setDefaultLang('fa');
+
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/en|fa/) ? browserLang : 'fa');
+
+  }
 
 
 }

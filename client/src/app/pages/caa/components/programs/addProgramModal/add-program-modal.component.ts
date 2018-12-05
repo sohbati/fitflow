@@ -35,11 +35,15 @@ export class AddProgramModalComponent implements OnInit {
   source2: LocalDataSource = new LocalDataSource();
   source3: LocalDataSource = new LocalDataSource();
   source4: LocalDataSource = new LocalDataSource();
+  source5: LocalDataSource = new LocalDataSource();
+  source6: LocalDataSource = new LocalDataSource();
 
   exercise1List: SelectedIExerciseItems[] = [];
   exercise2List: SelectedIExerciseItems[] = [];
   exercise3List: SelectedIExerciseItems[] = [];
   exercise4List: SelectedIExerciseItems[] = [];
+  exercise5List: SelectedIExerciseItems[] = [];
+  exercise6List: SelectedIExerciseItems[] = [];
 
   bodyPicture: string[] = ['', '', '', '', '', ''];
 
@@ -124,6 +128,8 @@ export class AddProgramModalComponent implements OnInit {
       this.exercise2List = [];
       this.exercise3List = [];
       this.exercise4List = [];
+      this.exercise5List = [];
+      this.exercise6List = [];
 
     }else {
       this.initPictures();
@@ -132,6 +138,8 @@ export class AddProgramModalComponent implements OnInit {
       this.intiExerciseItems(this.program.programExercise2Items, this.exercise2List, 2);
       this.intiExerciseItems(this.program.programExercise3Items, this.exercise3List, 3);
       this.intiExerciseItems(this.program.programExercise4Items, this.exercise4List, 4);
+      this.intiExerciseItems(this.program.programExercise5Items, this.exercise5List, 5);
+      this.intiExerciseItems(this.program.programExercise6Items, this.exercise6List, 6);
     }
 
 
@@ -232,6 +240,12 @@ export class AddProgramModalComponent implements OnInit {
           case 4 :
             this.exercise4List = exerciseList;
             break;
+          case 5 :
+            this.exercise5List = exerciseList;
+            break;
+          case 6 :
+            this.exercise6List = exerciseList;
+            break;
         }
         this.prepareGridRows(exerciseList, exerciseIndex);
       }
@@ -246,6 +260,8 @@ export class AddProgramModalComponent implements OnInit {
       case 2 : return this.exercise2List;
       case 3 : return this.exercise3List;
       case 4 : return this.exercise4List;
+      case 5 : return this.exercise5List;
+      case 6 : return this.exercise6List;
     }
   }
 
@@ -268,6 +284,12 @@ export class AddProgramModalComponent implements OnInit {
             break;
           case 4 :
             this.exercise4List = exerciseList;
+            break;
+          case 5 :
+            this.exercise5List = exerciseList;
+            break;
+          case 6 :
+            this.exercise6List = exerciseList;
             break;
         }
 
@@ -297,6 +319,8 @@ export class AddProgramModalComponent implements OnInit {
       case 2 : this.source2.load(exerciseAsStringList); break;
       case 3 : this.source3.load(exerciseAsStringList); break;
       case 4 : this.source4.load(exerciseAsStringList); break;
+      case 5 : this.source5.load(exerciseAsStringList); break;
+      case 6 : this.source6.load(exerciseAsStringList); break;
     }
   }
 
@@ -382,6 +406,8 @@ export class AddProgramModalComponent implements OnInit {
     this.program.programExercise2Items = this.prepareExerciseList(this.exercise2List);
     this.program.programExercise3Items = this.prepareExerciseList(this.exercise3List);
     this.program.programExercise4Items = this.prepareExerciseList(this.exercise4List);
+    this.program.programExercise5Items = this.prepareExerciseList(this.exercise5List);
+    this.program.programExercise6Items = this.prepareExerciseList(this.exercise6List);
     this.programService.addProgram(this.program).subscribe((result: ProgramView) => {
       this.program.id = result.id;
       this.helperService.showSuccess('مشخصات برنامه با موفقیت ثبت گردید')

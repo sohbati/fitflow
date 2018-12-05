@@ -22,6 +22,7 @@ interface SearchData {
 })
 
 export class AddExerciseItemModalComponent implements OnInit {
+  INPUT_REPEAT_TYPE_DEFAULT_VALUE: string = this.exerciseService.exerciseRepeatTypes[2];
   /**
    * used in dxAutoCompleter
    * this code initialized again in init method  **/
@@ -44,6 +45,7 @@ export class AddExerciseItemModalComponent implements OnInit {
   public searchData: SearchData[] = [];
 
   public exerciseRepeatTypeDesc: string[] = this.exerciseService.exerciseRepeatTypeDesc;
+  public exerciseRepeatTypes: string[] = this.exerciseService.exerciseRepeatTypes;
 
   public selectedExcercisesList: SelectedIExerciseItems[] = [];
 
@@ -76,6 +78,9 @@ export class AddExerciseItemModalComponent implements OnInit {
         });
       });
     }
+
+    // init repeat type combo :
+    this.inputRepeatType = this.INPUT_REPEAT_TYPE_DEFAULT_VALUE;
   }
 
   validateAdd(): boolean {
@@ -196,7 +201,7 @@ export class AddExerciseItemModalComponent implements OnInit {
     this.inputExercise = '';
     this.inputSet = null;
     this.inputRepeat = null;
-    this.inputRepeatType = '';
+    this.inputRepeatType = this.INPUT_REPEAT_TYPE_DEFAULT_VALUE;
   }
 
   removeItem (event, index: number) {

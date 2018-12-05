@@ -15,6 +15,7 @@ export class ExerciseService {
   public DELETE_PERSON: string  = '/deleteExercise';
 
   public exerciseRepeatTypeDesc: string[] = ['ثانیه', 'دقیقه', 'تکرار'];
+  public exerciseRepeatTypes: string[] = ['S', 'M', 'C'];
 
   constructor(private http: HttpClient,
               private helperService: HelperService) { }

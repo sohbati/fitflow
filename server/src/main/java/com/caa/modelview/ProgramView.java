@@ -46,5 +46,7 @@ public class ProgramView extends Program {
     private List<ProgramExerciseItemView> programExercise2Items = new ArrayList<>();
     private List<ProgramExerciseItemView> programExercise3Items = new ArrayList<>();
     private List<ProgramExerciseItemView> programExercise4Items = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise5Items = new ArrayList<>();
+    private List<ProgramExerciseItemView> programExercise6Items = new ArrayList<>();
 
 }

@@ -30,32 +30,46 @@
         <div class="row">
           <div class="col-sm-12" style="max-height: 300px;overflow: scroll;">
             <nb-tabset fullWidth>
-              <nb-tab tabTitle="  برنامه شماره ۱  ">
+              <nb-tab tabTitle="  برنامه جلسه اول  ">
                 <ng2-smart-table [settings]="settings"
                                  [source]="source1"
                                  (create)="addExerciseClick($event, 1)"
                                  (edit)="editExerciseClick($event, 1)">
                 </ng2-smart-table>
               </nb-tab>
-              <nb-tab tabTitle="  برنامه شماره ۲  ">
+              <nb-tab tabTitle="  برنامه جلسه دوم  ">
                 <ng2-smart-table [settings]="settings"
                                  [source]="source2"
                                  (create)="addExerciseClick($event, 2)"
                                  (edit)="editExerciseClick($event, 2)">
                 </ng2-smart-table>
               </nb-tab>
-              <nb-tab tabTitle="  برنامه شماره ۳  ">
+              <nb-tab tabTitle="  برنامه جلسه سوم  ">
                 <ng2-smart-table [settings]="settings"
                                  [source]="source3"
                                  (create)="addExerciseClick($event, 3)"
                                  (edit)="editExerciseClick($event, 3)">
                 </ng2-smart-table>
               </nb-tab>
-              <nb-tab tabTitle="  برنامه شماره ۴  ">
+              <nb-tab tabTitle="  برنامه جلسه چهارم  ">
                 <ng2-smart-table [settings]="settings"
                                  [source]="source4"
                                  (create)="addExerciseClick($event, 4)"
                                  (edit)="editExerciseClick($event,4)">
+                </ng2-smart-table>
+              </nb-tab>
+              <nb-tab tabTitle="  برنامه جلسه پنجم  ">
+                <ng2-smart-table [settings]="settings"
+                                 [source]="source5"
+                                 (create)="addExerciseClick($event, 5)"
+                                 (edit)="editExerciseClick($event, 5)">
+                </ng2-smart-table>
+              </nb-tab>
+              <nb-tab tabTitle="  برنامه جلسه ششم  ">
+                <ng2-smart-table [settings]="settings"
+                                 [source]="source6"
+                                 (create)="addExerciseClick($event, 6)"
+                                 (edit)="editExerciseClick($event, 6)">
                 </ng2-smart-table>
               </nb-tab>
             </nb-tabset>
@@ -264,7 +278,7 @@
     <button style="margin-left: 10px; margin-right: 10px" (click)="displayPersonsAllSizes()" type="submit"
             class="btn btn-primary">نمایش تمام سازهای فرد
     </button>
-    <button (click)="exportProgramClick()" type="submit" class="btn btn-primary">Export</button>
+    <button (click)="exportProgramClick()" type="submit" class="btn btn-primary">چاپ برنامه</button>
     <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
             class="btn btn-primary">بستن
     </button>

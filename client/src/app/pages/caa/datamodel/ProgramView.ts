@@ -14,6 +14,8 @@ export class ProgramView {
   programExercise2Items: ProgramExerciseItem[];
   programExercise3Items: ProgramExerciseItem[];
   programExercise4Items: ProgramExerciseItem[];
+  programExercise5Items: ProgramExerciseItem[];
+  programExercise6Items: ProgramExerciseItem[];
 
   personAge: number;
   personTall: number;

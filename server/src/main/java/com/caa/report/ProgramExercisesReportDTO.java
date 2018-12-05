@@ -27,5 +27,15 @@ public class ProgramExercisesReportDTO {
     private String program4ExerciseRepeatSet;
     private String program4ExerciseDscription;
 
+    private Long program5Id;
+    private String program5Exercise;
+    private String program5ExerciseRepeatSet;
+    private String program5ExerciseDscription;
+
+    private Long program6Id;
+    private String program6Exercise;
+    private String program6ExerciseRepeatSet;
+    private String program6ExerciseDscription;
+
 
 }

@@ -14,14 +14,14 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'حرکت ها',
-    icon: 'nb-exercise',
+    icon: 'nb-flame-circled',
     link: '/pages/exercises',
   },
-  // {
-  //   title: 'فایل برنامه های اشخاص',
-  //   icon: 'nb-person',
-  //   link: '/pages/programs',
-  // },
+  {
+    title: 'تنظیمات',
+    icon: 'nb-gear',
+    link: '/pages/settings',
+  },
   {
     title: 'FEATURES',
     group: true,

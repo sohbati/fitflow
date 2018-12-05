@@ -99,7 +99,11 @@ public class ExportReport {
          * Recognize sub-program count
          */
         int subProgramCount = 0;
-        if (exerciseItems.get(0).getProgram4Id() != null && exerciseItems.get(0).getProgram4Id()  >0) {
+        if (exerciseItems.get(0).getProgram6Id() != null && exerciseItems.get(0).getProgram6Id()  >0) {
+            subProgramCount = 6;
+        }else if (exerciseItems.get(0).getProgram5Id() != null && exerciseItems.get(0).getProgram5Id()  >0) {
+            subProgramCount = 5;
+        }else if (exerciseItems.get(0).getProgram4Id() != null && exerciseItems.get(0).getProgram4Id()  >0) {
             subProgramCount = 4;
         }else if (exerciseItems.get(0).getProgram3Id() != null && exerciseItems.get(0).getProgram3Id()  >0) {
             subProgramCount = 3;

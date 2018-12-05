@@ -4,6 +4,7 @@ import com.caa.constants.ProgramConstants;
 import com.caa.dao.ExerciseDao;
 import com.caa.dao.ProgramDao;
 import com.caa.dao.ProgramExerciseItemDao;
+import com.caa.model.Exercise;
 import com.caa.model.Person;
 import com.caa.model.Program;
 import com.caa.model.ProgramExerciseItem;
@@ -148,8 +149,9 @@ public class ProgramService {
         if (exerciseItems != null && exerciseItems.size() > 0) {
             exerciseItems.stream().forEach(programExerciseItem -> {
                 ProgramExerciseItemView viewItem = new ProgramExerciseItemView(programExerciseItem);
-                viewItem.setExerciseName(
-                        exerciseDao.getOne(programExerciseItem.getExerciseId()).getName());
+                Exercise ex = exerciseDao.getOne(programExerciseItem.getExerciseId());
+                String code = "(" + ex.getCode() + ")  ";
+                viewItem.setExerciseName( code + ex.getName());
                 viewList.add(viewItem);
             });
         }
@@ -184,6 +186,8 @@ public class ProgramService {
                     case 2 : pv.getProgramExercise2Items().add(exerciseItem); break;
                     case 3 : pv.getProgramExercise3Items().add(exerciseItem); break;
                     case 4 : pv.getProgramExercise4Items().add(exerciseItem); break;
+                    case 5 : pv.getProgramExercise5Items().add(exerciseItem); break;
+                    case 6 : pv.getProgramExercise6Items().add(exerciseItem); break;
                 }
             });
             result.add(pv);
@@ -199,6 +203,8 @@ public class ProgramService {
         List<ProgramExerciseItemView> items2 = programView.getProgramExercise2Items();
         List<ProgramExerciseItemView> items3 = programView.getProgramExercise3Items();
         List<ProgramExerciseItemView> items4 = programView.getProgramExercise4Items();
+        List<ProgramExerciseItemView> items5 = programView.getProgramExercise5Items();
+        List<ProgramExerciseItemView> items6 = programView.getProgramExercise6Items();
 
 
         programDao.save(p);
@@ -208,6 +214,8 @@ public class ProgramService {
         allEntityList.addAll(getSubExerciseItems(items2 , 2, p.getId()));
         allEntityList.addAll(getSubExerciseItems(items3 , 3, p.getId()));
         allEntityList.addAll(getSubExerciseItems(items4 , 4, p.getId()));
+        allEntityList.addAll(getSubExerciseItems(items5 , 5, p.getId()));
+        allEntityList.addAll(getSubExerciseItems(items6 , 6, p.getId()));
 
         programExerciseItemDao.deleteByProgramId(p.getId());
 

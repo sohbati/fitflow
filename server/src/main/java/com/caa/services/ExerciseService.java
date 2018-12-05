@@ -2,6 +2,7 @@ package com.caa.services;
 
 import com.caa.dao.ExerciseDao;
 import com.caa.dao.ProgramDao;
+import com.caa.model.Exercise;
 import com.caa.modelview.ProgramExerciseItemView;
 import com.caa.report.ProgramExercisesReportDTO;
 import org.apache.commons.collections.map.HashedMap;
@@ -133,6 +134,16 @@ public class ExerciseService {
                 addItem(item, subListIndex, id, exercise, repeatSet);
                 found = true;
                 break;
+            }else
+            if (subListIndex == 5 && (item.getProgram5Id() == null || item.getProgram5Id() == 0)){
+                addItem(item, subListIndex, id, exercise, repeatSet);
+                found = true;
+                break;
+            }else
+            if (subListIndex == 6 && (item.getProgram6Id() == null || item.getProgram6Id() == 0)){
+                addItem(item, subListIndex, id, exercise, repeatSet);
+                found = true;
+                break;
             }
         }
 
@@ -143,6 +154,8 @@ public class ExerciseService {
             newItem.setProgram2Exercise("");
             newItem.setProgram3Exercise("");
             newItem.setProgram4Exercise("");
+            newItem.setProgram5Exercise("");
+            newItem.setProgram6Exercise("");
             addItem(newItem, subListIndex, id, exercise, repeatSet);
         }
     }
@@ -169,6 +182,16 @@ public class ExerciseService {
                 reportDTOItem.setProgram4Id(id);
                 reportDTOItem.setProgram4Exercise(exercise);
                 reportDTOItem.setProgram4ExerciseRepeatSet(repeatSet);
+                break;
+            case 5 :
+                reportDTOItem.setProgram5Id(id);
+                reportDTOItem.setProgram5Exercise(exercise);
+                reportDTOItem.setProgram5ExerciseRepeatSet(repeatSet);
+                break;
+            case 6 :
+                reportDTOItem.setProgram6Id(id);
+                reportDTOItem.setProgram6Exercise(exercise);
+                reportDTOItem.setProgram6ExerciseRepeatSet(repeatSet);
                 break;
         }
     }
@@ -214,5 +237,15 @@ public class ExerciseService {
             case REPEAT_TYPE_REPEAT : return "";
         }
         return "";
+    }
+
+    public String getNewCode() {
+        String code = "1000";
+        String c = exerciseDao.findMaxCode();
+        if (c != null) {
+            code = c;
+        }
+        code = (Integer.parseInt(code) + 1) + "";
+        return code;
     }
 }

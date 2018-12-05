@@ -8,6 +8,7 @@ import { ThemeModule } from '../@theme/theme.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import {PersonsComponent} from './caa/components/persons/persons.component';
 import {ExercisesComponent} from './caa/components/exercise/exercises.component';
+import {SettingsComponent} from './caa/components/settings/settings.component';
 import {HelperService} from './caa/services/helper.service';
 import {PersonService} from './caa/services/person.service';
 import {ProgramService} from './caa/services/program.service';
@@ -27,10 +28,20 @@ import {DxAutocompleteModule, DxTemplateModule} from 'devextreme-angular';
 import {DisplayAllSizesForOnePersonComponent} from './caa/components/programs/addProgramModal/displayAllSizesForOnePerson/display-all-sizes-for-one-person.component';
 import {AddPersonModalComponent} from './caa/components/persons/addpersonmodal/add-person-modal.component';
 import {MyloginComponent} from '../auth/mylogin.component';
-import {AddExerciseModalComponent} from "./caa/components/programs/addProgramModal/addExerciseItemComponent/addExerciseModalComponent/add-exercise-modal.component";
+import {AddExerciseModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComponent/addExerciseModalComponent/add-exercise-modal.component';
+
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
 const PAGES_COMPONENTS = [
   PagesComponent,
 ];
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(httpClient: HttpClient) {
+  return new TranslateHttpLoader(httpClient);
+}
 
 @NgModule({
   imports: [
@@ -46,6 +57,13 @@ const PAGES_COMPONENTS = [
 
     DxAutocompleteModule,
     DxTemplateModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [ HelperService, PersonService, ProgramService],
   declarations: [
@@ -54,6 +72,7 @@ const PAGES_COMPONENTS = [
     PersonsComponent,
     AddPersonModalComponent,
     ExercisesComponent,
+    SettingsComponent,
     AddExerciseModalComponent,
     ProgramsComponent,
     AddProgramModalComponent,

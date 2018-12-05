@@ -44,9 +44,9 @@
         <div class="form-group">
           <label for="inputRepeatType">نوع تکرار</label>
           <select id="inputRepeatType" [(ngModel)]="inputRepeatType" class="form-control">
-            <option value="S">{{exerciseRepeatTypeDesc[0]}}</option>
-            <option value="M">{{exerciseRepeatTypeDesc[1]}}</option>
-            <option value="C">{{exerciseRepeatTypeDesc[2]}}</option>
+            <option [value]="exerciseRepeatTypes[0]">{{exerciseRepeatTypeDesc[0]}}</option>
+            <option [value]="exerciseRepeatTypes[1]">{{exerciseRepeatTypeDesc[1]}}</option>
+            <option selected [value]="exerciseRepeatTypes[2]">{{exerciseRepeatTypeDesc[2]}}</option>
           </select>
         </div>
       </div>

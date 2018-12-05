@@ -54,6 +54,8 @@
     "@ngx-share/button": "^6.0.1",
     "@ngx-share/buttons": "^6.0.1",
     "@ngx-share/core": "^6.0.1",
+    "@ngx-translate/core": "^10.0.0",
+    "@ngx-translate/http-loader": "3.0.0",
     "angular-font-awesome": "^3.1.2",
     "angular-tree-component": "7.2.0",
     "angular2-notifications": "^1.0.4",

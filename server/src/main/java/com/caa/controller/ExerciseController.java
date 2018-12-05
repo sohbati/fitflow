@@ -5,6 +5,7 @@ import com.caa.dao.ProgramExerciseItemDao;
 import com.caa.model.Exercise;
 import com.caa.model.ProgramExerciseItem;
 import com.caa.modelview.ExerciseView;
+import com.caa.services.ExerciseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class ExerciseController {
 	
     @Autowired
     private ExerciseDao exerciseDao;
+
+    @Autowired
+    private ExerciseService exerciseService;
     @Autowired
     private ProgramExerciseItemDao programExerciseItemDao;
 
@@ -68,10 +72,24 @@ public class ExerciseController {
 		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("کد حرکت تکراری است");
 		}
+		if (exercise.getCode() != null && exercise.getCode().length() > 0) {
+			try {
+				Integer.parseInt(exercise.getCode());
+			} catch (Exception ex) {
+				throw new RuntimeException("لطفا کد حرکت عددی وارد گردد");
+			}
+		}else {
+			exercise.setCode(exerciseService.getNewCode());
+		}
 
+		if (exercise.getLatinName() == null) {
+			exercise.setLatinName("");
+		}
+		exercise.setLatinName(exercise.getLatinName().trim());
 		// check repeated latin name
 		list = exerciseDao.findByLatinName(exercise.getLatinName());
-		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
+		if (exercise.getLatinName() != null && exercise.getLatinName().length() > 0 &&
+				list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("نام لاتین حرکت تکراری است");
 		}
 
