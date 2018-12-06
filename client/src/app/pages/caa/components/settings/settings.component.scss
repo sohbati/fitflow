@@ -1,0 +1,10 @@
+@import '../../../../@theme/styles/themes';
+@import '~@nebular/theme/styles/global/bootstrap/breakpoints';
+@import '~bootstrap/scss/mixins/breakpoints';
+
+.topcorner {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
