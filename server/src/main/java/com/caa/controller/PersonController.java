@@ -1,11 +1,10 @@
 package com.caa.controller;
 
-import com.caa.dao.PersonDao;
 import com.caa.model.Person;
 import com.caa.modelview.PersonView;
 import com.caa.services.PersonService;
+import com.caa.services.TenantConfigurationService;
 import com.caa.util.ImageUtil;
-import com.caa.util.PublicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +13,29 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.annotation.MultipartConfig;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PersonController {
 
     private static Logger logger = LoggerFactory.getLogger(PersonController.class);
 
-    @Autowired 	PersonService personService;
+    @Autowired
+	PersonService personService;
+
+    @Autowired
+	TenantConfigurationService tenantConfigurationService;
 
 	@RequestMapping(value="/getPersons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Iterable<Person> getPersons() {
     	
-    	logger.info("findAll entered...");
-    	
-		return personService.findAll();
+    	logger.info("queryAllForTenant entered...");
+		return personService.findAllForTenant();
 	}
 
 	@RequestMapping(value="/getPersonShortList", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +44,7 @@ public class PersonController {
 
     	logger.info("getPersonShortList entered...");
 
-		List<Person> list = personService.findAll();
+		List<Person> list = personService.findAllForTenant();
 		List<PersonView> result = new ArrayList<>();
 
 		for (Person p : list) {
@@ -102,7 +102,7 @@ public class PersonController {
 	public List<PersonView> findByNameFamilyPhone(@PathVariable("searchStr") String searchStr) throws IOException {
         List<Person> persons = null;
         if (searchStr == null || searchStr.length() == 0 || "EMPTY".equals(searchStr)) {
-	        persons = personService.findAll();
+	        persons = personService.findAllForTenant();
         }else {
             persons = personService.findByNameAndFamiliyAndPhone(searchStr);
         }
@@ -119,7 +119,8 @@ public class PersonController {
 	}
 
 	private String loadOriginalPersonImage(Person p) throws IOException {
-	    return ImageUtil.loadImageInEncodedString(p.getMobileNumber(),
+		String confFolder = tenantConfigurationService.getProjectConfigFolder();
+	    return ImageUtil.loadImageInEncodedString(confFolder, p.getMobileNumber(),
                 PersonService.PERSON_MAIN_PICTURE + "." + p.getImageSuffix());
 	}
 

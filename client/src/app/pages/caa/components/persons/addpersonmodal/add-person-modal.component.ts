@@ -35,7 +35,7 @@ export class AddPersonModalComponent implements OnInit {
           this.person.birthDate = '';
         }
       }, error => {
-        this.helperService.showError('خطا در نمایش اطلاعات فرد' + ' : ' + error);
+        this.helperService.showError2('خطا در نمایش اطلاعات فرد' + ' : ' + error, error);
       })
     }
   }

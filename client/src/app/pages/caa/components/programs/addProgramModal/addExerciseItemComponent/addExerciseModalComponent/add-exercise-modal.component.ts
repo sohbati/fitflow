@@ -55,6 +55,8 @@ export class AddExerciseModalComponent implements OnInit {
     this.exerciseService.getExerciseList().subscribe((data: Exercise[]) => {
       this.exerciseList = data;
       this.source.load(this.exerciseList);
+    }, (error) => {
+      this.helperService.showError(error)
     });
   }
 

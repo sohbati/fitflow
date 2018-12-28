@@ -33,6 +33,8 @@ export class PersonsComponent implements OnInit {
       this.personList.forEach((person, index, array) => {
         this.manageImage(person);
       });
+    }, err => {
+      this.helperService.showError(err);
     });
   }
 
@@ -107,7 +109,7 @@ export class PersonsComponent implements OnInit {
       }
       this.helperService.showSuccess('اطلاعات حذف گردید');
     }, (error) => {
-      this.helperService.showError('اگر برای  فرد برنامه ای تنظیم شده است نمی توان آن شخص را حذف نمود')
+      this.helperService.showError2('اگر برای  فرد برنامه ای تنظیم شده است نمی توان آن شخص را حذف نمود', error)
     });
   }
 
@@ -127,6 +129,5 @@ export class PersonsComponent implements OnInit {
     }, err => {
       this.helperService.showError2(' خطا در جستجو', err);
     })
-
   }
 }

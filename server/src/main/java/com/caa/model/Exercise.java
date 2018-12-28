@@ -16,6 +16,9 @@ public class Exercise {
 	@GeneratedValue
 	private long id;
 
+	@Column(name = "tenant_id", unique = true, updatable = true, insertable = true, nullable = false)
+	private String tenantId;
+
 	@Column(name = "name", unique = true, updatable = true, insertable = true, nullable = false)
 	private String name;
 

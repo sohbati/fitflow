@@ -397,9 +397,9 @@ export class AddProgramModalComponent implements OnInit {
     this.program.personThigh = this.toLatinNumbers(this.program.personThigh + '');
     this.program.personShin = this.toLatinNumbers(this.program.personShin + '');
     this.program.personButt = this.toLatinNumbers(this.program.personButt + '');
-    this.program.personFatPercentage = this.toLatinNumbers(this.program.personFatPercentage + '');
-    this.program.personFatWeight = this.toLatinNumbers(this.program.personFatWeight + '');
-    this.program.personMuscleWeight = this.toLatinNumbers(this.program.personMuscleWeight + '');
+    this.program.personFatPercentage = this.toLatinFloat(this.program.personFatPercentage + '');
+    this.program.personFatWeight = this.toLatinFloat(this.program.personFatWeight + '');
+    this.program.personMuscleWeight = this.toLatinFloat(this.program.personMuscleWeight + '');
     this.program.personScore = this.toLatinNumbers(this.program.personScore + '');
 
     this.program.programExercise1Items = this.prepareExerciseList(this.exercise1List);
@@ -414,7 +414,7 @@ export class AddProgramModalComponent implements OnInit {
       this.ngbActiveModal.close(this.program);
     },
     error2 => {
-       this.helperService.showError(' : خطا در ذخیره اطلاعات ' + error2);
+       this.helperService.showError2(' : خطا در ذخیره اطلاعات ' + error2, error2);
     });
     if (this.program.id > 0) {
       [1, 2, 3, 4, 3, 5, 6].forEach((value, index, array) => {
@@ -425,6 +425,10 @@ export class AddProgramModalComponent implements OnInit {
 
   toLatinNumbers(s: string): number {
     return this.helperService.toInt(this.helperService.convertToLatinNumbers(s));
+  }
+
+  toLatinFloat(s: string): number {
+    return this.helperService.toFloat(this.helperService.convertToLatinNumbers(s));
   }
 
   async uploadProgramPictures(programId: number, pictureName: string, pictureIndex: number) {
@@ -441,7 +445,7 @@ export class AddProgramModalComponent implements OnInit {
           this.programService.uploadProgramPicture(this.person.mobileNumber , programId, pictureName, formData).subscribe(result => {
 
           }, error => {
-            this.helperService.showError('خطا در اضافه کردن عکس های برنامه' + '--' + pictureName);
+            this.helperService.showError2('خطا در اضافه کردن عکس های برنامه' + '--' + pictureName, error);
           });
         }
       }

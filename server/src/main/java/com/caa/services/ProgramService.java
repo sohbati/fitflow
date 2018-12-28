@@ -13,22 +13,18 @@ import com.caa.modelview.ProgramExerciseItemView;
 import com.caa.modelview.ProgramView;
 import com.caa.report.ExportReport;
 import com.caa.report.ProgramExercisesReportDTO;
+import com.caa.services.security.impl.CustomUserDetailsService;
 import com.caa.util.DateUtil;
 import com.caa.util.ImageUtil;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import static com.caa.constants.ProgramConstants.*;
 /**
@@ -54,10 +50,13 @@ public class ProgramService {
     @Autowired
     PersonService personService;
 
+    @Autowired
+    TenantConfigurationService tenantConfigurationService;
+
     public String[][] getPersonAllSizes(long personId){
             String[][] personAllSizes;
-
-        List<Program> programs = programDao.findByPersonId(personId);
+        String userTenant = CustomUserDetailsService.getCurrentUserTenant();
+        List<Program> programs = programDao.queryByPersonIdForTenant(userTenant, personId);
         if (programs == null || programs.size() == 0) {
             return new String[0][0];
         }
@@ -114,7 +113,8 @@ public class ProgramService {
 
             ExportReport exportReport = new ExportReport();
             List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
-            imageBase64 = exportReport.getProgramExerciseAsImage(reportDTOList, program, person);
+            String confFolder = tenantConfigurationService.getProjectConfigFolder();
+            imageBase64 = exportReport.getProgramExerciseAsImage(confFolder, reportDTOList, program, person);
         }
         ImageView imageView = new ImageView();
         imageView.setContent(imageBase64);
@@ -128,7 +128,9 @@ public class ProgramService {
 
         List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
         List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
-        byte[] bytes = ExportReport.getProgramExerciseAsImageInBytes(reportDTOList, program, person);
+        String confFolder = tenantConfigurationService.getProjectConfigFolder();
+
+        byte[] bytes = ExportReport.getProgramExerciseAsImageInBytes(confFolder, reportDTOList, program, person);
         return bytes;
     }
 
@@ -138,7 +140,9 @@ public class ProgramService {
 
         List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
         List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
-        byte[] bytes = ExportReport.getProgramExerciseAsPDFInBytes(reportDTOList, program, person);
+        String confFolder = tenantConfigurationService.getProjectConfigFolder();
+
+        byte[] bytes = ExportReport.getProgramExerciseAsPDFInBytes(confFolder, reportDTOList, program, person);
         return bytes;
     }
 
@@ -150,7 +154,9 @@ public class ProgramService {
             exerciseItems.stream().forEach(programExerciseItem -> {
                 ProgramExerciseItemView viewItem = new ProgramExerciseItemView(programExerciseItem);
                 Exercise ex = exerciseDao.getOne(programExerciseItem.getExerciseId());
-                String code = "(" + ex.getCode() + ")  ";
+                boolean isShow = tenantConfigurationService.showCodeInPrintOrImage();
+
+                String code = isShow ?  "(" + ex.getCode() + ")  " : "";
                 viewItem.setExerciseName( code + ex.getName());
                 viewList.add(viewItem);
             });
@@ -159,7 +165,8 @@ public class ProgramService {
     }
 
     public Iterable<ProgramView> getPersonsPrograms(long personId) {
-        List<Program> list = programDao.findByPersonId(personId);
+        String tenant = CustomUserDetailsService.getCurrentUserTenant();
+        List<Program> list = programDao.queryByPersonIdForTenant(tenant, personId);
         List<ProgramView> result = new ArrayList<>();
 
         for(Program p : list) {
@@ -283,9 +290,14 @@ public class ProgramService {
     }
 
     public void saveProgramPicture(byte[] img, String personMobileNumber, long programId, String imageName, String type) throws IOException {
-        byte[] shrinkedImage = ImageUtil.shrinkImage(img, type);
-        ImageUtil.saveToFileSystem(personMobileNumber + "/" + programId, imageName, type, img);
-        ImageUtil.saveToFileSystem(personMobileNumber + "/" + programId + "/" + "small", imageName, type, shrinkedImage);
+        String confFolder = tenantConfigurationService.getProjectConfigFolder();
+        int w = tenantConfigurationService.getShrinkedImageWidth();
+        int h = tenantConfigurationService.getShrinkedImageHeight();
+
+        byte[] shrinkedImage = ImageUtil.shrinkImage(w, h, img, type);
+
+        ImageUtil.saveToFileSystem(confFolder,personMobileNumber + "/" + programId, imageName, type, img);
+        ImageUtil.saveToFileSystem(confFolder,personMobileNumber + "/" + programId + "/" + "small", imageName, type, shrinkedImage);
     }
 
     public byte[] loadProgramPictureOriginal(String personMobileNumber, long programId, int imageNumber) throws IOException {
@@ -311,7 +323,9 @@ public class ProgramService {
 
     private byte[] getImage(String path, String fileName) {
         try {
-            byte[] img = ImageUtil.loadImageInbytes(path, fileName);
+            String confFolder = tenantConfigurationService.getProjectConfigFolder();
+
+            byte[] img = ImageUtil.loadImageInbytes(confFolder, path, fileName);
             if (img != null && img.length > 0) {
                 return img;
             }

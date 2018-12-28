@@ -3,11 +3,11 @@ package com.caa.services;
 import com.caa.dao.PersonDao;
 import com.caa.model.Person;
 import com.caa.modelview.PersonView;
+import com.caa.services.security.impl.CustomUserDetailsService;
 import com.caa.util.DateUtil;
 import com.caa.util.ImageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,25 +23,39 @@ import java.util.List;
 public class PersonService {
 
     public static String PERSON_MAIN_PICTURE = "personPicture";
-    @Autowired PersonDao personDao;
+
+    @Autowired
+    PersonDao personDao;
+
+    @Autowired
+    ImageUtil imageService;
+
+    @Autowired
+    TenantConfigurationService tenantConfigurationService;
 
     public Person findOne(long id) {
       return personDao.findOne(id);
     }
 
-    public List<Person> findAll() {
-        return personDao.findAll();
+    public List<Person> findAllForTenant() {
+        String tenantId = CustomUserDetailsService.getCurrentUserTenant();
+        return personDao.queryAllForTenant(tenantId);
     }
 
     public List<Person> findByNameAndFamiliyAndPhone(String str) {
-        return personDao.findByNameAndFamiliyAndPhone(str);
+        String tenantId = CustomUserDetailsService.getCurrentUserTenant();
+        return personDao.queryByNameAndFamiliyAndPhoneForTenant(tenantId, str);
     }
     @Transactional
     public Person savePerson(PersonView personView, byte[] picture, String imageSuffix) throws IOException {
-        byte[] shrinkedImage = ImageUtil.shrinkImage(picture, imageSuffix);
+        String confFolder = tenantConfigurationService.getProjectConfigFolder();
+        int w = tenantConfigurationService.getShrinkedImageWidth();
+        int h = tenantConfigurationService.getShrinkedImageHeight();
+
+        byte[] shrinkedImage = ImageUtil.shrinkImage(w, h, picture, imageSuffix);
         validatePerson(personView);
         if (picture.length > 0) {
-            ImageUtil.saveToFileSystem(
+            ImageUtil.saveToFileSystem(confFolder,
                     personView.getMobileNumber(),
                     PERSON_MAIN_PICTURE,
                     imageSuffix,
@@ -83,7 +97,8 @@ public class PersonService {
             throw new RuntimeException("شماره موبایل اجباری است");
         }
 
-        List<Person> list = personDao.findByMobileNumber(personView.getMobileNumber());
+        String tenantId = CustomUserDetailsService.getCurrentUserTenant();
+        List<Person> list = personDao.queryByMobileNumberForTenant(tenantId, personView.getMobileNumber());
         if (id == 0) {
             if (list.size() > 0) {
                 throw new RuntimeException("شماره موبایل نمی تواند تکراری باشد");
@@ -105,6 +120,8 @@ public class PersonService {
     }
 
     private Person toEntity(PersonView personView,Person person, byte[] picture, String imageSuffix) {
+        person.setTenantId(CustomUserDetailsService.getCurrentUserTenant());
+
         person.setId(personView.getId());
         person.setFirstName(personView.getFirstName());
         person.setLastName(personView.getLastName());

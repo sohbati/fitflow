@@ -6,12 +6,11 @@ import com.caa.model.Exercise;
 import com.caa.model.ProgramExerciseItem;
 import com.caa.modelview.ExerciseView;
 import com.caa.services.ExerciseService;
+import com.caa.services.security.impl.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Isolation;
@@ -24,6 +23,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
 @Transactional(isolation= Isolation.READ_COMMITTED)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExerciseController {
 
     private static Logger logger = LoggerFactory.getLogger(ExerciseController.class);
@@ -49,9 +49,9 @@ public class ExerciseController {
 	@ResponseBody
 	public Iterable<Exercise> getExercises() {
     	
-    	logger.info("findAll entered...");
-    	
-		return exerciseDao.findAll();
+    	logger.info("queryAllForTenant entered...");
+		String tenant = CustomUserDetailsService.getCurrentUserTenant();
+		return exerciseDao.queryAllForTenant(tenant);
 	}
 
 	@RequestMapping(value="/saveExercise", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,7 +60,8 @@ public class ExerciseController {
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
 
   	// check repeated name
-		List<Exercise> list = exerciseDao.findByName(exercise.getName());
+		String tenant = CustomUserDetailsService.getCurrentUserTenant();
+		List<Exercise> list = exerciseDao.queryByNameForTenant(tenant, exercise.getName());
 		long currentId = exercise.getId();
 
 		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
@@ -68,7 +69,7 @@ public class ExerciseController {
 		}
 
 		// check repeated code
-		list = exerciseDao.findByCode(exercise.getCode());
+		list = exerciseDao.queryByCodeForTenant(tenant, exercise.getCode());
 		if (list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("کد حرکت تکراری است");
 		}
@@ -87,7 +88,7 @@ public class ExerciseController {
 		}
 		exercise.setLatinName(exercise.getLatinName().trim());
 		// check repeated latin name
-		list = exerciseDao.findByLatinName(exercise.getLatinName());
+		list = exerciseDao.queryByLatinNameForTenant(tenant, exercise.getLatinName());
 		if (exercise.getLatinName() != null && exercise.getLatinName().length() > 0 &&
 				list != null && list.size() > 0 && list.get(0).getId() != currentId) {
 			throw new RuntimeException("نام لاتین حرکت تکراری است");
@@ -114,9 +115,10 @@ public class ExerciseController {
 	@ResponseBody
 	public Iterable<ExerciseView> getExerciseShortList() {
 
-		logger.info("findAll entered...");
+		logger.info("queryAllForTenant entered...");
 
-		List<Exercise> list = exerciseDao.findAll();
+		String tenant = CustomUserDetailsService.getCurrentUserTenant();
+		List<Exercise> list = exerciseDao.queryAllForTenant(tenant);
 		List<ExerciseView> result = new ArrayList<>();
 
 		for (Exercise p : list) {

@@ -20,6 +20,9 @@ public class Program {
     @GeneratedValue
     private long id;
 
+    @Column(name = "tenant_id", unique = true, updatable = true, insertable = true, nullable = false)
+    private String tenantId;
+
     @OneToOne()
     @JoinColumn(name = "person_id")
     private Person person;

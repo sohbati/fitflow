@@ -5,7 +5,8 @@ import {AddProgramModalComponent} from './addProgramModal/add-program-modal.comp
 import {ProgramService} from '../../services/program.service';
 import {ProgramView} from '../../datamodel/ProgramView';
 import {HelperService} from '../../services/helper.service';
-import {PersonView} from "../../datamodel/PersonView";
+import {PersonView} from '../../datamodel/PersonView';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'ngx-programs',
@@ -63,6 +64,7 @@ export class ProgramsComponent implements OnInit {
 
   constructor(private modalService: NgbModal,
               private helperService: HelperService,
+              private ngbActiveModal: NgbActiveModal,
               private programService: ProgramService) { }
 
   ngOnInit() {
@@ -73,6 +75,8 @@ export class ProgramsComponent implements OnInit {
     this.programService.getProgramList(this.person.id).subscribe((data: ProgramView[]) => {
       this.programList = data;
       this.source.load(this.programList);
+    }, err => {
+      this.helperService.showError(err);
     });
   }
 
@@ -125,7 +129,11 @@ export class ProgramsComponent implements OnInit {
         this.source.refresh();
       }
     }, (error) => {
-      this.helperService.showError('در حذف برنامه ایرادی بوجود آمد لطفا با پشتیبانی سیستم تماس بگیرید')
+      this.helperService.showError2('در حذف برنامه ایرادی بوجود آمد لطفا با پشتیبانی سیستم تماس بگیرید', error)
     });
+  }
+
+  closeClick() {
+    this.ngbActiveModal.close();
   }
 }

@@ -5,8 +5,7 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {PersonsComponent} from './caa/components/persons/persons.component';
 import {ExercisesComponent} from './caa/components/exercise/exercises.component';
-import {MyloginComponent} from '../auth/mylogin.component';
-import {SettingsComponent} from "./caa/components/settings/settings.component";
+import {SettingsComponent} from './caa/components/settings/settings.component';
 
 const routes: Routes = [{
   path: '',
@@ -27,10 +26,6 @@ const routes: Routes = [{
     {
       path: 'settings',
       component: SettingsComponent,
-    },
-    {
-      path: 'login',
-      component: MyloginComponent,
     },
     {
       path: '',

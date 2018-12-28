@@ -16,6 +16,11 @@ import {NotificationsService, SimpleNotificationsModule} from 'angular2-notifica
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { NbPasswordAuthStrategy, NbAuthModule } from '@nebular/auth';
+import {AuthService} from './myauth/service/auth.service';
+import {ApiService} from './myauth/service/api.service';
+import {UserService} from './myauth/service/user.service';
+import {ConfigService} from './myauth/service/config.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -33,6 +38,15 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     NgbModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),
+
+    NbAuthModule.forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+        }),
+      ],
+      forms: {},
+    }),
     SimpleNotificationsModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -43,8 +57,15 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     }),
   ],
   bootstrap: [AppComponent],
-  providers: [NotificationsService,
-    { provide: APP_BASE_HREF, useValue: '/' },
+  providers: [
+
+    AuthService,
+    ApiService,
+    UserService,
+    ConfigService,
+
+    NotificationsService,
+    { provide: APP_BASE_HREF, useValue: '/' }
   ],
 
 })

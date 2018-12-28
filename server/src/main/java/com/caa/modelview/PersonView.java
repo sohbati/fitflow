@@ -1,13 +1,9 @@
 package com.caa.modelview;
 
 import com.caa.model.Person;
-import com.caa.services.PersonService;
 import com.caa.util.DateUtil;
 import com.caa.util.ImageUtil;
-import com.caa.util.PublicUtil;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * Created by Reza on 05/08/2018.
@@ -19,6 +15,7 @@ public class PersonView {
     }
     public PersonView(Person p) {
         this.setId(p.getId());
+        this.setTenantId(p.getTenantId());
         this.setFirstName(p.getFirstName());
         this.setLastName(p.getLastName());
         this.setFatherName(p.getFatherName());
@@ -32,6 +29,7 @@ public class PersonView {
         this.setImageSuffix(p.getImageSuffix());
     }
     private long id;
+    private String tenantId;
     private String firstName;
     private String lastName;
     private String fatherName;

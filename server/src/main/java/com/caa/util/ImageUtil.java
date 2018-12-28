@@ -1,9 +1,8 @@
 package com.caa.util;
 
-import com.caa.config.ConfigData;
-import com.caa.config.ProjectConfig;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.caa.services.TenantConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -16,16 +15,18 @@ import java.util.Base64;
 /**
  * Created by Reza on 22/08/2018.
  */
+
 public class ImageUtil {
 
     public static void saveToFileSystem(
+            String confFolder,
             String folderName,
             String fileName,
             String type,
             byte[] imageByteArray)
             throws IOException {
 
-        String confFolder = PublicUtil.getProjectConfigFolder();
+
         String folder = confFolder + "/" + folderName;
         String fullPath = folder + "/" + fileName + "." + type;
         File folderObj = new File(folder);
@@ -68,13 +69,16 @@ public class ImageUtil {
         return bytes;
     }
 
-    public static byte[] shrinkImage(byte[] imageInByte, String imageSuffix) throws IOException {
+    public static byte[] shrinkImage(
+            int shrinkedImageWidth,
+            int shrinkedImageHeight,
+            byte[] imageInByte, String imageSuffix) throws IOException {
         if (imageInByte.length == 0) {
             return new byte[0];
         }
 
-        int w = PublicUtil.getPublicConfig().getShrinkedImageWidth();
-        int h = PublicUtil.getPublicConfig().getShrinkedImageHeight();
+        int w = shrinkedImageWidth;
+        int h = shrinkedImageHeight;
 
         BufferedImage originalImage = toBufferedImage(imageInByte);
         int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
@@ -121,19 +125,19 @@ public class ImageUtil {
         return "jpg";
     }
 
-    public static String loadImageInEncodedString(String relativePath, String fileName) throws IOException {
-        String fileFullPath = PublicUtil.getProjectConfigFolder() + "/" +
+    public static String loadImageInEncodedString(String confFolder, String relativePath, String fileName) throws IOException {
+        String fileFullPath = confFolder + "/" +
                 relativePath + "/" + fileName;
         File f = new File(fileFullPath);
         if (!f.exists()) {
             return "";
         }
         byte[] bytes = Files.readAllBytes(f.toPath());
-        return ImageUtil.encodeImage(bytes);
+        return encodeImage(bytes);
     }
 
-    public static byte[] loadImageInbytes(String relativePath, String fileName) throws IOException {
-        String fileFullPath = PublicUtil.getProjectConfigFolder() + "/" +
+    public static byte[] loadImageInbytes(String confFolder, String relativePath, String fileName) throws IOException {
+        String fileFullPath = confFolder + "/" +
                 relativePath + "/" + fileName;
         File f = new File(fileFullPath);
         if (!f.exists()) {

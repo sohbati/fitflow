@@ -19,6 +19,7 @@ public class ProgramView extends Program {
 
     public ProgramView(Program p) {
         this.setId(p.getId());
+        this.setTenantId(p.getTenantId());
         this.setPerson(p.getPerson());
         this.setProgramDate(p.getProgramDate());
         this.setProgramName(p.getProgramName());

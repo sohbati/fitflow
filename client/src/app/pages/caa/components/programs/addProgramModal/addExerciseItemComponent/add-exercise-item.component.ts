@@ -61,6 +61,8 @@ export class AddExerciseItemModalComponent implements OnInit {
       data.forEach((e, index, array) => {
         this.searchData.push({item : e.name, value : e.id});
         programList.push(e.name);
+      }, (error) => {
+        this.helperService.showError(error)
       });
 
       this.dataSource =  new DataSource({

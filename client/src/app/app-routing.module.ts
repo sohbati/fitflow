@@ -12,6 +12,10 @@ import {
 const routes: Routes = [
   { path: 'pages', loadChildren: 'app/pages/pages.module#PagesModule' },
   {
+    path: 'myauth',
+    loadChildren: './myauth/myauth.module#MyAuthModule',
+  },
+  {
     path: 'auth',
     component: NbAuthComponent,
     children: [

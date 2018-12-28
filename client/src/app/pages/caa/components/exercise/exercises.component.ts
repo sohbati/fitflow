@@ -66,6 +66,8 @@ export class ExercisesComponent implements OnInit {
     this.exerciseService.getExerciseList().subscribe((data: Exercise[]) => {
       this.exerciseList = data;
       this.source.load(this.exerciseList);
+    }, err => {
+      this.helperService.showError(err);
     });
   }
 
@@ -82,7 +84,7 @@ export class ExercisesComponent implements OnInit {
       event.confirm.resolve();
       this.helperService.showSuccess('اطلاعات حذف گردید');
     }, error => {
-      this.helperService.showError('error:' )
+      this.helperService.showError(error);
       event.confirm.reject()
     });
   }

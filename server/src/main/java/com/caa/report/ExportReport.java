@@ -4,12 +4,9 @@ import com.caa.model.Person;
 import com.caa.model.Program;
 import com.caa.util.DateUtil;
 import com.caa.util.ImageUtil;
-import com.caa.util.PublicUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,21 +25,22 @@ public class ExportReport {
      * @param exerciseItems
      * @return BASE64 encoded string
      */
-    public static String getProgramExerciseAsImage(List<ProgramExercisesReportDTO> exerciseItems,
+    public static String getProgramExerciseAsImage(String confFolder,
+            List<ProgramExercisesReportDTO> exerciseItems,
                                                    Program program, Person person) {
-        ByteArrayOutputStream out = getImageStream(exerciseItems, program, person);
+        ByteArrayOutputStream out = getImageStream(confFolder, exerciseItems, program, person);
         String imageString = ImageUtil.encodeImage(out);
         return imageString;
     }
 
-    public static byte[] getProgramExerciseAsImageInBytes(
+    public static byte[] getProgramExerciseAsImageInBytes(String confFolder,
             List<ProgramExercisesReportDTO> exerciseItems,
             Program program, Person person) {
-        ByteArrayOutputStream out = getImageStream(exerciseItems, program, person);
+        ByteArrayOutputStream out = getImageStream(confFolder, exerciseItems, program, person);
         return out.toByteArray();
     }
 
-    public static byte[] getProgramExerciseAsPDFInBytes(
+    public static byte[] getProgramExerciseAsPDFInBytes(String confFolder,
             List<ProgramExercisesReportDTO> exerciseItems,
             Program program, Person person) {
         try {
@@ -50,7 +48,7 @@ public class ExportReport {
                 return null;
             }
 
-            JasperPrint jasperPrint = prepareJasperPrint(exerciseItems, program, person);
+            JasperPrint jasperPrint = prepareJasperPrint(confFolder, exerciseItems, program, person);
             if (jasperPrint.getPages().size() == 0) {
                 return null;
             }
@@ -63,7 +61,7 @@ public class ExportReport {
         return null;
     }
 
-    private static ByteArrayOutputStream getImageStream(
+    private static ByteArrayOutputStream getImageStream(String confFolder,
             List<ProgramExercisesReportDTO> exerciseItems, Program program, Person person) {
         try {
             if (exerciseItems.size() == 0) {
@@ -73,7 +71,7 @@ public class ExportReport {
             final String extension = "jpg";
             final float zoom = 2f;
 
-            JasperPrint jasperPrint = prepareJasperPrint(exerciseItems, program, person);
+            JasperPrint jasperPrint = prepareJasperPrint(confFolder, exerciseItems, program, person);
             if (jasperPrint.getPages().size() == 0) {
                 return null;
             }
@@ -93,7 +91,7 @@ public class ExportReport {
         return null;
     }
 
-    private static JasperPrint prepareJasperPrint(
+    private static JasperPrint prepareJasperPrint(String confFolder,
             List<ProgramExercisesReportDTO> exerciseItems, Program program, Person person) throws Exception{
         /**
          * Recognize sub-program count
@@ -113,7 +111,7 @@ public class ExportReport {
             subProgramCount = 1;
         }
 
-        String confFolder = PublicUtil.getProjectConfigFolder();
+//        String confFolder = PublicUtil.getProjectConfigFolder();
         String reportPath = confFolder + "/" + "report/PersonProgramExercises" + subProgramCount + "Session.jasper";
 
 //        InputStream inputStream = new FileInputStream(new java.io.File(reportPath));

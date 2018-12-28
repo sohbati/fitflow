@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-
 import { TreeModule } from 'angular-tree-component';
+
 import { PagesComponent } from './pages.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PagesRoutingModule } from './pages-routing.module';
@@ -18,7 +18,6 @@ import {AddProgramModalComponent} from './caa/components/programs/addProgramModa
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { DisplayProgramExerciseImageComponent } from
       './caa/components/programs/addProgramModal/displayProgramExerciseImageComponent/display-program-exercise-image.component';
-import {ShareButtonsModule} from 'ngx-sharebuttons';
 import {HttpClientJsonpModule} from '@angular/common/http';
 import {TemperatureDraggerComponent} from './dashboard/temperature/temperature-dragger/temperature-dragger.component';
 import {TreeComponent} from './components/tree/tree.component';
@@ -27,7 +26,6 @@ import {AddExerciseItemModalComponent} from
 import {DxAutocompleteModule, DxTemplateModule} from 'devextreme-angular';
 import {DisplayAllSizesForOnePersonComponent} from './caa/components/programs/addProgramModal/displayAllSizesForOnePerson/display-all-sizes-for-one-person.component';
 import {AddPersonModalComponent} from './caa/components/persons/addpersonmodal/add-person-modal.component';
-import {MyloginComponent} from '../auth/mylogin.component';
 import {AddExerciseModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComponent/addExerciseModalComponent/add-exercise-modal.component';
 
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
@@ -52,7 +50,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     Ng2SmartTableModule,
 
     HttpClientJsonpModule,
-    ShareButtonsModule.forRoot(),
     TreeModule,
 
     DxAutocompleteModule,
@@ -81,7 +78,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DisplayProgramExerciseImageComponent,
     TemperatureDraggerComponent,
     TreeComponent,
-    MyloginComponent,
   ],
   entryComponents: [
     AddProgramModalComponent,

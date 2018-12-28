@@ -11,11 +11,13 @@ import lombok.Data;
 public class ExerciseView  {
     public ExerciseView(Exercise e) {
         this.setId(e.getId());
+        this.setTenantId(e.getTenantId());
         this.setName(e.getName());
         this.setLatinName(e.getLatinName());
         this.setCode(e.getCode());
     }
     private long id;
+    private String tenantId;
     private String name;
     private String latinName;
     private String code;

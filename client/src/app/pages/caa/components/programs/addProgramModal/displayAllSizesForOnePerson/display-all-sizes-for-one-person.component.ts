@@ -28,13 +28,12 @@ export class DisplayAllSizesForOnePersonComponent implements OnInit {
     this.programService.getPersonProgramsAllSizes(this.personId).subscribe( (result: any[]) => {
       this.sizeList = result;
     }, error => {
-        this.helperService.showError(' error : ' + error);
+        this.helperService.showError2(' error : ' + error, error);
       })
     }
 
   close() {
     this.ngbActiveModal.close();
   }
-
   }
 

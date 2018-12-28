@@ -1,17 +1,12 @@
 package com.caa.controller;
 
-import com.caa.model.Person;
 import com.caa.model.Program;
-import com.caa.model.ProgramExerciseItem;
 import com.caa.modelview.ImageView;
-import com.caa.modelview.ProgramExerciseItemView;
 import com.caa.modelview.ProgramView;
-import com.caa.report.ExportReport;
-import com.caa.report.ProgramExercisesReportDTO;
 import com.caa.services.ExerciseService;
 import com.caa.services.ProgramExerciseItemService;
 import com.caa.services.ProgramService;
-import com.caa.util.DateUtil;
+import com.caa.services.TenantConfigurationService;
 import com.caa.util.ImageUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -26,13 +21,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProgramController {
 
     private static Logger logger = LoggerFactory.getLogger(ProgramController.class);
@@ -46,6 +41,8 @@ public class ProgramController {
     @Autowired
 	ProgramService programService;
 
+	@Autowired
+	TenantConfigurationService tenantConfigurationService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/getProgram/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -137,7 +134,8 @@ public class ProgramController {
 		byte[] img = programService.loadProgramPictureOriginal( personMobileNumber, programId, imageNumber);
 
 		if (img.length == 0) {
-			img = ImageUtil.loadImageInbytes("dummy", "dummy-body.png");
+			String confFolder = tenantConfigurationService.getProjectConfigFolder();
+			img = ImageUtil.loadImageInbytes(confFolder,"dummy", "dummy-body.png");
 		}
 		InputStream in = new ByteArrayInputStream(img);
 
@@ -155,7 +153,8 @@ public class ProgramController {
 		byte[] img = programService.loadProgramPictureShrinked( personMobileNumber, programId, imageNumber);
 
 		if (img.length == 0) {
-			img = ImageUtil.loadImageInbytes("dummy", "dummy-body.png");
+			String confFolder = tenantConfigurationService.getProjectConfigFolder();
+			img = ImageUtil.loadImageInbytes(confFolder,"dummy", "dummy-body.png");
 		}
 		InputStream in = new ByteArrayInputStream(img);
 

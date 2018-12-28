@@ -31,8 +31,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'nb-locked',
     children: [
       {
-        title: 'Login',
-        link: '/pages/login',
+        title: 'ورود',
+        link: '/myauth/mylogin',
       },
       {
         title: 'Register',

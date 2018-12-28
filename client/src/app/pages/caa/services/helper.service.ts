@@ -1,9 +1,10 @@
 /**
  * Created by sohbati on 7/22/2018.
  */
-import {Inject, Injectable} from "@angular/core";
-import {NotificationsService, NotificationType} from "angular2-notifications";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {Inject, Injectable} from '@angular/core';
+import {NotificationsService, NotificationType} from 'angular2-notifications';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 @Injectable({
@@ -11,6 +12,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class HelperService {
   constructor(@Inject(NotificationsService) private notificationService: NotificationsService,
+              @Inject(Router) private router: Router,
               @Inject(FormBuilder) private _fb: FormBuilder) {
 
     this.form = this._fb.group({
@@ -27,8 +29,11 @@ export class HelperService {
 
   form: FormGroup;
 
-  public SERVER_URL = 'http://localhost:9000';
+  // public SERVER_URL = 'http://localhost:9000';
+  public SERVER_URL = '/api';
   public BASE_64_IMAGE_PREFIX: string = 'data:image/png;base64,';
+  private NOT_LOGGED_IN_EXCEPTION = 'UserNotLoggedInException';
+  private LOGIN_URL = '/myauth/mylogin';
 
   private showNotification(content: string, type: NotificationType) {
     const temp = this.form.getRawValue();
@@ -42,21 +47,35 @@ export class HelperService {
 
 /////////////////////////////////////////////////////////////////////////
 
-  public showSuccess(body: string) {
+  public showSuccess(body: string): void {
     this.showNotification(body, NotificationType.Success);
   }
 
-  public showError2(error: string, err: any) {
-    if (err && err.error && err.error.message) {
-      error = error + ' :  ' +  err.error.message;
+  private isLogonError(err: any): boolean {
+    if (err && err.error && err.error.exception && err.error.exception.indexOf(this.NOT_LOGGED_IN_EXCEPTION) >= 0) {
+      this.router.navigate([this.LOGIN_URL]);
+      return true;
     }
-    if (err && err.error && err.error.error && err.error.error.message) {
-      error = error + ' :  ' +  err.error.error.message;
+    return false;
+  }
+
+  public showError2(error: string, errObj: any) {
+    if (this.isLogonError(errObj)) {
+      return;
+    }
+    if (errObj && errObj.error && errObj.error.message) {
+      error = error + ' :  ' +  errObj.error.message;
+    }
+    if (errObj && errObj.error && errObj.error.error && errObj.error.error.message) {
+      error = error + ' :  ' +  errObj.error.error.message;
     }
     this.showError(error);
   }
 
   public showError(err: any) {
+    if (this.isLogonError(err)) {
+      return;
+    }
     if (err && err.error && err.error.message) {
       this.showNotification(err.error.message, NotificationType.Error)
       return;
@@ -79,7 +98,11 @@ export class HelperService {
     });
   }
 
-  public toInt(s: string): number {
+  public  toInt(s: string): number {
     return parseInt(s);
+  }
+
+  public toFloat(s: string): number {
+    return parseFloat(s);
   }
 }

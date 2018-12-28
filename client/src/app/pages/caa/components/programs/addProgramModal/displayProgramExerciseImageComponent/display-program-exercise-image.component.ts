@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {ProgramService} from '../../../../services/program.service';
 import {ImageView} from '../../../../datamodel/ImageView';
 import {HelperService} from '../../../../services/helper.service';
-import {CeiboShare} from 'ng2-social-share';
 
 @Component({
   selector: 'ngx-display-program-exercise-image-modal',
@@ -31,6 +30,8 @@ export class DisplayProgramExerciseImageComponent implements OnInit {
         this.imageBase64 =  this.helperService.BASE_64_IMAGE_PREFIX + result.content;
         this.shareImageURL = this.helperService.SERVER_URL +
           this.programService.GET_PROGRAM_EXERCISE_PDF + '/' + this.programId
+      }, (error) => {
+        this.helperService.showError(error)
       });
   }
 

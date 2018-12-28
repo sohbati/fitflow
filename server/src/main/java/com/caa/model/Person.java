@@ -18,6 +18,9 @@ public class Person {
 	@GeneratedValue
 	private long id;
 
+	@Column(name = "tenant_id", unique = true, updatable = true, insertable = true, nullable = false)
+	private String tenantId;
+
 	@Column(name = "first_name", unique = true, updatable = true, insertable = true, nullable = false)
 	private String firstName;
 

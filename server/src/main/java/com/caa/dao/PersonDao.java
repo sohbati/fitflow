@@ -14,9 +14,13 @@ import java.util.List;
 @Transactional
 public interface PersonDao extends JpaRepository<Person, Long> {
 
-    public List<Person> findByMobileNumber(String mobileNumber);
+    @Query("SELECT e FROM Person e WHERE tenantId=?1 AND (e.mobileNumber like %?2%)")
+    public List<Person> queryByMobileNumberForTenant(String tenantId, String mobileNumber);
 
-    @Query("SELECT e FROM Person e WHERE e.firstName LIKE %?1% OR e.lastName LIKE %?1% OR e.mobileNumber LIKE %?1%")
-    public List<Person> findByNameAndFamiliyAndPhone(String str);
+    @Query("SELECT e FROM Person e WHERE tenantId=?1")
+    public List<Person> queryAllForTenant(String tenantId);
+
+    @Query("SELECT e FROM Person e WHERE tenantId=?1 AND (e.firstName LIKE %?2% OR e.lastName LIKE %?2% OR e.mobileNumber LIKE %?2%)")
+    public List<Person> queryByNameAndFamiliyAndPhoneForTenant(String tenantId, String str);
 
 }
