@@ -235,6 +235,7 @@ public class ProgramService {
 
     private Program getProgramFromView(ProgramView view) {
         Program program = new Program();
+        program.setTenantId(CustomUserDetailsService.getCurrentUserTenant());
         program.setId(view.getId());
         program.setDescription(view.getDescription());
         program.setPerson(view.getPerson());
