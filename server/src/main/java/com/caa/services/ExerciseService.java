@@ -23,9 +23,6 @@ public class ExerciseService {
     private static final String REPEAT_TYPE_MINUTE = "M";
     private static final String REPEAT_TYPE_REPEAT = "T";
 
-    private static final String REPEAT_TYPE_SECOND_DESC = "ثانیه";
-    private static final String REPEAT_TYPE_MINUTE_DESC = "دقیقه";
-    private static final String REPEAT_TYPE_REPEAT_DESC = "تکرار";
     @Autowired
     private ExerciseDao exerciseDao;
 
@@ -59,7 +56,7 @@ public class ExerciseService {
             if (exerciseRepeatSetMapList.get(subExerciseId).get(id) == null) {
                 exerciseRepeatSetMapList.get(subExerciseId).put(id, set + ". " + repeat);
             }else {
-                exerciseRepeatSetMapList.get(subExerciseId).replace(id, exerciseRepeatSetMapList.get(subExerciseId).get(id) + ", " +  repeat);
+                exerciseRepeatSetMapList.get(subExerciseId).replace(id, exerciseRepeatSetMapList.get(subExerciseId).get(id) + " + " +  repeat);
             }
 
         });

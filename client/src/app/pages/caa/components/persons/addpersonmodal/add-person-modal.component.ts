@@ -1,8 +1,7 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 import {PersonService} from '../../../services/person.service';
 import {HelperService} from '../../../services/helper.service';
-import {Person} from '../../../datamodel/Person';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {PersonView} from '../../../datamodel/PersonView';
 @Component({
@@ -48,7 +47,7 @@ export class AddPersonModalComponent implements OnInit {
     const inputEl: HTMLInputElement = this.inputEl.nativeElement;
     if (inputEl.files && inputEl.files[0]) {
       const imgSize = inputEl.files[0].size;
-      const MAX_IMAGE_SIZE = 3;
+      // const MAX_IMAGE_SIZE = 3;
       if (imgSize > 1024 * 1024 * 3) {
         this.helperService.showError('عکس انتخاب شده نباید بیشتر از ۳ مگابایت باشد');
         return;

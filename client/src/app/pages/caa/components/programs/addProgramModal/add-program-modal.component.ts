@@ -1,7 +1,7 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {HelperService} from '../../../services/helper.service';
 import { LocalDataSource } from 'ng2-smart-table';
-import {AddExerciseItemModalComponent} from './addExerciseItemComponent/add-exercise-item.component';
+import {AddExerciseItemModalComponent} from './addExerciseItemComp/add-exercise-item.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProgramService} from '../../../services/program.service';
 import {ProgramExerciseItem, ProgramView} from '../../../datamodel/ProgramView';
@@ -506,7 +506,7 @@ export class AddProgramModalComponent implements OnInit {
     });
     if (inputEl.files && inputEl.files[0]) {
       const imgSize = inputEl.files[0].size;
-      const MAX_IMAGE_SIZE = 3;
+      // const MAX_IMAGE_SIZE = 3;
       if (imgSize > 1024 * 1024 * 3) {
         this.helperService.showError('عکس انتخاب شده نباید بیشتر از ۳ مگابایت باشد');
         return;

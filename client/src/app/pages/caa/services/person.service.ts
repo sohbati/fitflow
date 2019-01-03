@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HelperService} from './helper.service';
 import {Person} from '../datamodel/Person';
-import {ApiService} from '../../../myauth/service/api.service';
+// import {ApiService} from '../../../myauth/service/api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class PersonService {
   public DELETE_PERSON: string  = '/deletePerson';
 
   constructor(private http: HttpClient,
-              private apiService: ApiService,
+              // private apiService: ApiService,
               private helperService: HelperService) { }
 
   public getPersonList() {

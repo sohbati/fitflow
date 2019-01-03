@@ -31,11 +31,11 @@ export class SettingsComponent implements OnInit {
   }
 
   save() {
-    const data = new Object();
-    data.configItems = new Object();
-    data.configItems.SHOW_CODE_IN_EXPORT_OR_PRINT =
-      this.appSetting.config_isShowExerciseCodeInPrint ? 'true' : 'false';
-
+    const data = {
+      configItems: {
+        SHOW_CODE_IN_EXPORT_OR_PRINT: this.appSetting.config_isShowExerciseCodeInPrint ? 'true' : 'false',
+      },
+    }
     this.appSettingService.save(data).subscribe( dd => {
       this.helperService.showSuccess('اطلاعات دخیره گردید');
     }, err => {

@@ -25,22 +25,22 @@ public class ExportReport {
      * @param exerciseItems
      * @return BASE64 encoded string
      */
-    public static String getProgramExerciseAsImage(String confFolder,
+    public static String getProgramExerciseAsImage(String confFolder, String coachName,
             List<ProgramExercisesReportDTO> exerciseItems,
                                                    Program program, Person person) {
-        ByteArrayOutputStream out = getImageStream(confFolder, exerciseItems, program, person);
+        ByteArrayOutputStream out = getImageStream(confFolder, coachName, exerciseItems, program, person);
         String imageString = ImageUtil.encodeImage(out);
         return imageString;
     }
 
-    public static byte[] getProgramExerciseAsImageInBytes(String confFolder,
+    public static byte[] getProgramExerciseAsImageInBytes(String coachName, String tenantDesc,
             List<ProgramExercisesReportDTO> exerciseItems,
             Program program, Person person) {
-        ByteArrayOutputStream out = getImageStream(confFolder, exerciseItems, program, person);
+        ByteArrayOutputStream out = getImageStream(coachName,tenantDesc,  exerciseItems, program, person);
         return out.toByteArray();
     }
 
-    public static byte[] getProgramExerciseAsPDFInBytes(String confFolder,
+    public static byte[] getProgramExerciseAsPDFInBytes(String confFolder,String coachName,
             List<ProgramExercisesReportDTO> exerciseItems,
             Program program, Person person) {
         try {
@@ -48,7 +48,7 @@ public class ExportReport {
                 return null;
             }
 
-            JasperPrint jasperPrint = prepareJasperPrint(confFolder, exerciseItems, program, person);
+            JasperPrint jasperPrint = prepareJasperPrint(confFolder, coachName, exerciseItems, program, person);
             if (jasperPrint.getPages().size() == 0) {
                 return null;
             }
@@ -61,7 +61,7 @@ public class ExportReport {
         return null;
     }
 
-    private static ByteArrayOutputStream getImageStream(String confFolder,
+    private static ByteArrayOutputStream getImageStream(String confFolder, String coachName,
             List<ProgramExercisesReportDTO> exerciseItems, Program program, Person person) {
         try {
             if (exerciseItems.size() == 0) {
@@ -71,7 +71,7 @@ public class ExportReport {
             final String extension = "jpg";
             final float zoom = 2f;
 
-            JasperPrint jasperPrint = prepareJasperPrint(confFolder, exerciseItems, program, person);
+            JasperPrint jasperPrint = prepareJasperPrint(confFolder, coachName, exerciseItems, program, person);
             if (jasperPrint.getPages().size() == 0) {
                 return null;
             }
@@ -91,7 +91,7 @@ public class ExportReport {
         return null;
     }
 
-    private static JasperPrint prepareJasperPrint(String confFolder,
+    private static JasperPrint prepareJasperPrint(String confFolder, String coachName,
             List<ProgramExercisesReportDTO> exerciseItems, Program program, Person person) throws Exception{
         /**
          * Recognize sub-program count
@@ -121,7 +121,7 @@ public class ExportReport {
         JasperReport jasperReport  = (JasperReport) JRLoader.loadObject(new java.io.File(reportPath));
 
         Map<String, Object> parameters = new HashMap();
-        parameters.put("coachName", "وحید مداحی");
+        parameters.put("coachName", coachName);
         parameters.put("programDate", DateUtil.getShamsiDate(program.getProgramDate()));
         parameters.put("personName", person.getFirstName() + ' ' + person.getLastName());
         parameters.put("age", program.getPersonAge());

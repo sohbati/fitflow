@@ -4,7 +4,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {NotificationsService, NotificationType} from 'angular2-notifications';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 
 
 @Injectable({
@@ -99,7 +99,7 @@ export class HelperService {
   }
 
   public  toInt(s: string): number {
-    return parseInt(s);
+    return parseInt(s, 10);
   }
 
   public toFloat(s: string): number {

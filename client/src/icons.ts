@@ -31,7 +31,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope';
 const icons = [
   faFacebookF, faTwitter, faLinkedinIn, faGooglePlusG, faPinterestP, faRedditAlien, faTumblr,
   faWhatsapp, faVk, faFacebookMessenger, faTelegramPlane, faStumbleupon, faXing, faCommentAlt,
-  faEnvelope, faCheck, faPrint, faExclamation, faLink, faEllipsisH, faMinus
+  faEnvelope, faCheck, faPrint, faExclamation, faLink, faEllipsisH, faMinus,
 ];
 
 library.add(...icons);

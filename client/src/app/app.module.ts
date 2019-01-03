@@ -65,7 +65,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ConfigService,
 
     NotificationsService,
-    { provide: APP_BASE_HREF, useValue: '/' }
+    { provide: APP_BASE_HREF, useValue: '/' },
   ],
 
 })

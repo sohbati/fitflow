@@ -4,7 +4,7 @@ import {Exercise} from '../../../../datamodel/Exercise';
 import {ExerciseService} from '../../../../services/exercise.service';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HelperService} from '../../../../services/helper.service';
-import {NotificationsService, NotificationType} from 'angular2-notifications';
+// import {NotificationsService} from 'angular2-notifications';
 import DataSource from 'devextreme/data/data_source';
 import ArrayStore from 'devextreme/data/array_store';
 import {AddExerciseModalComponent} from './addExerciseModalComponent/add-exercise-modal.component';
@@ -53,7 +53,8 @@ export class AddExerciseItemModalComponent implements OnInit {
               private exerciseService: ExerciseService,
               private ngbActiveModal: NgbActiveModal ,
               private helperService: HelperService,
-              private notificationService: NotificationsService) {
+              // private notificationService: NotificationsService
+  ) {
   }
   ngOnInit() {
     const programList = [];

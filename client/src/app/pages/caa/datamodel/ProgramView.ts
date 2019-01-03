@@ -1,7 +1,4 @@
-
-import {Person} from './Person';
-import {Exercise} from './Exercise';
-import {PersonView} from "./PersonView";
+import {PersonView} from './PersonView';
 
 export class ProgramView {
   id: number;

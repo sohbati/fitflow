@@ -4,6 +4,7 @@ import com.caa.constants.ProgramConstants;
 import com.caa.dao.ExerciseDao;
 import com.caa.dao.ProgramDao;
 import com.caa.dao.ProgramExerciseItemDao;
+import com.caa.dao.TenantDao;
 import com.caa.model.Exercise;
 import com.caa.model.Person;
 import com.caa.model.Program;
@@ -34,6 +35,8 @@ import static com.caa.constants.ProgramConstants.*;
 @Transactional(isolation= Isolation.READ_COMMITTED)
 public class ProgramService {
 
+    @Autowired
+    TenantDao tenantDao;
 
     @Autowired
     private ProgramDao programDao;
@@ -114,7 +117,8 @@ public class ProgramService {
             ExportReport exportReport = new ExportReport();
             List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
             String confFolder = tenantConfigurationService.getProjectConfigFolder();
-            imageBase64 = exportReport.getProgramExerciseAsImage(confFolder, reportDTOList, program, person);
+            String coachName = tenantConfigurationService.getCoachName();
+            imageBase64 = exportReport.getProgramExerciseAsImage(confFolder, coachName, reportDTOList, program, person);
         }
         ImageView imageView = new ImageView();
         imageView.setContent(imageBase64);
@@ -129,8 +133,8 @@ public class ProgramService {
         List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
         List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
         String confFolder = tenantConfigurationService.getProjectConfigFolder();
-
-        byte[] bytes = ExportReport.getProgramExerciseAsImageInBytes(confFolder, reportDTOList, program, person);
+        String coachName = tenantConfigurationService.getCoachName();
+        byte[] bytes = ExportReport.getProgramExerciseAsImageInBytes(confFolder, coachName, reportDTOList, program, person);
         return bytes;
     }
 
@@ -141,8 +145,9 @@ public class ProgramService {
         List<ProgramExerciseItemView> viewList = getProgramExerciseList(program);
         List<ProgramExercisesReportDTO> reportDTOList = exerciseService.convertProgramExerciseToReportDTO(viewList);
         String confFolder = tenantConfigurationService.getProjectConfigFolder();
+        String coachName = tenantConfigurationService.getCoachName();
 
-        byte[] bytes = ExportReport.getProgramExerciseAsPDFInBytes(confFolder, reportDTOList, program, person);
+        byte[] bytes = ExportReport.getProgramExerciseAsPDFInBytes(confFolder, coachName, reportDTOList, program, person);
         return bytes;
     }
 

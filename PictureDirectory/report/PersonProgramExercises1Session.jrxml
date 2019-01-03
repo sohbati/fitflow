@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PersonProgramExercises" language="groovy" columnDirection="RTL" pageWidth="570" pageHeight="734" whenNoDataType="BlankPage" columnWidth="540" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" uuid="a8e72d12-84ff-477f-b5c0-8a3fc5cf9ac0">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PersonProgramExercises" language="groovy" columnDirection="RTL" pageWidth="570" pageHeight="734" whenNoDataType="BlankPage" columnWidth="540" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" isIgnorePagination="true" uuid="a8e72d12-84ff-477f-b5c0-8a3fc5cf9ac0">
 	<property name="ireport.zoom" value="1.2100000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="12"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -60,7 +60,7 @@
 			<staticText>
 				<reportElement uuid="bf1f1216-9a0c-4fbb-a1a3-7e422612862b" x="208" y="3" width="100" height="20"/>
 				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="12"/>
+					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[به نام خدا]]></text>
 			</staticText>
@@ -108,10 +108,10 @@
 				<reportElement uuid="28ed5166-efbe-4f44-a840-8b121fc076df" x="179" y="53" width="42" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="ce0bb52a-96bb-48f6-b09d-18cdcc70d698" x="179" y="144" width="84" height="24"/>
+				<reportElement uuid="ce0bb52a-96bb-48f6-b09d-18cdcc70d698" x="305" y="136" width="83" height="24"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="57363b8d-8488-48b3-9033-5edea63884fd" x="181" y="115" width="82" height="29" backcolor="#9999FF"/>
+				<reportElement uuid="57363b8d-8488-48b3-9033-5edea63884fd" x="305" y="107" width="83" height="29" backcolor="#9999FF"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="a7ed1463-0dec-4992-bd04-f666a161769f" x="430" y="54" width="48" height="25"/>
@@ -176,16 +176,16 @@
 				<reportElement uuid="95a3753f-709c-4fd0-9ecf-33b32c180072" x="137" y="53" width="42" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="31e63559-c3d3-4cbd-a6b2-829d06661eb2" x="96" y="144" width="85" height="24"/>
+				<reportElement uuid="31e63559-c3d3-4cbd-a6b2-829d06661eb2" x="221" y="136" width="84" height="24"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="41f2e655-b913-4f70-ade9-06e2976cfc5d" x="96" y="115" width="85" height="29" backcolor="#9999FF"/>
+				<reportElement uuid="41f2e655-b913-4f70-ade9-06e2976cfc5d" x="221" y="107" width="84" height="29" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="2fb459ed-ea64-4263-8942-70e29e972204" x="457" y="144" width="61" height="24"/>
+				<reportElement uuid="2fb459ed-ea64-4263-8942-70e29e972204" x="15" y="136" width="123" height="24"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="e50d64b4-6a11-4a4d-9c51-bef957156f5d" x="457" y="115" width="61" height="30" backcolor="#9999FF"/>
+				<reportElement uuid="e50d64b4-6a11-4a4d-9c51-bef957156f5d" x="15" y="107" width="123" height="29" backcolor="#9999FF"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="7952b1b9-008a-4339-8a87-067df2c897fe" x="222" y="54" width="40" height="25"/>
@@ -230,49 +230,49 @@
 				<textFieldExpression><![CDATA[$P{abdomen}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="15c99eae-7512-4f50-9f0f-88abbc92173b" x="180" y="117" width="82" height="25"/>
+				<reportElement uuid="15c99eae-7512-4f50-9f0f-88abbc92173b" x="313" y="107" width="69" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[درصد چربی]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="7f00bf97-f183-48a8-98cc-edf47dd0b92c" x="180" y="145" width="82" height="20"/>
+				<reportElement uuid="7f00bf97-f183-48a8-98cc-edf47dd0b92c" x="313" y="137" width="59" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fatPercentage}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="2c837b07-190b-448a-bb75-29a69c2e0ff3" x="98" y="118" width="80" height="25"/>
+				<reportElement uuid="2c837b07-190b-448a-bb75-29a69c2e0ff3" x="223" y="110" width="82" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[وزن چربی]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="69990941-1f1b-42eb-bbe8-51e941ac440d" x="98" y="146" width="80" height="20"/>
+				<reportElement uuid="69990941-1f1b-42eb-bbe8-51e941ac440d" x="223" y="138" width="82" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fatWeight}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="ecf2176f-3036-4f57-a900-4150b3864318" x="464" y="117" width="40" height="25"/>
+				<reportElement uuid="ecf2176f-3036-4f57-a900-4150b3864318" x="74" y="110" width="40" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[امتیاز]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="47e624a8-c620-4945-a074-9658ad81f2a0" x="464" y="145" width="40" height="20"/>
+				<reportElement uuid="47e624a8-c620-4945-a074-9658ad81f2a0" x="74" y="138" width="40" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{score}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="7378b343-0d28-449b-ace4-4c979810453f" x="262" y="115" width="42" height="30" backcolor="#9999FF"/>
+				<reportElement uuid="7378b343-0d28-449b-ace4-4c979810453f" x="388" y="107" width="58" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
 				<reportElement uuid="5ef9c6ba-8d86-468d-b8d5-edf3b3fb8c0c" x="15" y="83" width="42" height="24"/>
@@ -288,7 +288,7 @@
 				<text><![CDATA[وزن]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="c85e9ede-c27f-4749-9673-a731c6395052" x="304" y="144" width="41" height="24"/>
+				<reportElement uuid="c85e9ede-c27f-4749-9673-a731c6395052" x="444" y="136" width="74" height="24"/>
 			</rectangle>
 			<textField>
 				<reportElement uuid="1eeda0c2-f2d7-4b32-8a84-a359d87e639b" x="16" y="85" width="40" height="20"/>
@@ -298,7 +298,7 @@
 				<textFieldExpression><![CDATA[$P{thigh}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="071d513b-a16a-4c11-8c64-fc3548e5c5c9" x="306" y="145" width="37" height="20"/>
+				<reportElement uuid="071d513b-a16a-4c11-8c64-fc3548e5c5c9" x="446" y="137" width="70" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -315,13 +315,13 @@
 				<textFieldExpression><![CDATA[$P{forearm}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement uuid="db345ec4-79a3-46a8-9356-f3d422b12596" x="262" y="144" width="42" height="24"/>
+				<reportElement uuid="db345ec4-79a3-46a8-9356-f3d422b12596" x="388" y="136" width="57" height="24"/>
 			</rectangle>
 			<rectangle>
 				<reportElement uuid="86122c40-c2e5-4a74-92f4-ad779f3464e4" x="96" y="53" width="42" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="015ba416-375f-4a09-ac19-d4211dbdd06b" x="304" y="115" width="41" height="29" backcolor="#9999FF"/>
+				<reportElement uuid="015ba416-375f-4a09-ac19-d4211dbdd06b" x="445" y="107" width="73" height="29" backcolor="#9999FF"/>
 			</rectangle>
 			<staticText>
 				<reportElement uuid="397cd31e-059c-49ee-b1c6-3e9670ac7a83" x="98" y="54" width="39" height="25"/>
@@ -338,14 +338,14 @@
 				<text><![CDATA[ران]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="eaeb76b3-e00b-4068-987e-0be32ed954ac" x="305" y="117" width="39" height="25"/>
+				<reportElement uuid="eaeb76b3-e00b-4068-987e-0be32ed954ac" x="453" y="108" width="60" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[ساق]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="53405c37-8d7b-40c6-b6bf-e56dceb19062" x="16" y="115" width="80" height="30" backcolor="#9999FF"/>
+				<reportElement uuid="53405c37-8d7b-40c6-b6bf-e56dceb19062" x="138" y="107" width="83" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<rectangle>
 				<reportElement uuid="8b8a65f2-918c-46ce-b4b0-898314418b57" x="97" y="83" width="41" height="24"/>
@@ -361,17 +361,17 @@
 				<reportElement uuid="78f3e3d2-08a4-4b85-b0e7-1e68685d5eb2" x="57" y="53" width="40" height="30" backcolor="#9999FF"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="6aec1cfd-2096-495a-92bc-efd6fc2f8f5b" x="18" y="117" width="78" height="25"/>
+				<reportElement uuid="6aec1cfd-2096-495a-92bc-efd6fc2f8f5b" x="143" y="109" width="68" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[وزن عضله]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="735848a7-2484-4dd8-b46a-e388de5c3a9f" x="16" y="144" width="80" height="24"/>
+				<reportElement uuid="735848a7-2484-4dd8-b46a-e388de5c3a9f" x="138" y="136" width="83" height="24"/>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="92ada36d-7028-42fc-97d7-c245e33bdf48" x="264" y="117" width="39" height="25"/>
+				<reportElement uuid="92ada36d-7028-42fc-97d7-c245e33bdf48" x="388" y="109" width="42" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" isBold="false"/>
 				</textElement>
@@ -385,14 +385,14 @@
 				<text><![CDATA[ساعد]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="6fae7611-80a9-44a6-80a1-64187bb619cc" x="265" y="146" width="37" height="20"/>
+				<reportElement uuid="6fae7611-80a9-44a6-80a1-64187bb619cc" x="391" y="138" width="52" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{butt}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e923d323-6327-4543-8085-838ba46b88f9" x="17" y="146" width="81" height="20"/>
+				<reportElement uuid="e923d323-6327-4543-8085-838ba46b88f9" x="139" y="138" width="84" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -440,17 +440,17 @@
 			<rectangle>
 				<reportElement uuid="60762d67-a99f-437c-ad11-1b3c36274806" mode="Transparent" x="15" y="0" width="506" height="29" backcolor="#009999"/>
 			</rectangle>
-			<textField isStretchWithOverflow="true">
-				<reportElement uuid="c507188f-ced9-466a-95cb-d65fdc8bfdb9" x="114" y="4" width="170" height="23"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c507188f-ced9-466a-95cb-d65fdc8bfdb9" x="18" y="4" width="218" height="23"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="12" pdfEncoding="Cp1256" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{program1ExerciseRepeatSet}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="4baf9cb7-a5d3-4af7-804b-74cd0087d248" x="284" y="1" width="234" height="26" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="4baf9cb7-a5d3-4af7-804b-74cd0087d248" x="236" y="1" width="282" height="26" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="12"/>
+					<font fontName="Tahoma" size="12" pdfEncoding="Cp1256"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{program1Exercise}]]></textFieldExpression>
 			</textField>
@@ -460,7 +460,7 @@
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band splitType="Stretch"/>
+		<band height="34" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
 		<band splitType="Stretch"/>

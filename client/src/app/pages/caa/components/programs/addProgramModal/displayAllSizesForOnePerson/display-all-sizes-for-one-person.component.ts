@@ -3,10 +3,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {HelperService} from '../../../../services/helper.service';
 import {ProgramService} from '../../../../services/program.service';
 
-interface SearchData {
-  item: string;
-  value: any;
-}
+// interface SearchData {
+//   item: string;
+//   value: any;
+// }
 
 
 @Component({

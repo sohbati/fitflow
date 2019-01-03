@@ -28,9 +28,6 @@ public class PersonService {
     PersonDao personDao;
 
     @Autowired
-    ImageUtil imageService;
-
-    @Autowired
     TenantConfigurationService tenantConfigurationService;
 
     public Person findOne(long id) {

@@ -16,20 +16,18 @@ import {ProgramsComponent} from './caa/components/programs/programs.component';
 import {AddProgramModalComponent} from './caa/components/programs/addProgramModal/add-program-modal.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { DisplayProgramExerciseImageComponent } from
-      './caa/components/programs/addProgramModal/displayProgramExerciseImageComponent/display-program-exercise-image.component';
+import { DisplayProgramExerciseImageComponent } from './caa/components/programs/addProgramModal/displayProgramExerciseImageComponent/display-program-exercise-image.component';
 import {HttpClientJsonpModule} from '@angular/common/http';
 import {TemperatureDraggerComponent} from './dashboard/temperature/temperature-dragger/temperature-dragger.component';
 import {TreeComponent} from './components/tree/tree.component';
-import {AddExerciseItemModalComponent} from
-  './caa/components/programs/addProgramModal/addExerciseItemComponent/add-exercise-item.component';
+import {AddExerciseItemModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComp/add-exercise-item.component';
 import {DxAutocompleteModule, DxTemplateModule} from 'devextreme-angular';
 import {DisplayAllSizesForOnePersonComponent} from './caa/components/programs/addProgramModal/displayAllSizesForOnePerson/display-all-sizes-for-one-person.component';
 import {AddPersonModalComponent} from './caa/components/persons/addpersonmodal/add-person-modal.component';
-import {AddExerciseModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComponent/addExerciseModalComponent/add-exercise-modal.component';
+import {AddExerciseModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComp/addExerciseModalComponent/add-exercise-modal.component';
 
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 const PAGES_COMPONENTS = [

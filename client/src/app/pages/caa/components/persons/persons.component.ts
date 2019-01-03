@@ -3,7 +3,7 @@ import {PersonService} from '../../services/person.service';
 import {HelperService} from '../../services/helper.service';
 import {Person} from '../../datamodel/Person';
 import {AddPersonModalComponent} from './addpersonmodal/add-person-modal.component';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PersonView} from '../../datamodel/PersonView';
 import {ProgramsComponent} from '../programs/programs.component';
 @Component({
