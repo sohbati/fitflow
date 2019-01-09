@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional
 public interface ExerciseDao extends JpaRepository<Exercise, Long> {
 
-    @Query("SELECT e FROM Exercise e WHERE tenantId=?1 AND (e.name like %?2%)")
+    @Query("SELECT e FROM Exercise e WHERE tenantId=?1 AND (e.name like ?2)")
     public List<Exercise> queryByNameForTenant(String tenantId, String name);
 
     @Query("SELECT e FROM Exercise e WHERE tenantId=?1 AND (e.code=?2)")

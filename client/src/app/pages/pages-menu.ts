@@ -34,18 +34,18 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'ورود',
         link: '/myauth/mylogin',
       },
-      {
-        title: 'Register',
-        link: '/auth/register',
-      },
-      {
-        title: 'Request Password',
-        link: '/auth/request-password',
-      },
-      {
-        title: 'Reset Password',
-        link: '/auth/reset-password',
-      },
+      // {
+      //   title: 'Register',
+      //   link: '/auth/register',
+      // },
+      // {
+      //   title: 'Request Password',
+      //   link: '/auth/request-password',
+      // },
+      // {
+      //   title: 'Reset Password',
+      //   link: '/auth/reset-password',
+      // },
     ],
   },
 ];

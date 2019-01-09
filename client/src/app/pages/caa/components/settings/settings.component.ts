@@ -11,7 +11,7 @@ import {HelperService} from '../../services/helper.service';
 
 export class SettingsComponent implements OnInit {
 
-  private appSetting: AppSetting = new AppSetting();
+  appSetting: AppSetting = new AppSetting();
 
   constructor(
     private helperService: HelperService,

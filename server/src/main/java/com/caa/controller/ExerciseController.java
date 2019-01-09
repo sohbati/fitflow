@@ -59,6 +59,7 @@ public class ExerciseController {
 	@Transactional
 	public Exercise saveExercise(@RequestBody Exercise exercise) {
 
+		exercise.setName(exercise.getName() == null ? "" : exercise.getName().trim());
   	// check repeated name
 		String tenant = CustomUserDetailsService.getCurrentUserTenant();
 		List<Exercise> list = exerciseDao.queryByNameForTenant(tenant, exercise.getName());
@@ -94,6 +95,7 @@ public class ExerciseController {
 			throw new RuntimeException("نام لاتین حرکت تکراری است");
 		}
 
+		exercise.setTenantId(tenant);
     	logger.info("saveExercise entered...");
     	exerciseDao.save(exercise);
 		return exercise;

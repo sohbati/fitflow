@@ -27,7 +27,7 @@ import {AddPersonModalComponent} from './caa/components/persons/addpersonmodal/a
 import {AddExerciseModalComponent} from './caa/components/programs/addProgramModal/addExerciseItemComp/addExerciseModalComponent/add-exercise-modal.component';
 
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 const PAGES_COMPONENTS = [
@@ -46,7 +46,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DashboardModule,
     MiscellaneousModule,
     Ng2SmartTableModule,
-
     HttpClientJsonpModule,
     TreeModule,
 

@@ -6,6 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import {TranslateService} from '@ngx-translate/core';
+import { globals } from '../environments/globals';
 
 @Component({
   selector: 'ngx-app',
@@ -15,8 +16,9 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private analytics: AnalyticsService, public translate: TranslateService) {
-    translate.addLangs(['en', 'fa']);
+  constructor(private analytics: AnalyticsService,
+              public translate: TranslateService) {
+    translate.addLangs(globals.langs);
     translate.setDefaultLang('fa');
 
     const browserLang = translate.getBrowserLang();
