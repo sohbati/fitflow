@@ -1,5 +1,5 @@
 #
-# CoachAidApp APISIX Configuration
+# FitFlow APISIX Configuration
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -23,12 +23,12 @@ deployment:
   admin:
     admin_key:
       - name: admin
-        key: ${{APISIX_ADMIN_KEY:=coach-aid-admin-key}}
+        key: ${{APISIX_ADMIN_KEY:=fitflow-admin-key}}
         role: admin
   etcd:
     host:
       - ${{ETCD_HOST:=http://127.0.0.1:2379}}
-    prefix: /coach-aid-gateway
+    prefix: /fitflow-gateway
     timeout: 30
 
 apisix:
@@ -55,7 +55,7 @@ nginx_config:
     use: epoll
     multi_accept: off
 
-# Minimal plugins for CoachAidApp (optimized for low memory VPS)
+# Minimal plugins for FitFlow (optimized for low memory VPS)
 plugins:
   - real-ip
   - cors

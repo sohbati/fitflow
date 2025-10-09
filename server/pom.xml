@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.sohbati.coach-aid-app</groupId>
-	<artifactId>coach-aid-app</artifactId>
+	<groupId>com.sohbati.fitflow</groupId>
+	<artifactId>fitflow</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>coach-aid-app</name>
+	<name>fitflow</name>
 	<description>Implements an embeeded local file-based database with h2.</description>
 
 	<parent>

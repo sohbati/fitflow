@@ -1,5 +1,5 @@
 #!/bin/bash
-# CoachAidApp APISIX Linux Deployment Script
+# FitFlow APISIX Linux Deployment Script
 # Usage: ./deploy-linux.sh [ubuntu|alpine] [production|development]
 
 set -e

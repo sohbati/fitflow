@@ -1,6 +1,6 @@
-# CoachAidApp Admin Gateway
+# FitFlow Admin Gateway
 
-This directory contains the APISIX admin gateway setup for the CoachAidApp project.
+This directory contains the APISIX admin gateway setup for the FitFlow project.
 
 ## Overview
 

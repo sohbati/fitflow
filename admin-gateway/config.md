@@ -1,4 +1,4 @@
-# CoachAidApp Admin Gateway Configuration
+# FitFlow Admin Gateway Configuration
 
 This file contains the default configuration for the APISIX admin gateway.
 

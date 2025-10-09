@@ -1,4 +1,4 @@
-# CoachAidApp - Project Planning Summary
+# FitFlow - Project Planning Summary
 
 ## Project Overview
 **Goal**: Develop an innovative fitness/coaching app as a solo developer project for free time development, with potential to grow into a sustainable business.

@@ -1,4 +1,4 @@
-# CoachAidApp APISIX Production Deployment Guide
+# FitFlow APISIX Production Deployment Guide
 
 This guide covers deploying the CoachAidApp APISIX gateway in production environments using Ubuntu or Alpine Linux.
 

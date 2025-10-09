@@ -1,5 +1,5 @@
 #!/bin/bash
-# CoachAidApp APISIX Configuration Manager
+# FitFlow APISIX Configuration Manager
 # Usage: ./config-manager.sh [command] [environment]
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

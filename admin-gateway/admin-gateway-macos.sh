@@ -1,5 +1,5 @@
 #!/bin/bash
-# admin-gateway: manage APISIX admin gateway for CoachAidApp
+# admin-gateway: manage APISIX admin gateway for FitFlow
 # Usage: ./admin-gateway.sh [start|stop|restart|status]
 
 # Get the directory where this script is located
