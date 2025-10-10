@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-lg-12">
+    <nb-card>
+      <nb-card-header class="topcorner">
+        <span>{{'SETTING.SETTING_TITLE' | translate}}</span>
+
+        <button type="button" (click)="save()" class="btn btn-outline-success btn-icon">
+          <i class="ion ion-checkmark-round"></i>
+        </button>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-6">
+
+            <nb-card>
+              <nb-card-header>{{'SETTING.PRINT' | translate}}</nb-card-header>
+              <nb-card-body>
+                <nb-checkbox [(ngModel)]="appSetting.config_isShowExerciseCodeInPrint" > {{'SETTING.SHOW_CODE_IN_PRINT'| translate}}</nb-checkbox>
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

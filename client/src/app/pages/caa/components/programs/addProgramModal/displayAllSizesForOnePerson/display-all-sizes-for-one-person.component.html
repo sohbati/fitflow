@@ -1,0 +1,22 @@
+<nb-card>
+  <nb-card-header>
+    <span>خلاصه سایز های آقای</span> <span><b> {{personName}} </b></span>
+  </nb-card-header>
+</nb-card>
+<nb-card>
+  <nb-card-body>
+
+    <div style="width: 750px;max-height: 450px; overflow: scroll; border: 1px solid">
+      <table class="table">
+        <tr *ngFor="let rowItem of sizeList">
+          <td *ngFor="let sizeItem of rowItem">{{sizeItem}}</td>
+        </tr>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>
+<div style="text-align: center" class="row">
+  <div class="col-sm-12">
+    <button style="margin-left: 10px; margin-right: 10px" (click)="close()" class="btn btn-primary">بستن</button>
+  </div>
+</div>

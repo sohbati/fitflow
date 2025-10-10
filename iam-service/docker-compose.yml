@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: iam-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: iam_db
+      MYSQL_USER: iam_user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/mysql/0_init.sql:/docker-entrypoint-initdb.d/0_init.sql
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Optional: PostgreSQL service for testing
+  postgres:
+    image: postgres:15
+    container_name: iam-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: iam_db
+      POSTGRES_USER: iam_user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/postgres/0_init.sql:/docker-entrypoint-initdb.d/0_init.sql
+    profiles:
+      - postgres
+
+volumes:
+  mysql_data:
+  postgres_data:

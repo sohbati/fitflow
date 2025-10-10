@@ -1,0 +1,8 @@
+.someMargin{
+  margin: 5px;
+}
+
+:host >>> nb-card-footer {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}

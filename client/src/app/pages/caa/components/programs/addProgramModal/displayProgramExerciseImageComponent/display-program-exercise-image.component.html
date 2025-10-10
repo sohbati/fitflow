@@ -1,0 +1,18 @@
+<nb-card>
+  <nb-card-body>
+
+    <div style="max-width: 800px; max-height: 550px;overflow-y: scroll; overflow-x: visible">
+      <!--<a href="#" (click)="print()" class="navigation someMargin">Print<i class="nb-power-circled"></i></a>-->
+      <img id="largeImage" (click)="swipe()" [style]="styles" [src]="imageBase64"/>
+    </div>
+
+  </nb-card-body>
+<nb-card-footer>
+  <div style="text-align: center" class="row">
+    <div class="col-sm-12">
+      <button style="margin-left: 10px; margin-right: 10px" (click)="close()" class="btn btn-primary">بستن</button>
+    </div>
+  </div>
+</nb-card-footer>
+</nb-card>
+

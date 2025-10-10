@@ -1,0 +1,8 @@
+.radius-round {
+  border-radius: border-radius-base;
+}
+
+:host >>> nb-card-header {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}

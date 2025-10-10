@@ -1,0 +1,22 @@
+<nb-card>
+  <nb-card-header>
+    لیست برنامه ها
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings"
+                     [source]="source"
+                     (create)="addClick($event)"
+                     (edit)="editClick($event)"
+                     (delete)="onDeleteConfirm($event)"
+    >
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
+<div style="text-align: center" class="row">
+  <div class="col-sm-12">
+    <button style="margin-left: 10px; margin-right: 10px" (click)="closeClick()" type="submit"
+            class="btn btn-primary">بستن
+    </button>
+  </div>
+</div>

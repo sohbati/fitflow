@@ -1,0 +1,67 @@
+#
+# FitFlow APISIX Configuration
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: etcd
+  admin:
+    admin_key:
+      - name: admin
+        key: ${{APISIX_ADMIN_KEY:=fitflow-admin-key}}
+        role: admin
+  etcd:
+    host:
+      - ${{ETCD_HOST:=http://127.0.0.1:2379}}
+    prefix: /fitflow-gateway
+    timeout: 30
+
+apisix:
+  node_listen: ${{APISIX_NODE_PORT:=9080}}
+  enable_admin: true
+  enable_admin_cors: true
+  allow_admin:
+    - ${{APISIX_ALLOW_ADMIN:=127.0.0.1}}
+  enable_debug: ${{APISIX_DEBUG:=false}}
+  enable_dev_mode: ${{APISIX_DEV_MODE:=false}}
+  config_center: etcd
+  enable_server_tokens: ${{APISIX_SERVER_TOKENS:=false}}
+  # Memory optimization settings
+  enable_control: false
+  enable_reuseport: false
+
+nginx_config:
+  worker_processes: ${{NGINX_WORKER_PROCESSES:=1}}
+  error_log: ${{NGINX_ERROR_LOG:=/var/log/apisix/error.log}}
+  pid: ${{NGINX_PID:=/var/run/apisix.pid}}
+  worker_rlimit_nofile: 1024
+  events:
+    worker_connections: 512
+    use: epoll
+    multi_accept: off
+
+# Minimal plugins for FitFlow (optimized for low memory VPS)
+plugins:
+  - real-ip
+  - cors
+  - jwt-auth
+  - proxy-rewrite
+  - limit-req
+  - gzip
+  - redirect
+  - response-rewrite
