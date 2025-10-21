@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="CoachAidApp-UserFlows" id="user-flows">
-        <mxGraphModel dx="605" dy="483" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="807" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -158,7 +158,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="1zOU2jVU4h-p2QFhVTUt" name="Data Model">
-        <mxGraphModel dx="890" dy="317" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="807" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -376,7 +376,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="x12yhMWLiWqx1eLiVvLw" name="microservice design">
-        <mxGraphModel dx="1455" dy="1583" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="2317" dy="2345" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -398,7 +398,7 @@
                 <mxCell id="xPeOQ-U4j3emJcJMRM2N-4" value="IAM Service&lt;br&gt;&lt;b&gt;&lt;font style=&quot;font-size: 13px;&quot;&gt;8091&lt;/font&gt;&lt;/b&gt;" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#282828;strokeColor=none;verticalAlign=top;pointerEvents=1;align=center;shape=mxgraph.cisco_safe.security_icons.iam;" parent="1" vertex="1">
                     <mxGeometry x="372.5" y="-100" width="37.5" height="47" as="geometry"/>
                 </mxCell>
-                <mxCell id="xPeOQ-U4j3emJcJMRM2N-18" style="edgeStyle=none;html=1;" parent="1" source="xPeOQ-U4j3emJcJMRM2N-5" target="xPeOQ-U4j3emJcJMRM2N-6" edge="1">
+                <mxCell id="xPeOQ-U4j3emJcJMRM2N-18" style="edgeStyle=none;html=1;startArrow=none;" parent="1" source="xPeOQ-U4j3emJcJMRM2N-17" target="xPeOQ-U4j3emJcJMRM2N-6" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="xPeOQ-U4j3emJcJMRM2N-5" value="&lt;b&gt;Fit&lt;/b&gt;" style="sketch=0;outlineConnect=0;fontColor=#ffffff;strokeColor=#006EAF;fillColor=#1ba1e2;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.mobile_client;" parent="1" vertex="1">
@@ -467,9 +467,6 @@
                         <mxGeometry x="440" y="175" width="200" height="170" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="xPeOQ-U4j3emJcJMRM2N-17" value="Command" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="310" y="225" width="80" height="30" as="geometry"/>
-                </mxCell>
                 <mxCell id="xPeOQ-U4j3emJcJMRM2N-21" style="edgeStyle=none;html=1;" parent="1" source="xPeOQ-U4j3emJcJMRM2N-19" target="xPeOQ-U4j3emJcJMRM2N-20" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
@@ -575,8 +572,17 @@
                 <mxCell id="2u8NVeo4ZT4elc3iaQNe-1" value="Port:9080" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#3700CC;fillColor=#6a00ff;fontColor=#ffffff;" parent="1" vertex="1">
                     <mxGeometry x="-240" y="101" width="80" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="fsVcSi5rWdiv47brWT6M-1" value="Fitflow" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                <mxCell id="fsVcSi5rWdiv47brWT6M-1" value="Fitflow" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="-10" y="320" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="UiGelzqShkEEcwtyXD3j-1" value="" style="edgeStyle=none;html=1;endArrow=none;" edge="1" parent="1" source="xPeOQ-U4j3emJcJMRM2N-5" target="xPeOQ-U4j3emJcJMRM2N-17">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="260" as="sourcePoint"/>
+                        <mxPoint x="210" y="260" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="xPeOQ-U4j3emJcJMRM2N-17" value="Command" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="240" width="80" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
