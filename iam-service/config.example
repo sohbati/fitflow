@@ -1,6 +1,6 @@
 JWT_SECRET=mysecret
-DATABASE_URL=iam_user:password@tcp(localhost:3306)/iam_db?charset=utf8mb4&parseTime=True&loc=Local
-DATABASE_TYPE=mysql
+DATABASE_URL=postgres://fitflow_iam_user:password@localhost:5432/fitflow_iam_db?sslmode=disable
+DATABASE_TYPE=postgres
 TOKEN_EXP_MINUTES=15
 PORT=8091
 

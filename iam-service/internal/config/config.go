@@ -31,8 +31,8 @@ func Load() *Config {
 
 	config := &Config{
 		JWTSecret:       getEnv("JWT_SECRET", "default-secret-key"),
-		DatabaseURL:     getEnv("DATABASE_URL", "fitflow_iam_user:password@tcp(localhost:3306)/fitflow_iam_db?charset=utf8mb4&parseTime=True&loc=Local"),
-		DatabaseType:    getEnv("DATABASE_TYPE", "mysql"),
+		DatabaseURL:     getEnv("DATABASE_URL", "postgres://fitflow_iam_user:password@localhost:5432/fitflow_iam_db?sslmode=disable"),
+		DatabaseType:    getEnv("DATABASE_TYPE", "postgres"),
 		TokenExpMinutes: getEnvAsInt("TOKEN_EXP_MINUTES", 15),
 		Port:            getEnv("PORT", "8091"),
 

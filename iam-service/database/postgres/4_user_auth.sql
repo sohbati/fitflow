@@ -1,6 +1,6 @@
 -- User Authentication Table
 -- Links users to their authentication providers and stores provider-specific data
-CREATE TABLE user_auth (
+CREATE TABLE IF NOT EXISTS user_auth (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     auth_provider_id UUID NOT NULL,
@@ -21,6 +21,9 @@ CREATE TABLE user_auth (
     otp_expires_at TIMESTAMP NULL,
     otp_attempts INTEGER DEFAULT 0,
     
+    -- Username field for local authentication
+    username VARCHAR(255) NULL,
+    
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -35,16 +38,13 @@ CREATE TABLE user_auth (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_user_auth_user_id ON user_auth(user_id);
-CREATE INDEX idx_user_auth_provider_id ON user_auth(auth_provider_id);
-CREATE INDEX idx_user_auth_provider_user_id ON user_auth(provider_user_id);
-CREATE INDEX idx_user_auth_email ON user_auth(provider_email);
-CREATE INDEX idx_user_auth_verified ON user_auth(is_verified);
-CREATE INDEX idx_user_auth_otp ON user_auth(otp_code, otp_expires_at);
-
--- Add username field for local authentication
-ALTER TABLE user_auth ADD COLUMN username VARCHAR(255) NULL;
-CREATE INDEX idx_user_auth_username ON user_auth(username);
+CREATE INDEX IF NOT EXISTS idx_user_auth_user_id ON user_auth(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_auth_provider_id ON user_auth(auth_provider_id);
+CREATE INDEX IF NOT EXISTS idx_user_auth_provider_user_id ON user_auth(provider_user_id);
+CREATE INDEX IF NOT EXISTS idx_user_auth_email ON user_auth(provider_email);
+CREATE INDEX IF NOT EXISTS idx_user_auth_verified ON user_auth(is_verified);
+CREATE INDEX IF NOT EXISTS idx_user_auth_otp ON user_auth(otp_code, otp_expires_at);
+CREATE INDEX IF NOT EXISTS idx_user_auth_username ON user_auth(username);
 
 -- Update trigger for updated_at
 CREATE TRIGGER update_user_auth_updated_at BEFORE UPDATE ON user_auth FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

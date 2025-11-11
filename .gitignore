@@ -1,4 +1,5 @@
 admin-gateway/apisix/
+admin-gateway/etcd-data/
 # Environment variables
 .env
 .env.local
@@ -11,3 +12,5 @@ iam-service/.env
 
 # Next.js
 fitflow/.env.local
+admin-gateway/etcd-data/
+admin-gateway/apisix/logs/

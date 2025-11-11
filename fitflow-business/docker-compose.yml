@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: fitflow-business-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fitflow_business_db
+      POSTGRES_USER: fitflow_business_user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/postgres/0_init.sql:/docker-entrypoint-initdb.d/0_init.sql
+      - ./database/postgres/1_gyms.sql:/docker-entrypoint-initdb.d/1_gyms.sql
+      - ./database/postgres/2_gym_locations.sql:/docker-entrypoint-initdb.d/2_gym_locations.sql
+      - ./database/postgres/3_gym_owners.sql:/docker-entrypoint-initdb.d/3_gym_owners.sql
+      - ./database/postgres/4_trainers.sql:/docker-entrypoint-initdb.d/4_trainers.sql
+      - ./database/postgres/5_gym_trainers.sql:/docker-entrypoint-initdb.d/5_gym_trainers.sql
+      - ./database/postgres/6_trainees.sql:/docker-entrypoint-initdb.d/6_trainees.sql
+      - ./database/postgres/7_persons.sql:/docker-entrypoint-initdb.d/7_persons.sql
+
+volumes:
+  postgres_data:
+

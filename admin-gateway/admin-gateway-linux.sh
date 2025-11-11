@@ -177,6 +177,8 @@ EOF
     mkdir -p /var/lib/etcd
     mkdir -p /var/log/apisix
     mkdir -p /var/run/apisix
+    # Also create etcd-data in admin-gateway directory for consistency and Docker deployments
+    mkdir -p "$SCRIPT_DIR/etcd-data"
     chown -R apisix:apisix /var/log/apisix /var/run/apisix
     chown -R etcd:etcd /var/lib/etcd
     
