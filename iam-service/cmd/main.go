@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	_ "iam-service/docs"
 	"iam-service/internal/auth"
 	"iam-service/internal/config"
 	"iam-service/internal/db"
@@ -43,6 +44,11 @@ type Application struct {
 	userService user.Service
 	roleRepo    role.Repository
 	roleService role.Service
+	// Auth services
+	authProviderRepo    auth.AuthProviderRepository
+	authProviderService auth.AuthProviderService
+	userAuthRepo        auth.UserAuthRepository
+	userAuthService     auth.UserAuthService
 	authHandler *auth.Handler
 	roleHandler *role.Handler
 	router      *router.Router
@@ -122,13 +128,39 @@ func (app *Application) setupServices() error {
 	app.roleRepo = role.NewRepository(app.database)
 	app.roleService = role.NewService(app.roleRepo)
 
+	// Initialize auth services
+	app.authProviderRepo = auth.NewAuthProviderRepository(app.database)
+	app.authProviderService = auth.NewAuthProviderService(app.authProviderRepo)
+
+	app.userAuthRepo = auth.NewUserAuthRepository(app.database)
+	app.userAuthService = auth.NewUserAuthService(app.authProviderRepo, app.userAuthRepo)
+
+	// Initialize default auth providers
+	if err := app.authProviderService.InitializeDefaultProviders(); err != nil {
+		log.Printf("Failed to initialize default auth providers: %v", err)
+		return err
+	}
+
 	log.Println("Services initialized successfully")
 	return nil
 }
 
 // setupHandlers initializes HTTP request handlers
 func (app *Application) setupHandlers() error {
-	app.authHandler = auth.NewHandler(app.userService, app.jwtManager)
+	// Check if Google OAuth is configured
+	if app.config.GoogleClientID != "" && app.config.GoogleClientSecret != "" {
+		googleConfig := &auth.GoogleOAuthConfig{
+			ClientID:     app.config.GoogleClientID,
+			ClientSecret: app.config.GoogleClientSecret,
+			RedirectURL:  app.config.GoogleRedirectURL,
+		}
+		app.authHandler = auth.NewHandlerWithGoogle(app.userService, app.userAuthService, app.authProviderService, app.jwtManager, googleConfig)
+		log.Println("Google OAuth enabled")
+	} else {
+		app.authHandler = auth.NewHandler(app.userService, app.userAuthService, app.authProviderService, app.jwtManager)
+		log.Println("Google OAuth disabled - missing configuration")
+	}
+
 	app.roleHandler = role.NewHandler(app.roleService)
 	log.Println("Handlers initialized successfully")
 	return nil
