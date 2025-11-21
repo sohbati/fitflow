@@ -1,10 +1,10 @@
 package db
 
 import (
-	"log"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
 func Connect(databaseURL, databaseType string) (*gorm.DB, error) {
@@ -32,4 +32,3 @@ func Migrate(db *gorm.DB) error {
 	log.Println("Database migrations disabled - using manual SQL migrations")
 	return nil
 }
-

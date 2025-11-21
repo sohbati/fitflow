@@ -15,19 +15,19 @@ type GymService interface {
 	DeleteGym(ctx context.Context, id int64) error
 	SearchGyms(ctx context.Context, query string, limit, offset int) ([]*model.Gym, error)
 	GetVerifiedGyms(ctx context.Context, limit, offset int) ([]*model.Gym, error)
-	
+
 	// Gym location operations
 	CreateGymLocation(ctx context.Context, location *model.GymLocation) error
 	GetGymLocations(ctx context.Context, gymID int64) ([]*model.GymLocation, error)
 	UpdateGymLocation(ctx context.Context, location *model.GymLocation) error
 	DeleteGymLocation(ctx context.Context, id int64) error
-	
+
 	// Gym owner operations
 	CreateGymOwner(ctx context.Context, owner *model.GymOwner) error
 	GetGymOwners(ctx context.Context, gymID int64) ([]*model.GymOwner, error)
 	UpdateGymOwner(ctx context.Context, owner *model.GymOwner) error
 	DeleteGymOwner(ctx context.Context, id int64) error
-	
+
 	// Trainer operations
 	CreateTrainer(ctx context.Context, trainer *model.Trainer) error
 	GetTrainerByID(ctx context.Context, id int64) (*model.Trainer, error)
@@ -35,7 +35,7 @@ type GymService interface {
 	UpdateTrainer(ctx context.Context, trainer *model.Trainer) error
 	DeleteTrainer(ctx context.Context, id int64) error
 	GetRegisteredTrainers(ctx context.Context, limit, offset int) ([]*model.Trainer, error)
-	
+
 	// Gym-Trainer relationship operations
 	AddTrainerToGym(ctx context.Context, gymID, trainerID int64) error
 	RemoveTrainerFromGym(ctx context.Context, gymID, trainerID int64) error

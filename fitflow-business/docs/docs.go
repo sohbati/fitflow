@@ -5,4 +5,3 @@ package docs
 // @description Business Logic Service for FitFlow Application
 // @host localhost:8092
 // @BasePath /
-

@@ -10,7 +10,7 @@ type GymTrainer struct {
 	GymID     int64     `json:"gym_id" gorm:"not null"`
 	TrainerID int64     `json:"trainer_id" gorm:"not null"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
-	
+
 	// Relationships
 	Gym     Gym     `json:"gym,omitempty" gorm:"foreignKey:GymID"`
 	Trainer Trainer `json:"trainer,omitempty" gorm:"foreignKey:TrainerID"`

@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fitflow-business/internal/model"
+	"fitflow-business/internal/repository"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ type traineeRepository struct {
 }
 
 // NewTraineeRepository creates a new trainee repository
-func NewTraineeRepository(db *gorm.DB) TraineeRepository {
+func NewTraineeRepository(db *gorm.DB) repository.TraineeRepository {
 	return &traineeRepository{db: db}
 }
 
@@ -24,7 +25,7 @@ func (r *traineeRepository) CreateTrainee(ctx context.Context, trainee *model.Tr
 // GetTraineeByID retrieves a trainee by ID
 func (r *traineeRepository) GetTraineeByID(ctx context.Context, id int64) (*model.Trainee, error) {
 	var trainee model.Trainee
-	err := r.db.WithContext(ctx).First(&trainee, id).Error
+	err := r.db.WithContext(ctx).Preload("Person").First(&trainee, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +35,11 @@ func (r *traineeRepository) GetTraineeByID(ctx context.Context, id int64) (*mode
 // GetTrainees retrieves all trainees with pagination
 func (r *traineeRepository) GetTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
-	err := r.db.WithContext(ctx).Limit(limit).Offset(offset).Find(&trainees).Error
+	err := r.db.WithContext(ctx).
+		Preload("Person").
+		Limit(limit).
+		Offset(offset).
+		Find(&trainees).Error
 	return trainees, err
 }
 
@@ -51,9 +56,13 @@ func (r *traineeRepository) DeleteTrainee(ctx context.Context, id int64) error {
 // SearchTrainees searches trainees by name, email, or phone
 func (r *traineeRepository) SearchTrainees(ctx context.Context, query string, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
+	like := "%" + query + "%"
 	err := r.db.WithContext(ctx).
-		Where("name ILIKE ? OR email ILIKE ? OR phone_number ILIKE ?", 
-			"%"+query+"%", "%"+query+"%", "%"+query+"%").
+		Model(&model.Trainee{}).
+		Preload("Person").
+		Joins("Person").
+		Where("persons.first_name ILIKE ? OR persons.last_name ILIKE ? OR persons.email ILIKE ? OR persons.phone_number ILIKE ?",
+			like, like, like, like).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err
 }
@@ -61,7 +70,11 @@ func (r *traineeRepository) SearchTrainees(ctx context.Context, query string, li
 // GetTraineesByEmail retrieves a trainee by email
 func (r *traineeRepository) GetTraineesByEmail(ctx context.Context, email string) (*model.Trainee, error) {
 	var trainee model.Trainee
-	err := r.db.WithContext(ctx).Where("email = ?", email).First(&trainee).Error
+	err := r.db.WithContext(ctx).
+		Preload("Person").
+		Joins("Person").
+		Where("persons.email = ?", email).
+		First(&trainee).Error
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +84,11 @@ func (r *traineeRepository) GetTraineesByEmail(ctx context.Context, email string
 // GetTraineesByPhone retrieves a trainee by phone number
 func (r *traineeRepository) GetTraineesByPhone(ctx context.Context, phone string) (*model.Trainee, error) {
 	var trainee model.Trainee
-	err := r.db.WithContext(ctx).Where("phone_number = ?", phone).First(&trainee).Error
+	err := r.db.WithContext(ctx).
+		Preload("Person").
+		Joins("Person").
+		Where("persons.phone_number = ?", phone).
+		First(&trainee).Error
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +99,7 @@ func (r *traineeRepository) GetTraineesByPhone(ctx context.Context, phone string
 func (r *traineeRepository) GetActiveTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
 	err := r.db.WithContext(ctx).
+		Preload("Person").
 		Where("is_active = ?", true).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err
@@ -91,6 +109,7 @@ func (r *traineeRepository) GetActiveTrainees(ctx context.Context, limit, offset
 func (r *traineeRepository) GetTraineesByMembershipType(ctx context.Context, membershipType model.MembershipType, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
 	err := r.db.WithContext(ctx).
+		Preload("Person").
 		Where("membership_type = ?", membershipType).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err
@@ -100,6 +119,7 @@ func (r *traineeRepository) GetTraineesByMembershipType(ctx context.Context, mem
 func (r *traineeRepository) GetTraineesByFitnessLevel(ctx context.Context, fitnessLevel model.FitnessLevel, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
 	err := r.db.WithContext(ctx).
+		Preload("Person").
 		Where("fitness_level = ?", fitnessLevel).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err
@@ -109,9 +129,10 @@ func (r *traineeRepository) GetTraineesByFitnessLevel(ctx context.Context, fitne
 func (r *traineeRepository) GetExpiringMemberships(ctx context.Context, days int, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
 	err := r.db.WithContext(ctx).
-		Where("membership_end_date BETWEEN ? AND ? AND is_active = ?", 
-			gorm.Expr("CURRENT_DATE"), 
-			gorm.Expr("CURRENT_DATE + INTERVAL ? DAY", days), 
+		Preload("Person").
+		Where("membership_end_date BETWEEN ? AND ? AND is_active = ?",
+			gorm.Expr("CURRENT_DATE"),
+			gorm.Expr("CURRENT_DATE + INTERVAL ? DAY", days),
 			true).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err
@@ -121,6 +142,7 @@ func (r *traineeRepository) GetExpiringMemberships(ctx context.Context, days int
 func (r *traineeRepository) GetExpiredMemberships(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee
 	err := r.db.WithContext(ctx).
+		Preload("Person").
 		Where("membership_end_date < CURRENT_DATE AND is_active = ?", true).
 		Limit(limit).Offset(offset).Find(&trainees).Error
 	return trainees, err

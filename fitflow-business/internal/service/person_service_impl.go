@@ -32,7 +32,7 @@ func (s *personService) CreatePerson(ctx context.Context, person *model.Person) 
 	if person.UserID == uuid.Nil {
 		return errors.New("user ID is required")
 	}
-	
+
 	// Validate email uniqueness if provided
 	if person.Email != nil && *person.Email != "" {
 		existingPerson, err := s.personRepo.GetPersonsByEmail(ctx, *person.Email)
@@ -40,7 +40,7 @@ func (s *personService) CreatePerson(ctx context.Context, person *model.Person) 
 			return errors.New("email already exists")
 		}
 	}
-	
+
 	// Validate phone uniqueness if provided
 	if person.PhoneNumber != nil && *person.PhoneNumber != "" {
 		existingPerson, err := s.personRepo.GetPersonsByPhone(ctx, *person.PhoneNumber)
@@ -48,13 +48,13 @@ func (s *personService) CreatePerson(ctx context.Context, person *model.Person) 
 			return errors.New("phone number already exists")
 		}
 	}
-	
+
 	// Validate user ID uniqueness
 	existingPerson, err := s.personRepo.GetPersonByUserID(ctx, person.UserID)
 	if err == nil && existingPerson != nil {
 		return errors.New("person with this user ID already exists")
 	}
-	
+
 	return s.personRepo.CreatePerson(ctx, person)
 }
 
@@ -85,7 +85,7 @@ func (s *personService) GetPersons(ctx context.Context, limit, offset int) ([]*m
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.personRepo.GetPersons(ctx, limit, offset)
 }
 
@@ -100,7 +100,7 @@ func (s *personService) UpdatePerson(ctx context.Context, person *model.Person) 
 	if person.LastName == "" {
 		return errors.New("last name is required")
 	}
-	
+
 	// Validate email uniqueness if provided
 	if person.Email != nil && *person.Email != "" {
 		existingPerson, err := s.personRepo.GetPersonsByEmail(ctx, *person.Email)
@@ -108,7 +108,7 @@ func (s *personService) UpdatePerson(ctx context.Context, person *model.Person) 
 			return errors.New("email already exists")
 		}
 	}
-	
+
 	// Validate phone uniqueness if provided
 	if person.PhoneNumber != nil && *person.PhoneNumber != "" {
 		existingPerson, err := s.personRepo.GetPersonsByPhone(ctx, *person.PhoneNumber)
@@ -116,7 +116,7 @@ func (s *personService) UpdatePerson(ctx context.Context, person *model.Person) 
 			return errors.New("phone number already exists")
 		}
 	}
-	
+
 	return s.personRepo.UpdatePerson(ctx, person)
 }
 
@@ -142,7 +142,7 @@ func (s *personService) SearchPersons(ctx context.Context, query string, limit, 
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.personRepo.SearchPersons(ctx, query, limit, offset)
 }
 
@@ -173,7 +173,7 @@ func (s *personService) GetActivePersons(ctx context.Context, limit, offset int)
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.personRepo.GetActivePersons(ctx, limit, offset)
 }
 
@@ -191,7 +191,7 @@ func (s *personService) GetPersonsByGender(ctx context.Context, gender model.Gen
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.personRepo.GetPersonsByGender(ctx, gender, limit, offset)
 }
 
@@ -209,7 +209,7 @@ func (s *personService) GetPersonsByLocation(ctx context.Context, city, province
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.personRepo.GetPersonsByLocation(ctx, city, province, country, limit, offset)
 }
 
@@ -250,7 +250,7 @@ func (s *personService) ValidatePersonData(ctx context.Context, person *model.Pe
 	if person.UserID == uuid.Nil {
 		return errors.New("user ID is required")
 	}
-	
+
 	// Validate email format if provided
 	if person.Email != nil && *person.Email != "" {
 		// Basic email validation
@@ -258,7 +258,7 @@ func (s *personService) ValidatePersonData(ctx context.Context, person *model.Pe
 			return errors.New("invalid email format")
 		}
 	}
-	
+
 	// Validate phone format if provided
 	if person.PhoneNumber != nil && *person.PhoneNumber != "" {
 		// Basic phone validation
@@ -266,7 +266,7 @@ func (s *personService) ValidatePersonData(ctx context.Context, person *model.Pe
 			return errors.New("phone number must be at least 10 characters")
 		}
 	}
-	
+
 	return nil
 }
 

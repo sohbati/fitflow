@@ -9,11 +9,11 @@ import (
 
 // gymService implements GymService interface
 type gymService struct {
-	gymRepo           repository.GymRepository
-	gymLocationRepo   repository.GymLocationRepository
-	gymOwnerRepo      repository.GymOwnerRepository
-	trainerRepo       repository.TrainerRepository
-	gymTrainerRepo    repository.GymTrainerRepository
+	gymRepo         repository.GymRepository
+	gymLocationRepo repository.GymLocationRepository
+	gymOwnerRepo    repository.GymOwnerRepository
+	trainerRepo     repository.TrainerRepository
+	gymTrainerRepo  repository.GymTrainerRepository
 }
 
 // NewGymService creates a new gym service
@@ -25,11 +25,11 @@ func NewGymService(
 	gymTrainerRepo repository.GymTrainerRepository,
 ) GymService {
 	return &gymService{
-		gymRepo:           gymRepo,
-		gymLocationRepo:   gymLocationRepo,
-		gymOwnerRepo:      gymOwnerRepo,
-		trainerRepo:       trainerRepo,
-		gymTrainerRepo:    gymTrainerRepo,
+		gymRepo:         gymRepo,
+		gymLocationRepo: gymLocationRepo,
+		gymOwnerRepo:    gymOwnerRepo,
+		trainerRepo:     trainerRepo,
+		gymTrainerRepo:  gymTrainerRepo,
 	}
 }
 
@@ -39,7 +39,7 @@ func (s *gymService) CreateGym(ctx context.Context, gym *model.Gym) error {
 	if gym.Name == "" {
 		return errors.New("gym name is required")
 	}
-	
+
 	// Set default values
 	if gym.Facilities == nil {
 		gym.Facilities = make(model.JSONB)
@@ -47,7 +47,7 @@ func (s *gymService) CreateGym(ctx context.Context, gym *model.Gym) error {
 	if gym.Images == nil {
 		gym.Images = make(model.Images, 0)
 	}
-	
+
 	return s.gymRepo.CreateGym(ctx, gym)
 }
 
@@ -70,7 +70,7 @@ func (s *gymService) GetGyms(ctx context.Context, limit, offset int) ([]*model.G
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.gymRepo.GetGyms(ctx, limit, offset)
 }
 
@@ -82,7 +82,7 @@ func (s *gymService) UpdateGym(ctx context.Context, gym *model.Gym) error {
 	if gym.Name == "" {
 		return errors.New("gym name is required")
 	}
-	
+
 	return s.gymRepo.UpdateGym(ctx, gym)
 }
 
@@ -108,7 +108,7 @@ func (s *gymService) SearchGyms(ctx context.Context, query string, limit, offset
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.gymRepo.SearchGyms(ctx, query, limit, offset)
 }
 
@@ -123,7 +123,7 @@ func (s *gymService) GetVerifiedGyms(ctx context.Context, limit, offset int) ([]
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.gymRepo.GetVerifiedGyms(ctx, limit, offset)
 }
 
@@ -135,7 +135,7 @@ func (s *gymService) CreateGymLocation(ctx context.Context, location *model.GymL
 	if location.LocationType == "" {
 		return errors.New("location type is required")
 	}
-	
+
 	return s.gymLocationRepo.CreateGymLocation(ctx, location)
 }
 
@@ -155,7 +155,7 @@ func (s *gymService) UpdateGymLocation(ctx context.Context, location *model.GymL
 	if location.LocationType == "" {
 		return errors.New("location type is required")
 	}
-	
+
 	return s.gymLocationRepo.UpdateGymLocation(ctx, location)
 }
 
@@ -172,10 +172,10 @@ func (s *gymService) CreateGymOwner(ctx context.Context, owner *model.GymOwner) 
 	if owner.GymID <= 0 {
 		return errors.New("invalid gym ID")
 	}
-	if owner.Name == "" {
-		return errors.New("owner name is required")
+	if owner.PersonID <= 0 && owner.Person.ID <= 0 {
+		return errors.New("owner person reference is required")
 	}
-	
+
 	return s.gymOwnerRepo.CreateGymOwner(ctx, owner)
 }
 
@@ -192,10 +192,10 @@ func (s *gymService) UpdateGymOwner(ctx context.Context, owner *model.GymOwner) 
 	if owner.ID <= 0 {
 		return errors.New("invalid owner ID")
 	}
-	if owner.Name == "" {
-		return errors.New("owner name is required")
+	if owner.PersonID <= 0 && owner.Person.ID <= 0 {
+		return errors.New("owner person reference is required")
 	}
-	
+
 	return s.gymOwnerRepo.UpdateGymOwner(ctx, owner)
 }
 
@@ -209,10 +209,10 @@ func (s *gymService) DeleteGymOwner(ctx context.Context, id int64) error {
 
 // CreateTrainer creates a new trainer
 func (s *gymService) CreateTrainer(ctx context.Context, trainer *model.Trainer) error {
-	if trainer.Name == "" {
-		return errors.New("trainer name is required")
+	if trainer.PersonID <= 0 && trainer.Person.ID <= 0 {
+		return errors.New("trainer person reference is required")
 	}
-	
+
 	return s.trainerRepo.CreateTrainer(ctx, trainer)
 }
 
@@ -235,7 +235,7 @@ func (s *gymService) GetTrainers(ctx context.Context, limit, offset int) ([]*mod
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.trainerRepo.GetTrainers(ctx, limit, offset)
 }
 
@@ -244,10 +244,10 @@ func (s *gymService) UpdateTrainer(ctx context.Context, trainer *model.Trainer) 
 	if trainer.ID <= 0 {
 		return errors.New("invalid trainer ID")
 	}
-	if trainer.Name == "" {
-		return errors.New("trainer name is required")
+	if trainer.PersonID <= 0 && trainer.Person.ID <= 0 {
+		return errors.New("trainer person reference is required")
 	}
-	
+
 	return s.trainerRepo.UpdateTrainer(ctx, trainer)
 }
 
@@ -270,7 +270,7 @@ func (s *gymService) GetRegisteredTrainers(ctx context.Context, limit, offset in
 	if offset < 0 {
 		offset = 0
 	}
-	
+
 	return s.trainerRepo.GetRegisteredTrainers(ctx, limit, offset)
 }
 
@@ -282,7 +282,7 @@ func (s *gymService) AddTrainerToGym(ctx context.Context, gymID, trainerID int64
 	if trainerID <= 0 {
 		return errors.New("invalid trainer ID")
 	}
-	
+
 	return s.gymTrainerRepo.AddTrainerToGym(ctx, gymID, trainerID)
 }
 
@@ -294,7 +294,7 @@ func (s *gymService) RemoveTrainerFromGym(ctx context.Context, gymID, trainerID 
 	if trainerID <= 0 {
 		return errors.New("invalid trainer ID")
 	}
-	
+
 	return s.gymTrainerRepo.RemoveTrainerFromGym(ctx, gymID, trainerID)
 }
 

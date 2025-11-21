@@ -18,7 +18,7 @@ type GymLocation struct {
 	Longitude    *float64  `json:"longitude" gorm:"type:decimal(10,7)"`
 	CreatedAt    time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `json:"updated_at" gorm:"autoUpdateTime"`
-	
+
 	// Relationships
 	Gym Gym `json:"gym,omitempty" gorm:"foreignKey:GymID"`
 }

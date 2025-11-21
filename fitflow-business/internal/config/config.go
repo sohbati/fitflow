@@ -1,8 +1,8 @@
 package config
 
 import (
-	"os"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
@@ -13,7 +13,7 @@ type Config struct {
 
 func Load() *Config {
 	godotenv.Load()
-	
+
 	return &Config{
 		DatabaseURL:  getEnv("DATABASE_URL", "postgres://fitflow_business_user:password@localhost:5432/fitflow_business_db?sslmode=disable"),
 		DatabaseType: getEnv("DATABASE_TYPE", "postgres"),
@@ -27,4 +27,3 @@ func getEnv(key, defaultValue string) string {
 	}
 	return defaultValue
 }
-

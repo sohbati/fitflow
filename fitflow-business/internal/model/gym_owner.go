@@ -12,7 +12,7 @@ type GymOwner struct {
 	BriefBio  *string   `json:"brief_bio" gorm:"type:text"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
-	
+
 	// Relationships
 	Person Person `json:"person,omitempty" gorm:"foreignKey:PersonID"`
 	Gym    Gym    `json:"gym,omitempty" gorm:"foreignKey:GymID"`

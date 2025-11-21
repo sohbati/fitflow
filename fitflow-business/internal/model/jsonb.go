@@ -1,7 +1,6 @@
 package model
 
 import (
-	"time"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
@@ -24,11 +23,11 @@ func (j *JSONB) Scan(value interface{}) error {
 		*j = nil
 		return nil
 	}
-	
+
 	bytes, ok := value.([]byte)
 	if !ok {
 		return errors.New("cannot scan non-byte value into JSONB")
 	}
-	
+
 	return json.Unmarshal(bytes, j)
 }

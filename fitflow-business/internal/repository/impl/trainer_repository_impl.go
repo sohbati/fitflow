@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fitflow-business/internal/model"
+	"fitflow-business/internal/repository"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ type trainerRepository struct {
 }
 
 // NewTrainerRepository creates a new trainer repository
-func NewTrainerRepository(db *gorm.DB) TrainerRepository {
+func NewTrainerRepository(db *gorm.DB) repository.TrainerRepository {
 	return &trainerRepository{db: db}
 }
 

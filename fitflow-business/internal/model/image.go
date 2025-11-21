@@ -1,7 +1,6 @@
 package model
 
 import (
-	"time"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
@@ -10,7 +9,7 @@ import (
 // Image represents a gym image
 type Image struct {
 	URL       string `json:"url"`
-	Type      string `json:"type"`      // logo, interior, exterior, trainer
+	Type      string `json:"type"` // logo, interior, exterior, trainer
 	IsPrimary bool   `json:"is_primary"`
 }
 
@@ -31,11 +30,11 @@ func (i *Images) Scan(value interface{}) error {
 		*i = nil
 		return nil
 	}
-	
+
 	bytes, ok := value.([]byte)
 	if !ok {
 		return errors.New("cannot scan non-byte value into Images")
 	}
-	
+
 	return json.Unmarshal(bytes, i)
 }

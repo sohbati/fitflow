@@ -11,7 +11,7 @@ type Trainer struct {
 	IsRegistered bool      `json:"is_registered" gorm:"default:false"`
 	CreatedAt    time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `json:"updated_at" gorm:"autoUpdateTime"`
-	
+
 	// Relationships
 	Person Person `json:"person,omitempty" gorm:"foreignKey:PersonID"`
 	Gyms   []Gym  `json:"gyms,omitempty" gorm:"many2many:gym_trainers;"`

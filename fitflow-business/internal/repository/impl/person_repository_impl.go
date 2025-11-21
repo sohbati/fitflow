@@ -64,7 +64,7 @@ func (r *personRepository) DeletePerson(ctx context.Context, id int64) error {
 func (r *personRepository) SearchPersons(ctx context.Context, query string, limit, offset int) ([]*model.Person, error) {
 	var persons []*model.Person
 	err := r.db.WithContext(ctx).
-		Where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone_number ILIKE ?", 
+		Where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone_number ILIKE ?",
 			"%"+query+"%", "%"+query+"%", "%"+query+"%", "%"+query+"%").
 		Limit(limit).Offset(offset).Find(&persons).Error
 	return persons, err
@@ -112,7 +112,7 @@ func (r *personRepository) GetPersonsByGender(ctx context.Context, gender model.
 func (r *personRepository) GetPersonsByLocation(ctx context.Context, city, province, country string, limit, offset int) ([]*model.Person, error) {
 	var persons []*model.Person
 	query := r.db.WithContext(ctx)
-	
+
 	if city != "" {
 		query = query.Where("city ILIKE ?", "%"+city+"%")
 	}
@@ -122,7 +122,7 @@ func (r *personRepository) GetPersonsByLocation(ctx context.Context, city, provi
 	if country != "" {
 		query = query.Where("country ILIKE ?", "%"+country+"%")
 	}
-	
+
 	err := query.Limit(limit).Offset(offset).Find(&persons).Error
 	return persons, err
 }

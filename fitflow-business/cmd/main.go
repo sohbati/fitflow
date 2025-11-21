@@ -58,4 +58,3 @@ func main() {
 		log.Fatalf("Failed to start: %v", err)
 	}
 }
-

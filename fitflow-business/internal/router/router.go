@@ -1,15 +1,14 @@
 package router
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"fitflow-business/internal/repository"
+	"fitflow-business/internal/handler"
 	"fitflow-business/internal/repository/impl"
 	"fitflow-business/internal/service"
-	"fitflow-business/internal/handler"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
+	"net/http"
 )
 
 type Router struct {
@@ -38,10 +37,10 @@ func (r *Router) SetupRoutes() *gin.Engine {
 	trainerRepo := impl.NewTrainerRepository(r.database)
 	gymTrainerRepo := impl.NewGymTrainerRepository(r.database)
 	traineeRepo := impl.NewTraineeRepository(r.database)
-	
+
 	gymService := service.NewGymService(gymRepo, gymLocationRepo, gymOwnerRepo, trainerRepo, gymTrainerRepo)
 	gymHandler := handler.NewGymHandler(gymService)
-	
+
 	traineeService := service.NewTraineeService(traineeRepo)
 	traineeHandler := handler.NewTraineeHandler(traineeService)
 
@@ -58,15 +57,15 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			gyms.POST("", gymHandler.CreateGym)
 			gyms.PUT("/:id", gymHandler.UpdateGym)
 			gyms.DELETE("/:id", gymHandler.DeleteGym)
-			
+
 			// Gym locations
 			gyms.GET("/:id/locations", gymHandler.GetGymLocations)
 			gyms.POST("/:id/locations", gymHandler.CreateGymLocation)
-			
+
 			// Gym owners
 			gyms.GET("/:id/owners", gymHandler.GetGymOwners)
 			gyms.POST("/:id/owners", gymHandler.CreateGymOwner)
-			
+
 			// Gym trainers
 			gyms.GET("/:id/trainers", gymHandler.GetGymTrainers)
 			gyms.POST("/:id/trainers/:trainer_id", gymHandler.AddTrainerToGym)
@@ -79,7 +78,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			trainers.GET("/:id", gymHandler.GetTrainer)
 			trainers.POST("", gymHandler.CreateTrainer)
 		}
-		
+
 		// Trainee routes
 		trainees := api.Group("/trainees")
 		{
@@ -241,4 +240,3 @@ func (r *Router) getDashboardAnalytics(c *gin.Context) {
 func (r *Router) getProgressAnalytics(c *gin.Context) {
 	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
 }
-

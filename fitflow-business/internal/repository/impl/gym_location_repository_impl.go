@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fitflow-business/internal/model"
+	"fitflow-business/internal/repository"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ type gymLocationRepository struct {
 }
 
 // NewGymLocationRepository creates a new gym location repository
-func NewGymLocationRepository(db *gorm.DB) GymLocationRepository {
+func NewGymLocationRepository(db *gorm.DB) repository.GymLocationRepository {
 	return &gymLocationRepository{db: db}
 }
 
