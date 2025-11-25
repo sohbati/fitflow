@@ -1,17 +1,5 @@
--- Gym table schema for FitFlow Business service
--- This script creates the main gyms table
-
--- Create function to update updated_at timestamp (if not exists)
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- Create gyms table
-CREATE TABLE IF NOT EXISTS gyms (
+-- Create gyms table inside fitflow_business_schema
+CREATE TABLE IF NOT EXISTS fitflow_business_schema.gyms (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT,
@@ -19,33 +7,32 @@ CREATE TABLE IF NOT EXISTS gyms (
     email VARCHAR(100),
     website_url VARCHAR(255),
     is_verified BOOLEAN DEFAULT FALSE,
-    facilities JSONB,  -- e.g., {"wifi": true, "pool": false, "sauna": true}
-    images JSONB,      -- e.g., [{"url": "...", "type": "logo", "is_primary": true}]
+    facilities JSONB,
+    images JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_gyms_name ON gyms(name);
-CREATE INDEX IF NOT EXISTS idx_gyms_verified ON gyms(is_verified);
-CREATE INDEX IF NOT EXISTS idx_gyms_created_at ON gyms(created_at);
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_gyms_name 
+    ON fitflow_business_schema.gyms(name);
 
--- Create trigger for updated_at
-CREATE TRIGGER update_gyms_updated_at 
-    BEFORE UPDATE ON gyms 
-    FOR EACH ROW 
-    EXECUTE FUNCTION update_updated_at_column();
+CREATE INDEX IF NOT EXISTS idx_gyms_verified 
+    ON fitflow_business_schema.gyms(is_verified);
 
--- Add comments for documentation
-COMMENT ON TABLE gyms IS 'Gym information and details';
-COMMENT ON COLUMN gyms.id IS 'Unique gym identifier';
-COMMENT ON COLUMN gyms.name IS 'Gym name';
-COMMENT ON COLUMN gyms.description IS 'Gym description';
-COMMENT ON COLUMN gyms.phone_number IS 'Gym contact phone number';
-COMMENT ON COLUMN gyms.email IS 'Gym contact email';
-COMMENT ON COLUMN gyms.website_url IS 'Gym website URL';
-COMMENT ON COLUMN gyms.is_verified IS 'Whether the gym is verified';
-COMMENT ON COLUMN gyms.facilities IS 'Gym facilities in JSON format';
-COMMENT ON COLUMN gyms.images IS 'Gym images in JSON format';
-COMMENT ON COLUMN gyms.created_at IS 'Gym creation timestamp';
-COMMENT ON COLUMN gyms.updated_at IS 'Last update timestamp';
+CREATE INDEX IF NOT EXISTS idx_gyms_created_at 
+    ON fitflow_business_schema.gyms(created_at);
+
+-- Add comments
+COMMENT ON TABLE fitflow_business_schema.gyms IS 'Gym information and details';
+COMMENT ON COLUMN fitflow_business_schema.gyms.id IS 'Unique gym identifier';
+COMMENT ON COLUMN fitflow_business_schema.gyms.name IS 'Gym name';
+COMMENT ON COLUMN fitflow_business_schema.gyms.description IS 'Gym description';
+COMMENT ON COLUMN fitflow_business_schema.gyms.phone_number IS 'Gym contact phone number';
+COMMENT ON COLUMN fitflow_business_schema.gyms.email IS 'Gym contact email';
+COMMENT ON COLUMN fitflow_business_schema.gyms.website_url IS 'Gym website URL';
+COMMENT ON COLUMN fitflow_business_schema.gyms.is_verified IS 'Whether the gym is verified';
+COMMENT ON COLUMN fitflow_business_schema.gyms.facilities IS 'Gym facilities in JSON format';
+COMMENT ON COLUMN fitflow_business_schema.gyms.images IS 'Gym images in JSON format';
+COMMENT ON COLUMN fitflow_business_schema.gyms.created_at IS 'Gym creation timestamp';
+COMMENT ON COLUMN fitflow_business_schema.gyms.updated_at IS 'Last update timestamp';

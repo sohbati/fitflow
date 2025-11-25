@@ -21,7 +21,5 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO fitflow_business_user;
 -- Set default privileges for future objects
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fitflow_business_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO fitflow_business_user;
-
--- Grant CREATE privilege on the public schema
-GRANT CREATE ON SCHEMA public TO fitflow_business_user;
-
+ 
+ CREATE SCHEMA fitflow_business_schema AUTHORIZATION fitflow_business_user;

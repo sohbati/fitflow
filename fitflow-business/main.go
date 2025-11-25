@@ -30,12 +30,14 @@ func (app *Application) Initialize() error {
 	app.config = config.Load()
 	log.Println("Configuration loaded")
 
+	log.Println("Connecting to database...")
 	database, err := db.Connect(app.config.DatabaseURL, app.config.DatabaseType)
 	if err != nil {
+		log.Printf("Failed to connect to database: %v", err)
 		return err
 	}
 	app.database = database
-	log.Println("Database connected")
+	log.Println("Database connection established and verified")
 
 	app.router = router.NewRouter(app.database)
 	log.Println("Router configured")

@@ -1,10 +1,7 @@
--- Gym locations table schema for FitFlow Business service
--- This script creates the gym_locations table
-
--- Create gym_locations table
-CREATE TABLE IF NOT EXISTS gym_locations (
+-- Create gym_locations table inside schema
+CREATE TABLE IF NOT EXISTS fitflow_business_schema.gym_locations (
     id BIGSERIAL PRIMARY KEY,
-    gym_id BIGINT REFERENCES gyms(id) ON DELETE CASCADE,
+    gym_id BIGINT REFERENCES fitflow_business_schema.gyms(id) ON DELETE CASCADE,
     location_type VARCHAR(20) NOT NULL,  -- home, gym, park, nature
     address VARCHAR(255),
     city VARCHAR(100),
@@ -18,28 +15,29 @@ CREATE TABLE IF NOT EXISTS gym_locations (
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_gym_locations_gym_id ON gym_locations(gym_id);
-CREATE INDEX IF NOT EXISTS idx_gym_locations_type ON gym_locations(location_type);
-CREATE INDEX IF NOT EXISTS idx_gym_locations_city ON gym_locations(city);
-CREATE INDEX IF NOT EXISTS idx_gym_locations_coordinates ON gym_locations(latitude, longitude);
+CREATE INDEX IF NOT EXISTS idx_gym_locations_gym_id 
+    ON fitflow_business_schema.gym_locations(gym_id);
 
--- Create trigger for updated_at
-CREATE TRIGGER update_gym_locations_updated_at 
-    BEFORE UPDATE ON gym_locations 
-    FOR EACH ROW 
-    EXECUTE FUNCTION update_updated_at_column();
+CREATE INDEX IF NOT EXISTS idx_gym_locations_type 
+    ON fitflow_business_schema.gym_locations(location_type);
+
+CREATE INDEX IF NOT EXISTS idx_gym_locations_city 
+    ON fitflow_business_schema.gym_locations(city);
+
+CREATE INDEX IF NOT EXISTS idx_gym_locations_coordinates 
+    ON fitflow_business_schema.gym_locations(latitude, longitude);
 
 -- Add comments for documentation
-COMMENT ON TABLE gym_locations IS 'Gym location details including addresses and coordinates';
-COMMENT ON COLUMN gym_locations.id IS 'Unique location identifier';
-COMMENT ON COLUMN gym_locations.gym_id IS 'Reference to the gym';
-COMMENT ON COLUMN gym_locations.location_type IS 'Type of location (home, gym, park, nature)';
-COMMENT ON COLUMN gym_locations.address IS 'Full address';
-COMMENT ON COLUMN gym_locations.city IS 'City name';
-COMMENT ON COLUMN gym_locations.province IS 'Province/state name';
-COMMENT ON COLUMN gym_locations.country IS 'Country name';
-COMMENT ON COLUMN gym_locations.postal_code IS 'Postal/ZIP code';
-COMMENT ON COLUMN gym_locations.latitude IS 'Latitude coordinate';
-COMMENT ON COLUMN gym_locations.longitude IS 'Longitude coordinate';
-COMMENT ON COLUMN gym_locations.created_at IS 'Location creation timestamp';
-COMMENT ON COLUMN gym_locations.updated_at IS 'Last update timestamp';
+COMMENT ON TABLE fitflow_business_schema.gym_locations IS 'Gym location details including addresses and coordinates';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.id IS 'Unique location identifier';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.gym_id IS 'Reference to the gym';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.location_type IS 'Type of location (home, gym, park, nature)';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.address IS 'Full address';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.city IS 'City name';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.province IS 'Province/state name';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.country IS 'Country name';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.postal_code IS 'Postal/ZIP code';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.latitude IS 'Latitude coordinate';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.longitude IS 'Longitude coordinate';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.created_at IS 'Location creation timestamp';
+COMMENT ON COLUMN fitflow_business_schema.gym_locations.updated_at IS 'Last update timestamp';
