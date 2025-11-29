@@ -1,0 +1,6 @@
+logs/
+*.pid
+*.log
+*.access.log
+*.error.log
+
