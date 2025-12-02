@@ -1,0 +1,46 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug IAM Service",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/iam-service/cmd/main.go",
+      "cwd": "${workspaceFolder}/iam-service",
+      "envFile": "${workspaceFolder}/iam-service/.env",
+      "env": {
+        "JWT_SECRET": "mysecret",
+        "DATABASE_URL": "postgres://fitflow_iam_user:password@localhost:5432/fitflow_iam_db?sslmode=disable",
+        "DATABASE_TYPE": "postgres",
+        "TOKEN_EXP_MINUTES": "15",
+        "PORT": "8091",
+        "GOOGLE_CLIENT_ID": "your-google-client-id",
+        "GOOGLE_CLIENT_SECRET": "your-google-client-secret",
+        "GOOGLE_REDIRECT_URL": "http://localhost:3000/auth/google/callback"
+      },
+      "args": [],
+      "showLog": true,
+      "trace": "verbose",
+      "stopOnEntry": false
+    },
+    {
+      "name": "Attach to IAM Service (Headless)",
+      "type": "go",
+      "request": "attach",
+      "mode": "local",
+      "processId": 0,
+      "showLog": true
+    },
+    {
+      "name": "Debug IAM Service (Headless - Connect)",
+      "type": "go",
+      "request": "attach",
+      "mode": "remote",
+      "remotePath": "${workspaceFolder}/iam-service",
+      "port": 2345,
+      "host": "127.0.0.1",
+      "showLog": true
+    }
+  ]
+}

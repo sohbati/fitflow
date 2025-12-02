@@ -328,6 +328,18 @@ func (h *GoogleAuthHandler) generateUsernameFromEmail(email string) string {
 // @Success 200 {object} map[string]string
 // @Router /auth/google/url [get]
 func (h *GoogleAuthHandler) GetGoogleAuthURL(c *gin.Context) {
+	fmt.Printf("[DEBUG] GetGoogleAuthURL called\n")
+	fmt.Printf("[DEBUG] Handler config: ClientID=%s, RedirectURL=%s\n",
+		h.config.ClientID, h.config.RedirectURL)
+
+	if h.config == nil {
+		fmt.Printf("[ERROR] OAuth config is nil\n")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "OAuth configuration not initialized"})
+		return
+	}
+
 	url := h.config.AuthCodeURL("state", oauth2.AccessTypeOffline)
+	fmt.Printf("[DEBUG] Generated auth URL: %s\n", url)
+
 	c.JSON(http.StatusOK, gin.H{"url": url})
 }

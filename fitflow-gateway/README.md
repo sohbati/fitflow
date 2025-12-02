@@ -30,8 +30,8 @@ From the repository root:
 
 Once running:
 
-- Gateway URL: http://localhost:8080
-- Admin/Status: http://localhost:8080/status (if enabled)
+- Gateway URL: http://localhost:8090
+- Admin/Status: http://localhost:8090/status (if enabled)
 
 Edit `config/nginx.conf` or files in `config/conf.d/` to add new upstream services, routes, and configurations. After editing, run `./run-fitflow-gateway.sh reload` to apply changes without downtime.
 

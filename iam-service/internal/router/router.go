@@ -129,7 +129,11 @@ func (r *Router) setupPublicRoutes(router *gin.Engine) {
 				fmt.Printf("Router: POST /auth/google called\n")
 				r.authHandler.GoogleAuthHandler.GoogleLogin(c)
 			})
-			authGroup.GET("/google/url", r.authHandler.GoogleAuthHandler.GetGoogleAuthURL)
+			authGroup.GET("/google/url", func(c *gin.Context) {
+				fmt.Printf("[DEBUG] Router: GET /auth/google/url called\n")
+				fmt.Printf("[DEBUG] Request method: %s, Path: %s\n", c.Request.Method, c.Request.URL.Path)
+				r.authHandler.GoogleAuthHandler.GetGoogleAuthURL(c)
+			})
 		} else {
 			fmt.Printf("Router: Google OAuth handler is nil\n")
 		}

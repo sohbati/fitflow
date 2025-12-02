@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -24,8 +25,24 @@ type Config struct {
 }
 
 func Load() *Config {
-	// Load .env file if it exists
-	if err := godotenv.Load(); err != nil {
+	// Try to load .env file from multiple possible locations
+	envPaths := []string{
+		".env",               // Current directory
+		"iam-service/.env",   // From root directory
+		"./iam-service/.env", // Relative path
+		filepath.Join(".", "iam-service", ".env"), // Using filepath
+	}
+
+	var envLoaded bool
+	for _, envPath := range envPaths {
+		if err := godotenv.Load(envPath); err == nil {
+			log.Printf("Loaded .env file from: %s", envPath)
+			envLoaded = true
+			break
+		}
+	}
+
+	if !envLoaded {
 		log.Println("No .env file found, using environment variables")
 	}
 

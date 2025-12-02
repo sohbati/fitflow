@@ -9,17 +9,47 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      // Get Google auth URL from IAM service
-      const response = await fetch(`${process.env.NEXT_PUBLIC_IAM_SERVICE_URL}/auth/google/url`);
-      if (!response.ok) {
-        throw new Error('Failed to get Google auth URL');
+      const iamServiceUrl = process.env.NEXT_PUBLIC_IAM_SERVICE_URL;
+      
+      if (!iamServiceUrl) {
+        console.error('NEXT_PUBLIC_IAM_SERVICE_URL is not defined');
+        alert('Configuration error: IAM service URL is not set. Please check your .env.local file and restart the dev server.');
+        setIsLoading(false);
+        return;
       }
+      
+      console.log('Fetching Google auth URL from:', `${iamServiceUrl}/auth/google/url`);
+      
+      // Get Google auth URL from IAM service
+      const response = await fetch(`${iamServiceUrl}/auth/google/url`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+      });
+      
+      console.log('Response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`Failed to get Google auth URL: ${response.status} ${response.statusText}`);
+      }
+      
       const data = await response.json();
+      console.log('Received auth URL data:', data);
+      
+      if (!data.url) {
+        throw new Error('Invalid response: no URL in response');
+      }
+      
       // Redirect to Google's auth page
       window.location.href = data.url;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error initiating Google sign-in:', error);
-      alert('Failed to initiate Google sign-in. Please try again.');
+      const errorMessage = error.message || 'Failed to initiate Google sign-in. Please try again.';
+      alert(errorMessage);
       setIsLoading(false);
     }
   };
