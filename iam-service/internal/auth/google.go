@@ -138,6 +138,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 			// User doesn't exist, create new user
 			newUser := &user.User{
 				Email:       userInfo.Email,
+				Mobile:      "", // Mobile not available from Google OAuth
 				DisplayName: userInfo.Name,
 				AvatarURL:   userInfo.Picture,
 			}

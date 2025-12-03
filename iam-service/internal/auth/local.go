@@ -57,6 +57,14 @@ func (h *LocalAuthHandler) Register(req LocalRegisterRequest) (*LocalAuthRespons
 		return nil, errors.New("email already exists")
 	}
 
+	// Check if mobile already exists (if provided)
+	if req.Mobile != "" {
+		existingUserByMobile, _ := h.userService.GetUserByMobile(req.Mobile)
+		if existingUserByMobile != nil {
+			return nil, errors.New("mobile number already exists")
+		}
+	}
+
 	// Hash password
 	hashedPassword, err := crypto.HashPassword(req.Password)
 	if err != nil {
@@ -66,6 +74,7 @@ func (h *LocalAuthHandler) Register(req LocalRegisterRequest) (*LocalAuthRespons
 	// Create user
 	newUser := &user.User{
 		Email:       req.Email,
+		Mobile:      req.Mobile,
 		DisplayName: req.DisplayName,
 		Country:     req.Country,
 		IsActive:    true,

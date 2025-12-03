@@ -12,6 +12,7 @@ type Service interface {
 	AuthenticateUser(username, password string) (*User, error)
 	GetUserByID(id uuid.UUID) (*User, error)
 	GetUserByEmail(email string) (*User, error)
+	GetUserByMobile(mobile string) (*User, error)
 	UpdateUser(user *User) (*User, error)
 }
 
@@ -21,6 +22,7 @@ type service struct {
 
 type CreateUserRequest struct {
 	Email       string `json:"email" binding:"required,email"`
+	Mobile      string `json:"mobile"`
 	DisplayName string `json:"display_name" binding:"required"`
 	Country     string `json:"country" binding:"required"`
 	Role        string `json:"role,omitempty"`
@@ -45,6 +47,7 @@ func (s *service) CreateUser(req CreateUserRequest) (*User, error) {
 
 	user := &User{
 		Email:       req.Email,
+		Mobile:      req.Mobile,
 		DisplayName: req.DisplayName,
 		Country:     req.Country,
 		Role:        role,
@@ -78,6 +81,11 @@ func (s *service) CreateUserFromStruct(user *User) (*User, error) {
 // GetUserByEmail gets user by email
 func (s *service) GetUserByEmail(email string) (*User, error) {
 	return s.repo.GetByEmail(email)
+}
+
+// GetUserByMobile gets user by mobile number
+func (s *service) GetUserByMobile(mobile string) (*User, error) {
+	return s.repo.GetByMobile(mobile)
 }
 
 // UpdateUser updates an existing user

@@ -5,6 +5,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR UNIQUE NOT NULL,
+    mobile VARCHAR(20) UNIQUE,
     display_name VARCHAR NOT NULL,
     avatar_url VARCHAR(500),
     country VARCHAR,
@@ -16,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_mobile ON users(mobile);
 CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active);
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
@@ -26,6 +28,7 @@ COMMENT ON TABLE users IS 'User accounts for the IAM service (normalized)';
 -- Column comments
 COMMENT ON COLUMN users.id IS 'Unique user identifier (UUID)';
 COMMENT ON COLUMN users.email IS 'Unique email address';
+COMMENT ON COLUMN users.mobile IS 'Unique mobile phone number';
 COMMENT ON COLUMN users.display_name IS 'User display name';
 COMMENT ON COLUMN users.avatar_url IS 'User avatar/profile image URL';
 COMMENT ON COLUMN users.country IS 'ISO country code';

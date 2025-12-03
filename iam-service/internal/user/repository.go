@@ -11,6 +11,7 @@ type Repository interface {
 	Create(user *User) error
 	Update(user *User) error
 	GetByEmail(email string) (*User, error)
+	GetByMobile(mobile string) (*User, error)
 	GetByID(id uuid.UUID) (*User, error)
 }
 
@@ -33,6 +34,18 @@ func (r *repository) Update(user *User) error {
 func (r *repository) GetByEmail(email string) (*User, error) {
 	var user User
 	err := r.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *repository) GetByMobile(mobile string) (*User, error) {
+	var user User
+	err := r.db.Where("mobile = ?", mobile).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user not found")

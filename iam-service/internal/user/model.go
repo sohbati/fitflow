@@ -10,6 +10,7 @@ import (
 type User struct {
 	ID          uuid.UUID `gorm:"type:char(36);primary_key" json:"id"`
 	Email       string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"email"`
+	Mobile      string    `gorm:"type:varchar(20);uniqueIndex" json:"mobile"`
 	DisplayName string    `gorm:"type:varchar(255);not null" json:"display_name"`
 	AvatarURL   string    `gorm:"type:varchar(500)" json:"avatar_url"`
 	Country     string    `gorm:"type:varchar(255)" json:"country"`
