@@ -58,9 +58,22 @@ export async function handleGoogleCallback(code: string): Promise<{ token: strin
 
   const data = await response.json()
   
+  // Map IAM service user fields to app user format
+  // IAM returns: display_name, avatar_url, google_id, etc.
+  // App expects: name, picture
+  const mappedUser = {
+    id: data.user.id,
+    email: data.user.email,
+    name: data.user.display_name || data.user.name,
+    picture: data.user.avatar_url || data.user.picture,
+    google_id: data.user.google_id, // Include google_id for future use
+    mobile: data.user.mobile,
+    country: data.user.country,
+  }
+  
   // Store token and user data
   localStorage.setItem('auth_token', data.token)
-  localStorage.setItem('user_data', JSON.stringify(data.user))
+  localStorage.setItem('user_data', JSON.stringify(mappedUser))
   
-  return data
+  return { ...data, user: mappedUser }
 }

@@ -7,6 +7,9 @@ export interface User {
   email?: string
   name?: string
   picture?: string
+  google_id?: string
+  mobile?: string
+  country?: string
 }
 
 export function useAuth() {

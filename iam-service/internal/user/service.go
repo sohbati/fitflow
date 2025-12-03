@@ -13,6 +13,7 @@ type Service interface {
 	GetUserByID(id uuid.UUID) (*User, error)
 	GetUserByEmail(email string) (*User, error)
 	GetUserByMobile(mobile string) (*User, error)
+	GetUserByGoogleID(googleID string) (*User, error)
 	UpdateUser(user *User) (*User, error)
 }
 
@@ -86,6 +87,11 @@ func (s *service) GetUserByEmail(email string) (*User, error) {
 // GetUserByMobile gets user by mobile number
 func (s *service) GetUserByMobile(mobile string) (*User, error) {
 	return s.repo.GetByMobile(mobile)
+}
+
+// GetUserByGoogleID gets user by Google ID (Gmail)
+func (s *service) GetUserByGoogleID(googleID string) (*User, error) {
+	return s.repo.GetByGoogleID(googleID)
 }
 
 // UpdateUser updates an existing user

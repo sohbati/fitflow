@@ -130,70 +130,86 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	// Check if user auth exists for this Google ID
 	existingUserAuth, err := h.userAuthService.GetUserAuthByProviderAndProviderUserID(googleProvider.ID, userInfo.ID)
 	if err != nil {
-		fmt.Printf("Google OAuth: User auth doesn't exist, checking if user exists by email\n")
-		// User auth doesn't exist, check if user exists by email
-		existingUser, err := h.userService.GetUserByEmail(userInfo.Email)
+		fmt.Printf("Google OAuth: User auth doesn't exist, checking if user exists by google_id (Gmail)\n")
+		// First check if user exists by google_id (Gmail)
+		existingUser, err := h.userService.GetUserByGoogleID(userInfo.Email)
 		if err != nil {
-			fmt.Printf("Google OAuth: User doesn't exist, creating new user\n")
-			// User doesn't exist, create new user
-			newUser := &user.User{
-				Email:       userInfo.Email,
-				Mobile:      "", // Mobile not available from Google OAuth
-				DisplayName: userInfo.Name,
-				AvatarURL:   userInfo.Picture,
-			}
-
-			createdUser, err := h.userService.CreateUserFromStruct(newUser)
+			// User not found by google_id, check by email
+			fmt.Printf("Google OAuth: User not found by google_id, checking by email\n")
+			existingUser, err = h.userService.GetUserByEmail(userInfo.Email)
 			if err != nil {
-				fmt.Printf("Google OAuth: Failed to create user: %v\n", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+				fmt.Printf("Google OAuth: User doesn't exist, creating new user\n")
+				// User doesn't exist, create new user with google_id set to Gmail
+				newUser := &user.User{
+					Email:       userInfo.Email,
+					GoogleID:    userInfo.Email, // Store Gmail as google_id
+					Mobile:      "",            // Mobile not available from Google OAuth
+					DisplayName: userInfo.Name,
+					AvatarURL:   userInfo.Picture,
+				}
+
+				createdUser, err := h.userService.CreateUserFromStruct(newUser)
+				if err != nil {
+					fmt.Printf("Google OAuth: Failed to create user: %v\n", err)
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+					return
+				}
+
+				fmt.Printf("Google OAuth: Created user: %s with google_id: %s\n", createdUser.ID, createdUser.GoogleID)
+
+				// Create user auth for Google
+				userAuth := &UserAuth{
+					UserID:         createdUser.ID,
+					AuthProviderID: googleProvider.ID,
+					ProviderUserID: userInfo.ID,
+					ProviderEmail:  userInfo.Email,
+					IsVerified:     true,
+				}
+
+				// Add provider data as JSON
+				providerData := map[string]interface{}{
+					"name":        userInfo.Name,
+					"given_name":  userInfo.GivenName,
+					"family_name": userInfo.FamilyName,
+					"picture":     userInfo.Picture,
+					"locale":      userInfo.Locale,
+				}
+				if data, err := json.Marshal(providerData); err == nil {
+					userAuth.ProviderData = string(data)
+				}
+
+				_, err = h.userAuthService.CreateUserAuth(userAuth)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user auth"})
+					return
+				}
+
+				// Generate JWT token
+				jwtToken, err := h.jwtManager.GenerateToken(createdUser.ID.String(), createdUser.Email)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+					return
+				}
+
+				c.JSON(http.StatusOK, GoogleLoginResponse{
+					Token: jwtToken,
+					User:  *createdUser,
+				})
 				return
 			}
 
-			fmt.Printf("Google OAuth: Created user: %s\n", createdUser.ID)
-
-			// Create user auth for Google
-			userAuth := &UserAuth{
-				UserID:         createdUser.ID,
-				AuthProviderID: googleProvider.ID,
-				ProviderUserID: userInfo.ID,
-				ProviderEmail:  userInfo.Email,
-				IsVerified:     true,
+			// User exists but doesn't have google_id set, update it
+			if existingUser.GoogleID == "" {
+				fmt.Printf("Google OAuth: User exists but google_id not set, updating\n")
+				existingUser.GoogleID = userInfo.Email
+				_, err = h.userService.UpdateUser(existingUser)
+				if err != nil {
+					fmt.Printf("Google OAuth: Failed to update user google_id: %v\n", err)
+				}
 			}
-
-			// Add provider data as JSON
-			providerData := map[string]interface{}{
-				"name":        userInfo.Name,
-				"given_name":  userInfo.GivenName,
-				"family_name": userInfo.FamilyName,
-				"picture":     userInfo.Picture,
-				"locale":      userInfo.Locale,
-			}
-			if data, err := json.Marshal(providerData); err == nil {
-				userAuth.ProviderData = string(data)
-			}
-
-			_, err = h.userAuthService.CreateUserAuth(userAuth)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user auth"})
-				return
-			}
-
-			// Generate JWT token
-			jwtToken, err := h.jwtManager.GenerateToken(createdUser.ID.String(), createdUser.Email)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-				return
-			}
-
-			c.JSON(http.StatusOK, GoogleLoginResponse{
-				Token: jwtToken,
-				User:  *createdUser,
-			})
-			return
 		}
 
-		// User exists, create user auth for Google
+		// User exists (by google_id or email), create user auth for Google
 		userAuth := &UserAuth{
 			UserID:         existingUser.ID,
 			AuthProviderID: googleProvider.ID,
@@ -220,10 +236,18 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 			return
 		}
 
-		// Update user info if needed
+		// Update user info if needed (including google_id if not set)
+		needsUpdate := false
+		if existingUser.GoogleID == "" {
+			existingUser.GoogleID = userInfo.Email
+			needsUpdate = true
+		}
 		if existingUser.AvatarURL != userInfo.Picture || existingUser.DisplayName != userInfo.Name {
 			existingUser.AvatarURL = userInfo.Picture
 			existingUser.DisplayName = userInfo.Name
+			needsUpdate = true
+		}
+		if needsUpdate {
 			_, err = h.userService.UpdateUser(existingUser)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
@@ -252,10 +276,18 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 		return
 	}
 
-	// Update user info if needed
+	// Update user info if needed (including google_id if not set)
+	needsUpdate := false
+	if existingUser.GoogleID == "" {
+		existingUser.GoogleID = userInfo.Email
+		needsUpdate = true
+	}
 	if existingUser.AvatarURL != userInfo.Picture || existingUser.DisplayName != userInfo.Name {
 		existingUser.AvatarURL = userInfo.Picture
 		existingUser.DisplayName = userInfo.Name
+		needsUpdate = true
+	}
+	if needsUpdate {
 		_, err = h.userService.UpdateUser(existingUser)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
