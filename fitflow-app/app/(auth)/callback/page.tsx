@@ -1,75 +1,58 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { handleGoogleCallback } from '@/hooks/useGoogleAuth'
 
 function GoogleCallbackContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [message, setMessage] = useState('');
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    const error = searchParams.get('error');
+    const code = searchParams.get('code')
+    const error = searchParams.get('error')
 
     if (error) {
-      setStatus('error');
-      setMessage(`Google authentication failed: ${error}`);
-      return;
+      setStatus('error')
+      setMessage(`Google authentication failed: ${error}`)
+      return
     }
 
     if (code) {
-      // Send the code to your backend IAM service
       const authenticateWithGoogle = async () => {
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_IAM_SERVICE_URL}/auth/google`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Google authentication failed');
-          }
-
-          const data = await response.json();
+          await handleGoogleCallback(code)
           
-          // Store token and user data in localStorage for now
-          localStorage.setItem('auth_token', data.token);
-          localStorage.setItem('user_data', JSON.stringify(data.user));
-          
-          setStatus('success');
-          setMessage('Successfully signed in with Google!');
+          setStatus('success')
+          setMessage('Successfully signed in with Google!')
           
           // Redirect to home page after a short delay
           setTimeout(() => {
-            router.push('/');
-          }, 2000);
+            router.push('/home')
+          }, 2000)
           
         } catch (error: any) {
-          console.error('Google authentication error:', error);
-          setStatus('error');
-          setMessage(`Authentication failed: ${error.message}`);
+          console.error('Google authentication error:', error)
+          setStatus('error')
+          setMessage(`Authentication failed: ${error.message}`)
         }
-      };
+      }
       
-      authenticateWithGoogle();
+      authenticateWithGoogle()
     } else {
-      setStatus('error');
-      setMessage('Google authentication failed: No code received.');
+      setStatus('error')
+      setMessage('Google authentication failed: No code received.')
     }
-  }, [searchParams, router]);
+  }, [searchParams, router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <Link href="/" className="text-3xl font-bold text-blue-600">
+          <Link href="/home" className="text-3xl font-bold text-blue-600">
             FitFlow
           </Link>
         </div>
@@ -119,7 +102,7 @@ function GoogleCallbackContent() {
                   Try Again
                 </Link>
                 <Link 
-                  href="/"
+                  href="/home"
                   className="inline-block w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                 >
                   Back to Home
@@ -130,7 +113,7 @@ function GoogleCallbackContent() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function GoogleCallbackPage() {
@@ -145,5 +128,6 @@ export default function GoogleCallbackPage() {
     }>
       <GoogleCallbackContent />
     </Suspense>
-  );
+  )
 }
+

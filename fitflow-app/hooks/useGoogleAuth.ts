@@ -1,147 +1,66 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react';
-import { GoogleUser, AuthResponse, GOOGLE_CLIENT_ID } from '@/lib/google-auth';
-
-declare global {
-  interface Window {
-    google: any;
-    gapi: any;
+export async function initiateGoogleSignIn(): Promise<void> {
+  const iamServiceUrl = process.env.NEXT_PUBLIC_IAM_SERVICE_URL
+  
+  if (!iamServiceUrl) {
+    throw new Error('Configuration error: IAM service URL is not set. Please check your .env.local file and restart the dev server.')
   }
+  
+  console.log('Fetching Google auth URL from:', `${iamServiceUrl}/auth/google/url`)
+  
+  const response = await fetch(`${iamServiceUrl}/auth/google/url`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+  
+  console.log('Response status:', response.status, response.statusText)
+  
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('Response error:', errorText)
+    throw new Error(`Failed to get Google auth URL: ${response.status} ${response.statusText}`)
+  }
+  
+  const data = await response.json()
+  console.log('Received auth URL data:', data)
+  
+  if (!data.url) {
+    throw new Error('Invalid response: no URL in response')
+  }
+  
+  // Redirect to Google's auth page
+  window.location.href = data.url
 }
 
-export const useGoogleAuth = () => {
-  const [user, setUser] = useState<GoogleUser | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
+export async function handleGoogleCallback(code: string): Promise<{ token: string; user: any }> {
+  const iamServiceUrl = process.env.NEXT_PUBLIC_IAM_SERVICE_URL
+  
+  if (!iamServiceUrl) {
+    throw new Error('IAM service URL is not configured')
+  }
 
-  // Load Google Identity Services
-  useEffect(() => {
-    const loadGoogleScript = () => {
-      if (window.google) {
-        setIsGoogleLoaded(true);
-        return;
-      }
+  const response = await fetch(`${iamServiceUrl}/auth/google`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  })
 
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setIsGoogleLoaded(true);
-      };
-      script.onerror = () => {
-        setError('Failed to load Google Identity Services');
-      };
-      document.head.appendChild(script);
-    };
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || 'Google authentication failed')
+  }
 
-    loadGoogleScript();
-  }, []);
-
-  // Initialize Google Identity Services
-  useEffect(() => {
-    if (!isGoogleLoaded || !window.google) return;
-
-    try {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-    } catch (err) {
-      setError('Failed to initialize Google Identity Services');
-    }
-  }, [isGoogleLoaded]);
-
-  // Handle credential response
-  const handleCredentialResponse = useCallback((response: any) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(response.credential.split('.')[1]));
-      
-      const userData: GoogleUser = {
-        id: payload.sub,
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture,
-        given_name: payload.given_name,
-        family_name: payload.family_name,
-      };
-
-      setUser(userData);
-      
-      // Store token in localStorage
-      localStorage.setItem('google_token', response.credential);
-      localStorage.setItem('google_user', JSON.stringify(userData));
-      
-    } catch (err) {
-      setError('Failed to process Google authentication');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Sign in with Google
-  const signIn = useCallback(() => {
-    if (!isGoogleLoaded || !window.google) {
-      setError('Google Identity Services not loaded');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      window.google.accounts.id.prompt();
-    } catch (err) {
-      setError('Failed to initiate Google sign-in');
-      setIsLoading(false);
-    }
-  }, [isGoogleLoaded]);
-
-  // Sign out
-  const signOut = useCallback(() => {
-    if (!isGoogleLoaded || !window.google) return;
-
-    try {
-      window.google.accounts.id.disableAutoSelect();
-      setUser(null);
-      localStorage.removeItem('google_token');
-      localStorage.removeItem('google_user');
-    } catch (err) {
-      setError('Failed to sign out');
-    }
-  }, [isGoogleLoaded]);
-
-  // Check for existing session
-  useEffect(() => {
-    const storedUser = localStorage.getItem('google_user');
-    const storedToken = localStorage.getItem('google_token');
-
-    if (storedUser && storedToken) {
-      try {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
-      } catch (err) {
-        // Clear invalid stored data
-        localStorage.removeItem('google_user');
-        localStorage.removeItem('google_token');
-      }
-    }
-  }, []);
-
-  return {
-    user,
-    isLoading,
-    error,
-    isGoogleLoaded,
-    signIn,
-    signOut,
-  };
-};
+  const data = await response.json()
+  
+  // Store token and user data
+  localStorage.setItem('auth_token', data.token)
+  localStorage.setItem('user_data', JSON.stringify(data.user))
+  
+  return data
+}
