@@ -9,6 +9,7 @@ import (
 	"iam-service/internal/db"
 	"iam-service/internal/role"
 	"iam-service/internal/router"
+	"iam-service/internal/session"
 	"iam-service/internal/user"
 	"iam-service/pkg/jwt"
 
@@ -49,9 +50,12 @@ type Application struct {
 	authProviderService auth.AuthProviderService
 	userAuthRepo        auth.UserAuthRepository
 	userAuthService     auth.UserAuthService
-	authHandler *auth.Handler
-	roleHandler *role.Handler
-	router      *router.Router
+	// Session services
+	sessionRepo    session.Repository
+	sessionService session.Service
+	authHandler    *auth.Handler
+	roleHandler    *role.Handler
+	router         *router.Router
 }
 
 // NewApplication creates a new application instance
@@ -135,6 +139,10 @@ func (app *Application) setupServices() error {
 	app.userAuthRepo = auth.NewUserAuthRepository(app.database)
 	app.userAuthService = auth.NewUserAuthService(app.authProviderRepo, app.userAuthRepo)
 
+	// Initialize session services
+	app.sessionRepo = session.NewRepository(app.database)
+	app.sessionService = session.NewService(app.sessionRepo)
+
 	// Initialize default auth providers
 	if err := app.authProviderService.InitializeDefaultProviders(); err != nil {
 		log.Printf("Failed to initialize default auth providers: %v", err)
@@ -154,10 +162,10 @@ func (app *Application) setupHandlers() error {
 			ClientSecret: app.config.GoogleClientSecret,
 			RedirectURL:  app.config.GoogleRedirectURL,
 		}
-		app.authHandler = auth.NewHandlerWithGoogle(app.userService, app.userAuthService, app.authProviderService, app.jwtManager, googleConfig)
+		app.authHandler = auth.NewHandlerWithGoogle(app.userService, app.userAuthService, app.authProviderService, app.jwtManager, app.sessionService, googleConfig)
 		log.Println("Google OAuth enabled")
 	} else {
-		app.authHandler = auth.NewHandler(app.userService, app.userAuthService, app.authProviderService, app.jwtManager)
+		app.authHandler = auth.NewHandler(app.userService, app.userAuthService, app.authProviderService, app.jwtManager, app.sessionService)
 		log.Println("Google OAuth disabled - missing configuration")
 	}
 

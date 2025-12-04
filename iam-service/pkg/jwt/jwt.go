@@ -64,3 +64,8 @@ func (j *JWTManager) ValidateToken(tokenString string) (*Claims, error) {
 func (j *JWTManager) GenerateTokenWithCustomClaims(userID, username string) (string, error) {
 	return j.GenerateToken(userID, username)
 }
+
+// GetTokenDuration returns the token expiration duration
+func (j *JWTManager) GetTokenDuration() time.Duration {
+	return j.tokenDuration
+}

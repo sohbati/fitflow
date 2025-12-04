@@ -4,12 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"iam-service/internal/session"
 	"iam-service/internal/user"
+	"iam-service/pkg/crypto"
 	"iam-service/pkg/jwt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -39,11 +43,12 @@ type GoogleAuthHandler struct {
 	userAuthService     UserAuthService
 	authProviderService AuthProviderService
 	jwtManager          *jwt.JWTManager
+	sessionService      session.Service
 	config              *oauth2.Config
 }
 
 // NewGoogleAuthHandler creates a new Google OAuth handler
-func NewGoogleAuthHandler(userService user.Service, userAuthService UserAuthService, authProviderService AuthProviderService, jwtManager *jwt.JWTManager, googleConfig *GoogleOAuthConfig) *GoogleAuthHandler {
+func NewGoogleAuthHandler(userService user.Service, userAuthService UserAuthService, authProviderService AuthProviderService, jwtManager *jwt.JWTManager, sessionService session.Service, googleConfig *GoogleOAuthConfig) *GoogleAuthHandler {
 	config := &oauth2.Config{
 		ClientID:     googleConfig.ClientID,
 		ClientSecret: googleConfig.ClientSecret,
@@ -60,6 +65,7 @@ func NewGoogleAuthHandler(userService user.Service, userAuthService UserAuthServ
 		userAuthService:     userAuthService,
 		authProviderService: authProviderService,
 		jwtManager:          jwtManager,
+		sessionService:      sessionService,
 		config:              config,
 	}
 }
@@ -143,7 +149,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 				newUser := &user.User{
 					Email:       userInfo.Email,
 					GoogleID:    userInfo.Email, // Store Gmail as google_id
-					Mobile:      "",            // Mobile not available from Google OAuth
+					Mobile:      "",             // Mobile not available from Google OAuth
 					DisplayName: userInfo.Name,
 					AvatarURL:   userInfo.Picture,
 				}
@@ -189,6 +195,12 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 				if err != nil {
 					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 					return
+				}
+
+				// Create session for the user
+				if err := h.createSessionForUser(c, createdUser.ID.String(), jwtToken); err != nil {
+					fmt.Printf("Google OAuth: Failed to create session: %v\n", err)
+					// Don't fail the login if session creation fails, just log it
 				}
 
 				c.JSON(http.StatusOK, GoogleLoginResponse{
@@ -262,6 +274,12 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 			return
 		}
 
+		// Create session for the user
+		if err := h.createSessionForUser(c, existingUser.ID.String(), jwtToken); err != nil {
+			fmt.Printf("Google OAuth: Failed to create session: %v\n", err)
+			// Don't fail the login if session creation fails, just log it
+		}
+
 		c.JSON(http.StatusOK, GoogleLoginResponse{
 			Token: jwtToken,
 			User:  *existingUser,
@@ -316,10 +334,75 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 		return
 	}
 
+	// Create session for the user
+	if err := h.createSessionForUser(c, existingUser.ID.String(), jwtToken); err != nil {
+		fmt.Printf("Google OAuth: Failed to create session: %v\n", err)
+		// Don't fail the login if session creation fails, just log it
+	}
+
 	c.JSON(http.StatusOK, GoogleLoginResponse{
 		Token: jwtToken,
 		User:  *existingUser,
 	})
+}
+
+// extractRequestInfo extracts IP address, user agent, and device info from the request
+func (h *GoogleAuthHandler) extractRequestInfo(c *gin.Context) (ipAddress, userAgent, deviceInfo string) {
+	// Get IP address (check X-Forwarded-For for proxied requests)
+	ipAddress = c.GetHeader("X-Forwarded-For")
+	if ipAddress == "" {
+		ipAddress = c.GetHeader("X-Real-IP")
+	}
+	if ipAddress == "" {
+		ipAddress = c.ClientIP()
+	}
+	// Take first IP if multiple (X-Forwarded-For can contain multiple IPs)
+	if idx := strings.Index(ipAddress, ","); idx != -1 {
+		ipAddress = strings.TrimSpace(ipAddress[:idx])
+	}
+
+	// Get user agent
+	userAgent = c.GetHeader("User-Agent")
+	if userAgent == "" {
+		userAgent = "Unknown"
+	}
+
+	// Extract basic device info from user agent
+	deviceInfo = "Unknown Device"
+	if strings.Contains(strings.ToLower(userAgent), "mobile") || strings.Contains(strings.ToLower(userAgent), "android") || strings.Contains(strings.ToLower(userAgent), "iphone") {
+		deviceInfo = "Mobile"
+	} else if strings.Contains(strings.ToLower(userAgent), "tablet") || strings.Contains(strings.ToLower(userAgent), "ipad") {
+		deviceInfo = "Tablet"
+	} else if strings.Contains(strings.ToLower(userAgent), "desktop") || strings.Contains(strings.ToLower(userAgent), "windows") || strings.Contains(strings.ToLower(userAgent), "mac") || strings.Contains(strings.ToLower(userAgent), "linux") {
+		deviceInfo = "Desktop"
+	}
+
+	return ipAddress, userAgent, deviceInfo
+}
+
+// createSessionForUser creates a session record for a logged-in user
+func (h *GoogleAuthHandler) createSessionForUser(c *gin.Context, userID string, jwtToken string) error {
+	ipAddress, userAgent, deviceInfo := h.extractRequestInfo(c)
+
+	// Hash the token
+	tokenHash := crypto.HashToken(jwtToken)
+
+	// Calculate expiration time
+	expiresAt := time.Now().Add(h.jwtManager.GetTokenDuration())
+
+	// Parse user ID to UUID
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return fmt.Errorf("invalid user ID: %v", err)
+	}
+
+	// Create session
+	_, err = h.sessionService.CreateSession(userUUID, tokenHash, deviceInfo, ipAddress, userAgent, expiresAt)
+	if err != nil {
+		return fmt.Errorf("failed to create session: %v", err)
+	}
+
+	return nil
 }
 
 // getGoogleUserInfo fetches user information from Google API
