@@ -220,6 +220,23 @@ func (h *GymHandler) GetGymOwners(c *gin.Context) {
 	c.JSON(http.StatusOK, owners)
 }
 
+// GetGymOwnerByUserID handles GET /gym-owners/user/:user_id
+func (h *GymHandler) GetGymOwnerByUserID(c *gin.Context) {
+	userID := c.Param("user_id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID is required"})
+		return
+	}
+
+	gymOwner, err := h.gymService.GetGymOwnerByUserID(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Gym owner not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gymOwner)
+}
+
 // CreateTrainer handles POST /trainers
 func (h *GymHandler) CreateTrainer(c *gin.Context) {
 	var trainer model.Trainer

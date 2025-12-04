@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export interface User {
   id?: string
@@ -13,6 +14,7 @@ export interface User {
 }
 
 export function useAuth() {
+  const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -49,6 +51,8 @@ export function useAuth() {
 
   const signOut = () => {
     clearAuth()
+    // Redirect to sign-in page after signing out
+    router.push('/auth/signin')
   }
 
   return {

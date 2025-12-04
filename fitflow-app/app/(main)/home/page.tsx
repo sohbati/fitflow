@@ -1,44 +1,77 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { AuthStatus } from '@/components/auth/AuthStatus'
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
 
 export default function HomePage() {
+  const router = useRouter()
   const { isAuthenticated, user } = useAuth()
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
-  const [showInstallButton, setShowInstallButton] = useState(false)
+  const [checkingRole, setCheckingRole] = useState(false)
 
+  // Check if user exists in persons table and their role
   useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault()
-      setDeferredPrompt(e)
-      setShowInstallButton(true)
+    const checkUserStatus = async () => {
+      if (!isAuthenticated || !user?.id) return
+
+      setCheckingRole(true)
+      try {
+        const token = localStorage.getItem('auth_token')
+        if (!token) return
+
+        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
+        
+        // First, check if person exists
+        const personCheckResponse = await fetch(`${businessServiceUrl}/api/v1/persons/check/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+
+        if (personCheckResponse.ok) {
+          const personData = await personCheckResponse.json()
+          
+          if (!personData.exists) {
+            // User doesn't exist in persons table - redirect to role selection
+            router.push('/select-role')
+            return
+          }
+        }
+
+        // Person exists, check if they're a gym owner
+        const gymOwnerResponse = await fetch(`${businessServiceUrl}/api/v1/gym-owners/user/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+
+        if (gymOwnerResponse.ok) {
+          // User is a gym owner, redirect to dashboard
+          router.push('/gym-owner/dashboard')
+          return
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error)
+      } finally {
+        setCheckingRole(false)
+      }
     }
 
-    window.addEventListener('beforeinstallprompt', handler)
+    checkUserStatus()
+  }, [isAuthenticated, user, router])
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler)
-    }
-  }, [])
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return
-
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
-
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt')
-    } else {
-      console.log('User dismissed the install prompt')
-    }
-
-    setDeferredPrompt(null)
-    setShowInstallButton(false)
+  if (checkingRole) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -51,23 +84,6 @@ export default function HomePage() {
         A modern Progressive Web App for fitness tracking. Track your workouts, 
         monitor your progress, and achieve your fitness goals.
       </p>
-      
-      <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-        <div className="rounded-md shadow">
-          {showInstallButton ? (
-            <button
-              onClick={handleInstallClick}
-              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
-            >
-              Install App
-            </button>
-          ) : (
-            <div className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-gray-400 bg-gray-200 md:py-4 md:text-lg md:px-10">
-              App Installed
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Authentication Section */}
       <div className="mt-8 max-w-md mx-auto">

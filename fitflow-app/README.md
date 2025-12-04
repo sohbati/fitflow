@@ -63,8 +63,7 @@ npm run dev
 
 ### Installation
 The app can be installed on devices that support PWA installation:
-- Click the "Install App" button when it appears
-- Or use the browser's "Add to Home Screen" option
+- Use the browser's "Add to Home Screen" option
 
 ### Google Authentication
 - Secure OAuth 2.0 authentication with Google
@@ -134,7 +133,7 @@ npm run cap:open:android
 fitflow/
 ├── app/
 │   ├── layout.tsx          # Root layout with PWA meta tags
-│   ├── page.tsx            # Home page with install button
+│   ├── page.tsx            # Home page
 │   ├── about/
 │   │   └── page.tsx        # About page
 │   └── offline/

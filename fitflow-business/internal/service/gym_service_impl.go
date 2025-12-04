@@ -187,6 +187,14 @@ func (s *gymService) GetGymOwners(ctx context.Context, gymID int64) ([]*model.Gy
 	return s.gymOwnerRepo.GetGymOwners(ctx, gymID)
 }
 
+// GetGymOwnerByUserID retrieves a gym owner by user ID
+func (s *gymService) GetGymOwnerByUserID(ctx context.Context, userID string) (*model.GymOwner, error) {
+	if userID == "" {
+		return nil, errors.New("user ID is required")
+	}
+	return s.gymOwnerRepo.GetGymOwnerByUserID(ctx, userID)
+}
+
 // UpdateGymOwner updates an existing gym owner
 func (s *gymService) UpdateGymOwner(ctx context.Context, owner *model.GymOwner) error {
 	if owner.ID <= 0 {

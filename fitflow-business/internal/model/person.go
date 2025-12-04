@@ -38,6 +38,11 @@ type Person struct {
 	UpdatedAt                time.Time  `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
+// TableName specifies the table name for GORM
+func (Person) TableName() string {
+	return "persons"
+}
+
 // GetFullName returns the full name of the person
 func (p *Person) GetFullName() string {
 	return p.FirstName + " " + p.LastName

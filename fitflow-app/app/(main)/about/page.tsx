@@ -37,7 +37,6 @@ export default function About() {
             <ul className="text-sm text-gray-600 space-y-1">
               <li>• Service Worker</li>
               <li>• Web App Manifest</li>
-              <li>• Install Prompts</li>
               <li>• Push Notifications</li>
             </ul>
           </div>
@@ -60,7 +59,6 @@ export default function About() {
           To get started with FitFlow:
         </p>
         <ol className="list-decimal list-inside text-gray-600 mb-6 space-y-2">
-          <li>Install the app using the "Install App" button on the home page</li>
           <li>Sign in with your Google account to access all features</li>
           <li>For developers, check the README.md for setup instructions</li>
         </ol>

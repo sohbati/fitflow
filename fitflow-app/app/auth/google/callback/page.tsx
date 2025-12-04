@@ -8,8 +8,9 @@ import { handleGoogleCallback } from '@/hooks/useGoogleAuth'
 function GoogleCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'redirecting'>('loading')
   const [message, setMessage] = useState('')
+  const [redirectMessage, setRedirectMessage] = useState('Redirecting to home page...')
 
   useEffect(() => {
     const code = searchParams.get('code')
@@ -24,15 +25,47 @@ function GoogleCallbackContent() {
     if (code) {
       const authenticateWithGoogle = async () => {
         try {
-          await handleGoogleCallback(code)
+          const result = await handleGoogleCallback(code)
           
           setStatus('success')
           setMessage('Successfully signed in with Google!')
           
-          // Redirect to home page after a short delay
+          // Check if user is new (doesn't have a person record)
+          const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
+          const token = localStorage.getItem('auth_token')
+          
+          if (token && result.user?.id) {
+            try {
+              const checkResponse = await fetch(`${businessServiceUrl}/api/v1/persons/check/${result.user.id}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              })
+              
+              if (checkResponse.ok) {
+                const checkData = await checkResponse.json()
+                
+                if (!checkData.exists) {
+                  // New user - redirect to role selection
+                  setStatus('redirecting')
+                  setRedirectMessage('Redirecting to registration...')
+                  setTimeout(() => {
+                    router.push('/select-role')
+                  }, 1500)
+                  return
+                }
+              }
+            } catch (checkError) {
+              console.error('Error checking person:', checkError)
+              // Continue to home if check fails
+            }
+          }
+          
+          // Existing user - redirect to home page
+          setRedirectMessage('Redirecting to home page...')
           setTimeout(() => {
             router.push('/home')
-          }, 2000)
+          }, 1500)
           
         } catch (error: any) {
           console.error('Google authentication error:', error)
@@ -68,7 +101,7 @@ function GoogleCallbackContent() {
             </div>
           )}
           
-          {status === 'success' && (
+          {(status === 'success' || status === 'redirecting') && (
             <div className="space-y-4">
               <div className="flex justify-center">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -79,7 +112,7 @@ function GoogleCallbackContent() {
               </div>
               <h2 className="text-xl font-semibold text-gray-900">Success!</h2>
               <p className="text-gray-600">{message}</p>
-              <p className="text-sm text-gray-500">Redirecting to home page...</p>
+              <p className="text-sm text-gray-500">{redirectMessage}</p>
             </div>
           )}
           

@@ -4,12 +4,30 @@ import (
 	"fitflow-business/internal/handler"
 	"fitflow-business/internal/repository/impl"
 	"fitflow-business/internal/service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
-	"net/http"
 )
+
+// CORS middleware
+func corsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, PATCH, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
 
 type Router struct {
 	database *gorm.DB
@@ -21,6 +39,9 @@ func NewRouter(database *gorm.DB) *Router {
 
 func (r *Router) SetupRoutes() *gin.Engine {
 	router := gin.Default()
+
+	// Apply CORS middleware to all routes
+	router.Use(corsMiddleware())
 
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
@@ -37,12 +58,17 @@ func (r *Router) SetupRoutes() *gin.Engine {
 	trainerRepo := impl.NewTrainerRepository(r.database)
 	gymTrainerRepo := impl.NewGymTrainerRepository(r.database)
 	traineeRepo := impl.NewTraineeRepository(r.database)
+	personRepo := impl.NewPersonRepository(r.database)
 
 	gymService := service.NewGymService(gymRepo, gymLocationRepo, gymOwnerRepo, trainerRepo, gymTrainerRepo)
 	gymHandler := handler.NewGymHandler(gymService)
 
 	traineeService := service.NewTraineeService(traineeRepo)
 	traineeHandler := handler.NewTraineeHandler(traineeService)
+
+	personService := service.NewPersonService(personRepo)
+	registrationService := service.NewRegistrationService(personService, gymService, gymOwnerRepo)
+	personHandler := handler.NewPersonHandler(personService, registrationService)
 
 	// Business API routes
 	api := router.Group("/api/v1")
@@ -65,10 +91,12 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			// Gym owners
 			gyms.GET("/:id/owners", gymHandler.GetGymOwners)
 			gyms.POST("/:id/owners", gymHandler.CreateGymOwner)
+		}
 
-			// Gym trainers
-			gyms.GET("/:id/trainers", gymHandler.GetGymTrainers)
-			gyms.POST("/:id/trainers/:trainer_id", gymHandler.AddTrainerToGym)
+		// Gym owner routes
+		gymOwners := api.Group("/gym-owners")
+		{
+			gymOwners.GET("/user/:user_id", gymHandler.GetGymOwnerByUserID)
 		}
 
 		// Trainer routes
@@ -77,6 +105,13 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			trainers.GET("", gymHandler.GetTrainers)
 			trainers.GET("/:id", gymHandler.GetTrainer)
 			trainers.POST("", gymHandler.CreateTrainer)
+		}
+
+		// Person routes
+		persons := api.Group("/persons")
+		{
+			persons.GET("/check/:user_id", personHandler.CheckPersonExists)
+			persons.POST("/register/gym-owner", personHandler.RegisterGymOwner)
 		}
 
 		// Trainee routes
