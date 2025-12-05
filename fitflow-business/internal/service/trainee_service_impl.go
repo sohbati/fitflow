@@ -62,6 +62,14 @@ func (s *traineeService) GetTraineeByID(ctx context.Context, id int64) (*model.T
 	return s.traineeRepo.GetTraineeByID(ctx, id)
 }
 
+// GetTraineeByUserID retrieves a trainee by user ID
+func (s *traineeService) GetTraineeByUserID(ctx context.Context, userID string) (*model.Trainee, error) {
+	if userID == "" {
+		return nil, errors.New("user ID is required")
+	}
+	return s.traineeRepo.GetTraineeByUserID(ctx, userID)
+}
+
 // GetTrainees retrieves all trainees with pagination
 func (s *traineeService) GetTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	if limit <= 0 {

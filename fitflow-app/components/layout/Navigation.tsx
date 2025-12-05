@@ -157,7 +157,7 @@ export function Navigation() {
                   </Link>
 
                   <Link
-                    href="/trainer"
+                    href="/switch-profile?type=trainer"
                     onClick={handleLinkClick}
                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
                       pathname?.startsWith('/trainer')
@@ -172,7 +172,7 @@ export function Navigation() {
                   </Link>
 
                   <Link
-                    href="/trainee"
+                    href="/switch-profile?type=trainee"
                     onClick={handleLinkClick}
                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
                       pathname?.startsWith('/trainee')
@@ -192,7 +192,7 @@ export function Navigation() {
                     className="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
                   >
                     <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                     Switch Profile
                   </Link>

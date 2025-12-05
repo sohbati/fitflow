@@ -54,6 +54,23 @@ func (h *TraineeHandler) GetTrainee(c *gin.Context) {
 	c.JSON(http.StatusOK, trainee)
 }
 
+// GetTraineeByUserID handles GET /trainees/user/:user_id
+func (h *TraineeHandler) GetTraineeByUserID(c *gin.Context) {
+	userID := c.Param("user_id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID is required"})
+		return
+	}
+
+	trainee, err := h.traineeService.GetTraineeByUserID(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Trainee not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, trainee)
+}
+
 // GetTrainees handles GET /trainees
 func (h *TraineeHandler) GetTrainees(c *gin.Context) {
 	limitStr := c.DefaultQuery("limit", "10")

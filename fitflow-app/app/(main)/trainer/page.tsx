@@ -7,9 +7,7 @@ export default function TrainerPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // TODO: Create trainer dashboard and redirect to it
-    // For now, redirect to home
-    router.replace('/home')
+    router.replace('/trainer/dashboard')
   }, [router])
 
   return (

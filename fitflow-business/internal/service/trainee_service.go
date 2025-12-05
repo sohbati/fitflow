@@ -10,6 +10,7 @@ type TraineeService interface {
 	// Basic CRUD operations
 	CreateTrainee(ctx context.Context, trainee *model.Trainee) error
 	GetTraineeByID(ctx context.Context, id int64) (*model.Trainee, error)
+	GetTraineeByUserID(ctx context.Context, userID string) (*model.Trainee, error)
 	GetTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error)
 	UpdateTrainee(ctx context.Context, trainee *model.Trainee) error
 	DeleteTrainee(ctx context.Context, id int64) error

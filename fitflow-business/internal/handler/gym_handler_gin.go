@@ -270,6 +270,23 @@ func (h *GymHandler) GetTrainer(c *gin.Context) {
 	c.JSON(http.StatusOK, trainer)
 }
 
+// GetTrainerByUserID handles GET /trainers/user/:user_id
+func (h *GymHandler) GetTrainerByUserID(c *gin.Context) {
+	userID := c.Param("user_id")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID is required"})
+		return
+	}
+
+	trainer, err := h.gymService.GetTrainerByUserID(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Trainer not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, trainer)
+}
+
 // GetTrainers handles GET /trainers
 func (h *GymHandler) GetTrainers(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))

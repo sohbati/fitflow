@@ -157,3 +157,236 @@ func (h *PersonHandler) RegisterGymOwner(c *gin.Context) {
 	})
 }
 
+// RegisterTrainerRequest represents the request to register a trainer
+type RegisterTrainerRequest struct {
+	UserID string `json:"user_id" binding:"required"`
+
+	// Person fields
+	FirstName    string  `json:"first_name" binding:"required"`
+	LastName     string  `json:"last_name" binding:"required"`
+	Email        *string `json:"email"`
+	PhoneNumber  *string `json:"phone_number"`
+	DateOfBirth  *string `json:"date_of_birth"`
+	Gender       *string `json:"gender"`
+	Address      *string `json:"address"`
+	City         *string `json:"city"`
+	Province     *string `json:"province"`
+	Country      *string `json:"country"`
+	PostalCode   *string `json:"postal_code"`
+	ProfileImageURL *string `json:"profile_image_url"`
+}
+
+// RegisterTrainer handles POST /persons/register/trainer
+func (h *PersonHandler) RegisterTrainer(c *gin.Context) {
+	var req RegisterTrainerRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		return
+	}
+
+	userUUID, err := uuid.Parse(req.UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	var dateOfBirth *time.Time
+	if req.DateOfBirth != nil && *req.DateOfBirth != "" {
+		parsed, err := time.Parse("2006-01-02", *req.DateOfBirth)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date of birth format. Use YYYY-MM-DD"})
+			return
+		}
+		dateOfBirth = &parsed
+	}
+
+	var gender *model.Gender
+	if req.Gender != nil && *req.Gender != "" {
+		g := model.Gender(*req.Gender)
+		if g != model.GenderMale && g != model.GenderFemale && g != model.GenderOther {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid gender. Must be 'male', 'female', or 'other'"})
+			return
+		}
+		gender = &g
+	}
+
+	person := &model.Person{
+		UserID:          userUUID,
+		FirstName:       req.FirstName,
+		LastName:        req.LastName,
+		Email:           req.Email,
+		PhoneNumber:     req.PhoneNumber,
+		DateOfBirth:     dateOfBirth,
+		Gender:          gender,
+		ProfileImageURL: req.ProfileImageURL,
+		Address:         req.Address,
+		City:            req.City,
+		Province:        req.Province,
+		Country:         req.Country,
+		PostalCode:      req.PostalCode,
+		IsActive:        true,
+	}
+
+	trainer, err := h.registrationService.RegisterTrainer(c.Request.Context(), userUUID, person)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Trainer registered successfully",
+		"trainer": trainer,
+	})
+}
+
+// RegisterTraineeRequest represents the request to register a trainee
+type RegisterTraineeRequest struct {
+	UserID string `json:"user_id" binding:"required"`
+
+	// Person fields
+	FirstName    string  `json:"first_name" binding:"required"`
+	LastName     string  `json:"last_name" binding:"required"`
+	Email        *string `json:"email"`
+	PhoneNumber  *string `json:"phone_number"`
+	DateOfBirth  *string `json:"date_of_birth"`
+	Gender       *string `json:"gender"`
+	Address      *string `json:"address"`
+	City         *string `json:"city"`
+	Province     *string `json:"province"`
+	Country      *string `json:"country"`
+	PostalCode   *string `json:"postal_code"`
+	ProfileImageURL *string `json:"profile_image_url"`
+
+	// Trainee fields
+	HeightCm          *int     `json:"height_cm"`
+	WeightKg          *float64 `json:"weight_kg"`
+	FitnessLevel     *string  `json:"fitness_level"` // "beginner", "intermediate", "advanced"
+	Goals            *string  `json:"goals"`
+	MedicalConditions *string `json:"medical_conditions"`
+	MembershipType   *string  `json:"membership_type"` // "basic", "premium", "vip"
+	MembershipStartDate *string `json:"membership_start_date"`
+	MembershipEndDate   *string `json:"membership_end_date"`
+}
+
+// RegisterTrainee handles POST /persons/register/trainee
+func (h *PersonHandler) RegisterTrainee(c *gin.Context) {
+	var req RegisterTraineeRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		return
+	}
+
+	userUUID, err := uuid.Parse(req.UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	var dateOfBirth *time.Time
+	if req.DateOfBirth != nil && *req.DateOfBirth != "" {
+		parsed, err := time.Parse("2006-01-02", *req.DateOfBirth)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date of birth format. Use YYYY-MM-DD"})
+			return
+		}
+		dateOfBirth = &parsed
+	}
+
+	var gender *model.Gender
+	if req.Gender != nil && *req.Gender != "" {
+		g := model.Gender(*req.Gender)
+		if g != model.GenderMale && g != model.GenderFemale && g != model.GenderOther {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid gender. Must be 'male', 'female', or 'other'"})
+			return
+		}
+		gender = &g
+	}
+
+	person := &model.Person{
+		UserID:          userUUID,
+		FirstName:       req.FirstName,
+		LastName:        req.LastName,
+		Email:           req.Email,
+		PhoneNumber:     req.PhoneNumber,
+		DateOfBirth:     dateOfBirth,
+		Gender:          gender,
+		ProfileImageURL: req.ProfileImageURL,
+		Address:         req.Address,
+		City:            req.City,
+		Province:        req.Province,
+		Country:         req.Country,
+		PostalCode:      req.PostalCode,
+		IsActive:        true,
+	}
+
+	var fitnessLevel *model.FitnessLevel
+	if req.FitnessLevel != nil && *req.FitnessLevel != "" {
+		fl := model.FitnessLevel(*req.FitnessLevel)
+		if fl != model.FitnessLevelBeginner && fl != model.FitnessLevelIntermediate && fl != model.FitnessLevelAdvanced {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid fitness level. Must be 'beginner', 'intermediate', or 'advanced'"})
+			return
+		}
+		fitnessLevel = &fl
+	}
+
+	var membershipType *model.MembershipType
+	if req.MembershipType != nil && *req.MembershipType != "" {
+		mt := model.MembershipType(*req.MembershipType)
+		if mt != model.MembershipTypeBasic && mt != model.MembershipTypePremium && mt != model.MembershipTypeVIP {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid membership type. Must be 'basic', 'premium', or 'vip'"})
+			return
+		}
+		membershipType = &mt
+	}
+
+	var membershipStartDate *time.Time
+	if req.MembershipStartDate != nil && *req.MembershipStartDate != "" {
+		parsed, err := time.Parse("2006-01-02", *req.MembershipStartDate)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid membership start date format. Use YYYY-MM-DD"})
+			return
+		}
+		membershipStartDate = &parsed
+	}
+
+	var membershipEndDate *time.Time
+	if req.MembershipEndDate != nil && *req.MembershipEndDate != "" {
+		parsed, err := time.Parse("2006-01-02", *req.MembershipEndDate)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid membership end date format. Use YYYY-MM-DD"})
+			return
+		}
+		membershipEndDate = &parsed
+	}
+
+	trainee := &model.Trainee{
+		HeightCm:            req.HeightCm,
+		WeightKg:            req.WeightKg,
+		FitnessLevel:        model.FitnessLevelBeginner,
+		Goals:               req.Goals,
+		MedicalConditions:   req.MedicalConditions,
+		MembershipType:      model.MembershipTypeBasic,
+		MembershipStartDate: membershipStartDate,
+		MembershipEndDate:   membershipEndDate,
+		IsActive:            true,
+	}
+
+	if fitnessLevel != nil {
+		trainee.FitnessLevel = *fitnessLevel
+	}
+	if membershipType != nil {
+		trainee.MembershipType = *membershipType
+	}
+
+	registeredTrainee, err := h.registrationService.RegisterTrainee(c.Request.Context(), userUUID, person, trainee)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Trainee registered successfully",
+		"trainee": registeredTrainee,
+	})
+}
+

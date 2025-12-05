@@ -44,7 +44,7 @@ export default function SelectProfilePage() {
         return
       }
 
-      const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+      const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
       
       const response = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${user.id}`, {
         headers: {
@@ -231,13 +231,22 @@ export default function SelectProfilePage() {
           ))}
         </div>
 
-        <div className="text-center">
-          <button
-            onClick={() => router.push('/select-role')}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
-          >
-            Create a new profile
-          </button>
+        <div className="text-center space-y-4">
+          <p className="text-sm text-gray-600">Don't have a profile yet?</p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              href="/switch-profile?type=trainer"
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+            >
+              Register as Trainer
+            </Link>
+            <Link
+              href="/switch-profile?type=trainee"
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
+            >
+              Register as Trainee
+            </Link>
+          </div>
         </div>
       </div>
     </div>

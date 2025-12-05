@@ -22,7 +22,7 @@ export default function HomePage() {
         const token = localStorage.getItem('auth_token')
         if (!token) return
 
-        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
         
         // Check for selected profile first
         const selectedProfileId = localStorage.getItem('selected_profile_id')
@@ -124,7 +124,7 @@ export default function HomePage() {
         console.error('Error checking user profiles:', error)
         // Try checking existing roles as fallback
         try {
-          const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+          const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
           await checkExistingRolesAndRedirect(token, user.id, businessServiceUrl)
         } catch (err) {
           // If all checks fail, stay on home page

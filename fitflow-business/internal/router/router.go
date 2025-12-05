@@ -69,7 +69,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 
 	personService := service.NewPersonService(personRepo)
 	profileService := service.NewProfileService(profileRepo, personRepo, gymOwnerRepo, trainerRepo, traineeRepo)
-	registrationService := service.NewRegistrationService(personService, gymService, gymOwnerRepo, profileService)
+	registrationService := service.NewRegistrationService(personService, gymService, gymOwnerRepo, trainerRepo, traineeRepo, profileService)
 	personHandler := handler.NewPersonHandler(personService, registrationService)
 
 	profileHandler := handler.NewProfileHandler(profileService)
@@ -107,6 +107,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 		trainers := api.Group("/trainers")
 		{
 			trainers.GET("", gymHandler.GetTrainers)
+			trainers.GET("/user/:user_id", gymHandler.GetTrainerByUserID)
 			trainers.GET("/:id", gymHandler.GetTrainer)
 			trainers.POST("", gymHandler.CreateTrainer)
 		}
@@ -116,6 +117,8 @@ func (r *Router) SetupRoutes() *gin.Engine {
 		{
 			persons.GET("/check/:user_id", personHandler.CheckPersonExists)
 			persons.POST("/register/gym-owner", personHandler.RegisterGymOwner)
+			persons.POST("/register/trainer", personHandler.RegisterTrainer)
+			persons.POST("/register/trainee", personHandler.RegisterTrainee)
 		}
 
 		// Trainee routes
@@ -130,6 +133,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			trainees.GET("/phone/:phone", traineeHandler.GetTraineesByPhone)
 			trainees.GET("/membership/:type", traineeHandler.GetTraineesByMembershipType)
 			trainees.GET("/fitness/:level", traineeHandler.GetTraineesByFitnessLevel)
+			trainees.GET("/user/:user_id", traineeHandler.GetTraineeByUserID)
 			trainees.GET("/:id", traineeHandler.GetTrainee)
 			trainees.GET("/:id/age", traineeHandler.CalculateAge)
 			trainees.GET("/:id/bmi", traineeHandler.CalculateBMI)

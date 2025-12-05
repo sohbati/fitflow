@@ -16,6 +16,7 @@ type TraineeRepository interface {
 
 	// Search and filtering operations
 	GetTraineeByPersonID(ctx context.Context, personID int64) (*model.Trainee, error)
+	GetTraineeByUserID(ctx context.Context, userID string) (*model.Trainee, error)
 	SearchTrainees(ctx context.Context, query string, limit, offset int) ([]*model.Trainee, error)
 	GetTraineesByEmail(ctx context.Context, email string) (*model.Trainee, error)
 	GetTraineesByPhone(ctx context.Context, phone string) (*model.Trainee, error)

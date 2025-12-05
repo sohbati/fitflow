@@ -32,6 +32,7 @@ type GymService interface {
 	// Trainer operations
 	CreateTrainer(ctx context.Context, trainer *model.Trainer) error
 	GetTrainerByID(ctx context.Context, id int64) (*model.Trainer, error)
+	GetTrainerByUserID(ctx context.Context, userID string) (*model.Trainer, error)
 	GetTrainers(ctx context.Context, limit, offset int) ([]*model.Trainer, error)
 	UpdateTrainer(ctx context.Context, trainer *model.Trainer) error
 	DeleteTrainer(ctx context.Context, id int64) error

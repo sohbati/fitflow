@@ -14,7 +14,7 @@ function GoogleCallbackContent() {
   // Helper function to check profiles and redirect
   const checkProfilesAndRedirect = async (token: string, userId: string) => {
     try {
-      const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+      const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
       
       // First, check for profiles
       const response = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${userId}`, {
@@ -89,7 +89,7 @@ function GoogleCallbackContent() {
       console.error('Error checking profiles:', error)
       // Try checking existing roles as fallback
       try {
-        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
         await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
       } catch (err) {
         router.push('/select-role')

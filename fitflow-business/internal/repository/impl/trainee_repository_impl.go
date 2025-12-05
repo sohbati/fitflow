@@ -45,6 +45,20 @@ func (r *traineeRepository) GetTraineeByPersonID(ctx context.Context, personID i
 	return &trainee, nil
 }
 
+// GetTraineeByUserID retrieves a trainee by user ID (from IAM service)
+func (r *traineeRepository) GetTraineeByUserID(ctx context.Context, userID string) (*model.Trainee, error) {
+	var trainee model.Trainee
+	err := r.db.WithContext(ctx).
+		Joins("INNER JOIN persons ON trainees.person_id = persons.id").
+		Where("persons.user_id = ?", userID).
+		Preload("Person").
+		First(&trainee).Error
+	if err != nil {
+		return nil, err
+	}
+	return &trainee, nil
+}
+
 // GetTrainees retrieves all trainees with pagination
 func (r *traineeRepository) GetTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee

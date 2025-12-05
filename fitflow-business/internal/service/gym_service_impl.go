@@ -232,6 +232,14 @@ func (s *gymService) GetTrainerByID(ctx context.Context, id int64) (*model.Train
 	return s.trainerRepo.GetTrainerByID(ctx, id)
 }
 
+// GetTrainerByUserID retrieves a trainer by user ID
+func (s *gymService) GetTrainerByUserID(ctx context.Context, userID string) (*model.Trainer, error) {
+	if userID == "" {
+		return nil, errors.New("user ID is required")
+	}
+	return s.trainerRepo.GetTrainerByUserID(ctx, userID)
+}
+
 // GetTrainers retrieves all trainers with pagination
 func (s *gymService) GetTrainers(ctx context.Context, limit, offset int) ([]*model.Trainer, error) {
 	if limit <= 0 {

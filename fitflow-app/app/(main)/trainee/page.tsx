@@ -7,9 +7,7 @@ export default function TraineePage() {
   const router = useRouter()
 
   useEffect(() => {
-    // TODO: Create trainee dashboard and redirect to it
-    // For now, redirect to home
-    router.replace('/home')
+    router.replace('/trainee/dashboard')
   }, [router])
 
   return (
