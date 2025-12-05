@@ -169,8 +169,31 @@ function GoogleCallbackContent() {
         return
       }
 
-      // TODO: Check for trainer and trainee when those endpoints are available
-      // For now, if no gym owner found, redirect to role selection
+      // Check if user is a trainer
+      const trainerResponse = await fetch(`${businessServiceUrl}/api/v1/trainers/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (trainerResponse.ok) {
+        router.push('/trainer')
+        return
+      }
+
+      // Check if user is a trainee
+      const traineeResponse = await fetch(`${businessServiceUrl}/api/v1/trainees/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (traineeResponse.ok) {
+        router.push('/trainee')
+        return
+      }
+
+      // If no role found, redirect to role selection
       router.push('/select-role')
     } catch (error) {
       console.error('Error checking existing roles:', error)
