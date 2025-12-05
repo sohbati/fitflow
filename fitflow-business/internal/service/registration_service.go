@@ -15,9 +15,10 @@ type RegistrationService interface {
 
 // registrationService implements RegistrationService interface
 type registrationService struct {
-	personService PersonService
-	gymService    GymService
-	gymOwnerRepo  repository.GymOwnerRepository
+	personService  PersonService
+	gymService     GymService
+	gymOwnerRepo   repository.GymOwnerRepository
+	profileService ProfileService
 }
 
 // NewRegistrationService creates a new registration service
@@ -25,11 +26,13 @@ func NewRegistrationService(
 	personService PersonService,
 	gymService GymService,
 	gymOwnerRepo repository.GymOwnerRepository,
+	profileService ProfileService,
 ) RegistrationService {
 	return &registrationService{
-		personService: personService,
-		gymService:    gymService,
-		gymOwnerRepo:  gymOwnerRepo,
+		personService:  personService,
+		gymService:     gymService,
+		gymOwnerRepo:   gymOwnerRepo,
+		profileService: profileService,
 	}
 }
 
@@ -80,6 +83,15 @@ func (s *registrationService) RegisterGymOwner(ctx context.Context, userID uuid.
 
 	if err := s.gymOwnerRepo.CreateGymOwner(ctx, gymOwner); err != nil {
 		return nil, err
+	}
+
+	// Create profile for gym owner
+	_, err := s.profileService.CreateGymOwnerProfile(ctx, userID, person.ID, gymOwner.ID)
+	if err != nil {
+		// Log error but don't fail registration if profile creation fails
+		// Profile can be created later via sync endpoint
+		// In production, you might want to handle this differently
+		// For now, we'll just continue
 	}
 
 	return gymOwner, nil

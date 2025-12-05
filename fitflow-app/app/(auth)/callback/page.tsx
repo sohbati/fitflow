@@ -11,6 +11,116 @@ function GoogleCallbackContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('')
 
+  // Helper function to check profiles and redirect
+  const checkProfilesAndRedirect = async (token: string, userId: string) => {
+    try {
+      const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+      
+      // First, check for profiles
+      const response = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const activeProfiles = data.profiles?.filter((p: any) => p.is_active) || []
+
+        if (activeProfiles.length === 0) {
+          // No profiles found, try to sync from existing role records
+          const syncResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/sync/${userId}`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          })
+
+          if (syncResponse.ok) {
+            // Profiles were created, get them again
+            const profilesResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${userId}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+            })
+            if (profilesResponse.ok) {
+              const profilesData = await profilesResponse.json()
+              const syncedProfiles = profilesData.profiles?.filter((p: any) => p.is_active) || []
+              if (syncedProfiles.length > 0) {
+                // Use synced profiles
+                activeProfiles.push(...syncedProfiles)
+              }
+            }
+          }
+
+          if (activeProfiles.length === 0) {
+            // Still no profiles, check for existing role records (fallback)
+            await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
+            return
+          }
+        }
+
+        if (activeProfiles.length === 1) {
+          // Only one profile, automatically select it and redirect
+          localStorage.setItem('selected_profile_id', activeProfiles[0].id.toString())
+          const profileType = activeProfiles[0].type
+          switch (profileType) {
+            case 'gym_owner':
+              router.push('/gym-owner')
+              break
+            case 'trainer':
+              router.push('/trainer')
+              break
+            case 'trainee':
+              router.push('/trainee')
+              break
+            default:
+              router.push('/home')
+          }
+        } else {
+          // Multiple profiles, redirect to profile selection
+          router.push('/select-profile')
+        }
+      } else {
+        // If profile check fails, check for existing roles
+        await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
+      }
+    } catch (error) {
+      console.error('Error checking profiles:', error)
+      // Try checking existing roles as fallback
+      try {
+        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+        await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
+      } catch (err) {
+        router.push('/select-role')
+      }
+    }
+  }
+
+  // Helper function to check existing role records (for backward compatibility)
+  const checkExistingRolesAndRedirect = async (token: string, userId: string, businessServiceUrl: string) => {
+    try {
+      // Check if user is a gym owner
+      const gymOwnerResponse = await fetch(`${businessServiceUrl}/api/v1/gym-owners/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (gymOwnerResponse.ok) {
+        router.push('/gym-owner')
+        return
+      }
+
+      // TODO: Check for trainer and trainee when those endpoints are available
+      // For now, if no gym owner found, redirect to role selection
+      router.push('/select-role')
+    } catch (error) {
+      console.error('Error checking existing roles:', error)
+      router.push('/select-role')
+    }
+  }
+
   useEffect(() => {
     const code = searchParams.get('code')
     const error = searchParams.get('error')
@@ -24,15 +134,15 @@ function GoogleCallbackContent() {
     if (code) {
       const authenticateWithGoogle = async () => {
         try {
-          await handleGoogleCallback(code)
+          const result = await handleGoogleCallback(code)
           
           setStatus('success')
           setMessage('Successfully signed in with Google!')
           
-          // Redirect to home page after a short delay
+          // Check profiles and redirect accordingly
           setTimeout(() => {
-            router.push('/home')
-          }, 2000)
+            checkProfilesAndRedirect(result.token, result.user.id)
+          }, 1000)
           
         } catch (error: any) {
           console.error('Google authentication error:', error)

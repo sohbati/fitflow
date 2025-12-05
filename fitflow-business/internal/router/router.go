@@ -59,6 +59,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 	gymTrainerRepo := impl.NewGymTrainerRepository(r.database)
 	traineeRepo := impl.NewTraineeRepository(r.database)
 	personRepo := impl.NewPersonRepository(r.database)
+	profileRepo := impl.NewProfileRepository(r.database)
 
 	gymService := service.NewGymService(gymRepo, gymLocationRepo, gymOwnerRepo, trainerRepo, gymTrainerRepo)
 	gymHandler := handler.NewGymHandler(gymService)
@@ -67,8 +68,11 @@ func (r *Router) SetupRoutes() *gin.Engine {
 	traineeHandler := handler.NewTraineeHandler(traineeService)
 
 	personService := service.NewPersonService(personRepo)
-	registrationService := service.NewRegistrationService(personService, gymService, gymOwnerRepo)
+	profileService := service.NewProfileService(profileRepo, personRepo, gymOwnerRepo, trainerRepo, traineeRepo)
+	registrationService := service.NewRegistrationService(personService, gymService, gymOwnerRepo, profileService)
 	personHandler := handler.NewPersonHandler(personService, registrationService)
+
+	profileHandler := handler.NewProfileHandler(profileService)
 
 	// Business API routes
 	api := router.Group("/api/v1")
@@ -134,6 +138,26 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			trainees.PUT("/:id", traineeHandler.UpdateTrainee)
 			trainees.PATCH("/:id/status", traineeHandler.UpdateMembershipStatus)
 			trainees.DELETE("/:id", traineeHandler.DeleteTrainee)
+		}
+
+		// Profile routes
+		profiles := api.Group("/profiles")
+		{
+			profiles.POST("", profileHandler.CreateProfile)
+			profiles.POST("/sync/:user_id", profileHandler.SyncProfiles)
+			profiles.GET("/type/:type", profileHandler.GetProfilesByType)
+			profiles.GET("/:id", profileHandler.GetProfile)
+			profiles.PUT("/:id", profileHandler.UpdateProfile)
+			profiles.PATCH("/:id/set-default", profileHandler.SetDefaultProfile)
+			profiles.PATCH("/:id/activate", profileHandler.ActivateProfile)
+			profiles.PATCH("/:id/deactivate", profileHandler.DeactivateProfile)
+			profiles.DELETE("/:id", profileHandler.DeleteProfile)
+			
+			// User-specific profile routes
+			profiles.GET("/user/:user_id", profileHandler.GetProfilesByUserID)
+			profiles.GET("/user/:user_id/default", profileHandler.GetDefaultProfile)
+			profiles.GET("/user/:user_id/active", profileHandler.GetActiveProfiles)
+			profiles.GET("/user/:user_id/type/:type", profileHandler.GetProfileByType)
 		}
 
 		// Programs

@@ -32,6 +32,19 @@ func (r *traineeRepository) GetTraineeByID(ctx context.Context, id int64) (*mode
 	return &trainee, nil
 }
 
+// GetTraineeByPersonID retrieves a trainee by person ID
+func (r *traineeRepository) GetTraineeByPersonID(ctx context.Context, personID int64) (*model.Trainee, error) {
+	var trainee model.Trainee
+	err := r.db.WithContext(ctx).
+		Preload("Person").
+		Where("person_id = ?", personID).
+		First(&trainee).Error
+	if err != nil {
+		return nil, err
+	}
+	return &trainee, nil
+}
+
 // GetTrainees retrieves all trainees with pagination
 func (r *traineeRepository) GetTrainees(ctx context.Context, limit, offset int) ([]*model.Trainee, error) {
 	var trainees []*model.Trainee

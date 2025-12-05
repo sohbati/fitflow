@@ -12,9 +12,9 @@ export default function HomePage() {
   const { isAuthenticated, user } = useAuth()
   const [checkingRole, setCheckingRole] = useState(false)
 
-  // Check if user exists in persons table and their role
+  // Check user profiles and redirect accordingly
   useEffect(() => {
-    const checkUserStatus = async () => {
+    const checkUserProfiles = async () => {
       if (!isAuthenticated || !user?.id) return
 
       setCheckingRole(true)
@@ -22,45 +22,143 @@ export default function HomePage() {
         const token = localStorage.getItem('auth_token')
         if (!token) return
 
-        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
+        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
         
-        // First, check if person exists
-        const personCheckResponse = await fetch(`${businessServiceUrl}/api/v1/persons/check/${user.id}`, {
+        // Check for selected profile first
+        const selectedProfileId = localStorage.getItem('selected_profile_id')
+        
+        if (selectedProfileId) {
+          // User has a selected profile, get it and redirect
+          const profileResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/${selectedProfileId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          })
+
+          if (profileResponse.ok) {
+            const profile = await profileResponse.json()
+            switch (profile.type) {
+              case 'gym_owner':
+                router.push('/gym-owner')
+                return
+              case 'trainer':
+                router.push('/trainer')
+                return
+              case 'trainee':
+                router.push('/trainee')
+                return
+            }
+          }
+        }
+
+        // No selected profile, check all profiles
+        const profilesResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${user.id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         })
 
-        if (personCheckResponse.ok) {
-          const personData = await personCheckResponse.json()
-          
-          if (!personData.exists) {
-            // User doesn't exist in persons table - redirect to role selection
-            router.push('/select-role')
+        if (profilesResponse.ok) {
+          const data = await profilesResponse.json()
+          const activeProfiles = data.profiles?.filter((p: any) => p.is_active) || []
+
+          if (activeProfiles.length === 0) {
+            // No profiles found, try to sync from existing role records
+            const syncResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/sync/${user.id}`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+            })
+
+            if (syncResponse.ok) {
+              // Profiles were created, get them again
+              const profilesResponse2 = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${user.id}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              })
+              if (profilesResponse2.ok) {
+                const profilesData2 = await profilesResponse2.json()
+                const syncedProfiles = profilesData2.profiles?.filter((p: any) => p.is_active) || []
+                if (syncedProfiles.length > 0) {
+                  // Use synced profiles
+                  activeProfiles.push(...syncedProfiles)
+                }
+              }
+            }
+
+            if (activeProfiles.length === 0) {
+              // Still no profiles, check for existing role records (fallback)
+              await checkExistingRolesAndRedirect(token, user.id, businessServiceUrl)
+              return
+            }
+          }
+
+          if (activeProfiles.length === 1) {
+            // Only one profile, automatically select it
+            localStorage.setItem('selected_profile_id', activeProfiles[0].id.toString())
+            const profileType = activeProfiles[0].type
+            switch (profileType) {
+              case 'gym_owner':
+                router.push('/gym-owner')
+                return
+              case 'trainer':
+                router.push('/trainer')
+                return
+              case 'trainee':
+                router.push('/trainee')
+                return
+            }
+          } else {
+            // Multiple profiles, redirect to profile selection
+            router.push('/select-profile')
             return
           }
+        } else {
+          // If profile check fails, check for existing roles
+          await checkExistingRolesAndRedirect(token, user.id, businessServiceUrl)
+          return
         }
+      } catch (error) {
+        console.error('Error checking user profiles:', error)
+        // Try checking existing roles as fallback
+        try {
+          const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8092'
+          await checkExistingRolesAndRedirect(token, user.id, businessServiceUrl)
+        } catch (err) {
+          // If all checks fail, stay on home page
+        }
+      } finally {
+        setCheckingRole(false)
+      }
+    }
 
-        // Person exists, check if they're a gym owner
-        const gymOwnerResponse = await fetch(`${businessServiceUrl}/api/v1/gym-owners/user/${user.id}`, {
+    // Helper function to check existing role records (for backward compatibility)
+    const checkExistingRolesAndRedirect = async (token: string, userId: string, businessServiceUrl: string) => {
+      try {
+        // Check if user is a gym owner
+        const gymOwnerResponse = await fetch(`${businessServiceUrl}/api/v1/gym-owners/user/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         })
 
         if (gymOwnerResponse.ok) {
-          // User is a gym owner, redirect to dashboard
-          router.push('/gym-owner/dashboard')
+          router.push('/gym-owner')
           return
         }
+
+        // TODO: Check for trainer and trainee when those endpoints are available
+        // For now, if no gym owner found, redirect to role selection
+        router.push('/select-role')
       } catch (error) {
-        console.error('Error checking user status:', error)
-      } finally {
-        setCheckingRole(false)
+        console.error('Error checking existing roles:', error)
+        router.push('/select-role')
       }
     }
 
-    checkUserStatus()
+    checkUserProfiles()
   }, [isAuthenticated, user, router])
 
   if (checkingRole) {
