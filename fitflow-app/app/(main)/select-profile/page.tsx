@@ -21,22 +21,48 @@ interface Profile {
 
 export default function SelectProfilePage() {
   const router = useRouter()
-  const { user, isAuthenticated, setProfile } = useAuth()
+  const { user, isAuthenticated, setProfile, isLoading } = useAuth()
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selecting, setSelecting] = useState(false)
 
   useEffect(() => {
-    if (!isAuthenticated || !user?.id) {
+    // Wait for auth hook to finish loading
+    if (isLoading) {
+      return
+    }
+
+    // Check authentication directly from localStorage as well
+    const token = localStorage.getItem('auth_token')
+    const userData = localStorage.getItem('user_data')
+    
+    if (!token || !userData) {
       router.push('/auth/signin')
       return
     }
 
-    fetchProfiles()
-  }, [isAuthenticated, user])
+    // Parse user data to get user ID
+    let userId: string | null = null
+    try {
+      const parsedUser = JSON.parse(userData)
+      userId = parsedUser?.id
+    } catch (e) {
+      console.error('Error parsing user data:', e)
+      router.push('/auth/signin')
+      return
+    }
 
-  const fetchProfiles = async () => {
+    if (!userId) {
+      router.push('/auth/signin')
+      return
+    }
+
+    // If we have token and user ID, fetch profiles
+    fetchProfiles(userId)
+  }, [isLoading, isAuthenticated, user, router])
+
+  const fetchProfiles = async (userId: string) => {
     try {
       const token = localStorage.getItem('auth_token')
       if (!token) {
@@ -46,7 +72,7 @@ export default function SelectProfilePage() {
 
       const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
       
-      const response = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${user.id}`, {
+      const response = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${userId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -150,12 +176,12 @@ export default function SelectProfilePage() {
     }
   }
 
-  if (loading) {
+  if (isLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading profiles...</p>
+          <p className="mt-4 text-gray-600">{isLoading ? 'Checking authentication...' : 'Loading profiles...'}</p>
         </div>
       </div>
     )
@@ -163,7 +189,7 @@ export default function SelectProfilePage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
           <button
@@ -178,7 +204,7 @@ export default function SelectProfilePage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div className="flex items-center justify-center min-h-[60vh] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
           <Link href="/home" className="text-3xl font-bold text-blue-600">
@@ -231,23 +257,37 @@ export default function SelectProfilePage() {
           ))}
         </div>
 
-        <div className="text-center space-y-4">
-          <p className="text-sm text-gray-600">Don't have a profile yet?</p>
-          <div className="flex justify-center space-x-4">
-            <Link
-              href="/switch-profile?type=trainer"
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
-            >
-              Register as Trainer
-            </Link>
-            <Link
-              href="/switch-profile?type=trainee"
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
-            >
-              Register as Trainee
-            </Link>
-          </div>
-        </div>
+        {(() => {
+          const hasTrainer = profiles.some(p => p.type === 'trainer')
+          const hasTrainee = profiles.some(p => p.type === 'trainee')
+          
+          // Only show registration buttons for profiles the user doesn't have
+          const missingProfiles = []
+          if (!hasTrainer) missingProfiles.push({ type: 'trainer', label: 'Register as Trainer', className: 'bg-green-600 hover:bg-green-700' })
+          if (!hasTrainee) missingProfiles.push({ type: 'trainee', label: 'Register as Trainee', className: 'bg-purple-600 hover:bg-purple-700' })
+          
+          // Don't show gym owner registration here since it's a different flow
+          
+          if (missingProfiles.length > 0) {
+            return (
+              <div className="text-center space-y-4">
+                <p className="text-sm text-gray-600">Don't have a profile yet?</p>
+                <div className="flex justify-center space-x-4">
+                  {missingProfiles.map((profile) => (
+                    <Link
+                      key={profile.type}
+                      href={`/switch-profile?type=${profile.type}`}
+                      className={`px-4 py-2 ${profile.className} text-white rounded-md text-sm`}
+                    >
+                      {profile.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+          return null
+        })()}
       </div>
     </div>
   )

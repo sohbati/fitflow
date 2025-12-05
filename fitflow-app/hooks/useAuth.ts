@@ -22,6 +22,27 @@ export function useAuth() {
 
   useEffect(() => {
     checkAuth()
+
+    // Listen for storage changes (e.g., when auth is set in another tab or after login)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'auth_token' || e.key === 'user_data' || e.key === 'selected_profile_id') {
+        checkAuth()
+      }
+    }
+
+    // Listen for custom storage events (for same-tab updates)
+    const handleCustomStorageChange = () => {
+      checkAuth()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    // Custom event for same-tab updates
+    window.addEventListener('auth-storage-change', handleCustomStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('auth-storage-change', handleCustomStorageChange)
+    }
   }, [])
 
   const checkAuth = () => {

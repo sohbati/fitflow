@@ -24,11 +24,11 @@ export default function HomePage() {
 
         const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
         
-        // Check for selected profile first
+        // Check for selected profile first (only if it exists and is valid)
         const selectedProfileId = localStorage.getItem('selected_profile_id')
         
         if (selectedProfileId) {
-          // User has a selected profile, get it and redirect
+          // User has a selected profile, verify it's still valid
           const profileResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/${selectedProfileId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -37,17 +37,26 @@ export default function HomePage() {
 
           if (profileResponse.ok) {
             const profile = await profileResponse.json()
-            switch (profile.type) {
-              case 'gym_owner':
-                router.push('/gym-owner')
-                return
-              case 'trainer':
-                router.push('/trainer')
-                return
-              case 'trainee':
-                router.push('/trainee')
-                return
+            // Verify the profile belongs to this user and is active
+            if (profile.user_id === user.id && profile.is_active) {
+              switch (profile.type) {
+                case 'gym_owner':
+                  router.push('/gym-owner')
+                  return
+                case 'trainer':
+                  router.push('/trainer')
+                  return
+                case 'trainee':
+                  router.push('/trainee')
+                  return
+              }
+            } else {
+              // Profile is invalid, clear it
+              localStorage.removeItem('selected_profile_id')
             }
+          } else {
+            // Profile not found, clear it
+            localStorage.removeItem('selected_profile_id')
           }
         }
 

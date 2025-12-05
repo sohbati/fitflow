@@ -25,7 +25,7 @@ function GoogleCallbackContent() {
 
       if (response.ok) {
         const data = await response.json()
-        const activeProfiles = data.profiles?.filter((p: any) => p.is_active) || []
+        let activeProfiles = data.profiles?.filter((p: any) => p.is_active) || []
 
         if (activeProfiles.length === 0) {
           // No profiles found, try to sync from existing role records
@@ -45,20 +45,19 @@ function GoogleCallbackContent() {
             })
             if (profilesResponse.ok) {
               const profilesData = await profilesResponse.json()
-              const syncedProfiles = profilesData.profiles?.filter((p: any) => p.is_active) || []
-              if (syncedProfiles.length > 0) {
-                // Use synced profiles
-                activeProfiles.push(...syncedProfiles)
-              }
+              activeProfiles = profilesData.profiles?.filter((p: any) => p.is_active) || []
             }
           }
 
           if (activeProfiles.length === 0) {
-            // Still no profiles, check for existing role records (fallback)
-            await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
+            // Still no profiles, redirect to role selection
+            router.push('/select-role')
             return
           }
         }
+
+        // Clear any previously selected profile on new login
+        localStorage.removeItem('selected_profile_id')
 
         if (activeProfiles.length === 1) {
           // Only one profile, automatically select it and redirect
@@ -77,23 +76,64 @@ function GoogleCallbackContent() {
             default:
               router.push('/home')
           }
-        } else {
+        } else if (activeProfiles.length > 1) {
           // Multiple profiles, redirect to profile selection
           router.push('/select-profile')
+        } else {
+          // No active profiles, redirect to role selection
+          router.push('/select-role')
         }
       } else {
-        // If profile check fails, check for existing roles
+        // If profile check fails, try to sync first
+        console.warn('Profile check failed, attempting to sync profiles...')
+        const syncResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/sync/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+
+        if (syncResponse.ok) {
+          // Retry profile check after sync
+          const retryResponse = await fetch(`${businessServiceUrl}/api/v1/profiles/user/${userId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          })
+          if (retryResponse.ok) {
+            const retryData = await retryResponse.json()
+            const retryProfiles = retryData.profiles?.filter((p: any) => p.is_active) || []
+            if (retryProfiles.length > 1) {
+              router.push('/select-profile')
+              return
+            } else if (retryProfiles.length === 1) {
+              localStorage.setItem('selected_profile_id', retryProfiles[0].id.toString())
+              const profileType = retryProfiles[0].type
+              switch (profileType) {
+                case 'gym_owner':
+                  router.push('/gym-owner')
+                  break
+                case 'trainer':
+                  router.push('/trainer')
+                  break
+                case 'trainee':
+                  router.push('/trainee')
+                  break
+                default:
+                  router.push('/home')
+              }
+              return
+            }
+          }
+        }
+        
+        // If all else fails, check for existing roles or redirect to role selection
         await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
       }
     } catch (error) {
       console.error('Error checking profiles:', error)
-      // Try checking existing roles as fallback
-      try {
-        const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
-        await checkExistingRolesAndRedirect(token, userId, businessServiceUrl)
-      } catch (err) {
-        router.push('/select-role')
-      }
+      // On error, redirect to home page which will handle profile checking
+      router.push('/home')
     }
   }
 

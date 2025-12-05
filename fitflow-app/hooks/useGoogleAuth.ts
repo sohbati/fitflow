@@ -72,8 +72,10 @@ export async function handleGoogleCallback(code: string): Promise<{ token: strin
   }
   
   // Store token and user data
-  localStorage.setItem('auth_token', data.token)
-  localStorage.setItem('user_data', JSON.stringify(mappedUser))
+      localStorage.setItem('auth_token', data.token)
+      localStorage.setItem('user_data', JSON.stringify(mappedUser))
+      // Trigger custom event to notify useAuth hook
+      window.dispatchEvent(new Event('auth-storage-change'))
   
   return { ...data, user: mappedUser }
 }
