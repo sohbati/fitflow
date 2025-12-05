@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
+import { Navigation } from '@/components/layout/Navigation'
 
 export default function SelectRolePage() {
   const router = useRouter()
@@ -17,12 +18,10 @@ export default function SelectRolePage() {
         router.push('/register/gym-owner')
         break
       case 'trainer':
-        // TODO: Implement trainer registration
-        alert('Trainer registration coming soon!')
+        router.push('/register/trainer')
         break
       case 'trainee':
-        // TODO: Implement trainee registration
-        alert('Trainee registration coming soon!')
+        router.push('/register/trainee')
         break
       default:
         break
@@ -30,8 +29,10 @@ export default function SelectRolePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full space-y-8">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-24">
+        <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
           <Link href="/home" className="text-3xl font-bold text-blue-600">
             FitFlow
@@ -143,8 +144,9 @@ export default function SelectRolePage() {
             </button>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

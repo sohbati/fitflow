@@ -124,52 +124,57 @@ export function Navigation() {
           {/* Drawer Menu Items */}
           <nav className="flex-1 overflow-y-auto py-4">
             <div className="px-2 space-y-1">
-              <Link
-                href="/home"
-                onClick={handleLinkClick}
-                className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                  pathname === '/home'
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                Home
-              </Link>
+              {/* Hide menu items on select-role page */}
+              {pathname !== '/select-role' && (
+                <>
+                  <Link
+                    href="/home"
+                    onClick={handleLinkClick}
+                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                      pathname === '/home'
+                        ? 'bg-blue-50 text-blue-600 font-medium'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Home
+                  </Link>
 
-              {isAuthenticated && (
-                <Link
-                  href="/select-profile"
-                  onClick={handleLinkClick}
-                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                    pathname === '/select-profile'
-                      ? 'bg-blue-50 text-blue-600 font-medium'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                  Switch Profile
-                </Link>
+                  {isAuthenticated && (
+                    <Link
+                      href="/select-profile"
+                      onClick={handleLinkClick}
+                      className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                        pathname === '/select-profile'
+                          ? 'bg-blue-50 text-blue-600 font-medium'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                      </svg>
+                      Switch Profile
+                    </Link>
+                  )}
+
+                  <Link
+                    href="/about"
+                    onClick={handleLinkClick}
+                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                      pathname === '/about'
+                        ? 'bg-blue-50 text-blue-600 font-medium'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    About
+                  </Link>
+                </>
               )}
-
-              <Link
-                href="/about"
-                onClick={handleLinkClick}
-                className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                  pathname === '/about'
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                About
-              </Link>
             </div>
           </nav>
 
