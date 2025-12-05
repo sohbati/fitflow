@@ -56,10 +56,27 @@ function GoogleCallbackContent() {
           }
         }
 
-        // Clear any previously selected profile on new login
-        localStorage.removeItem('selected_profile_id')
-
-        if (activeProfiles.length === 1) {
+        // Check for default profile first
+        const defaultProfile = activeProfiles.find((p: any) => p.is_default && p.is_active)
+        
+        if (defaultProfile) {
+          // Use default profile
+          localStorage.setItem('selected_profile_id', defaultProfile.id.toString())
+          const profileType = defaultProfile.type
+          switch (profileType) {
+            case 'gym_owner':
+              router.push('/gym-owner')
+              break
+            case 'trainer':
+              router.push('/trainer')
+              break
+            case 'trainee':
+              router.push('/trainee')
+              break
+            default:
+              router.push('/home')
+          }
+        } else if (activeProfiles.length === 1) {
           // Only one profile, automatically select it and redirect
           localStorage.setItem('selected_profile_id', activeProfiles[0].id.toString())
           const profileType = activeProfiles[0].type
@@ -77,7 +94,7 @@ function GoogleCallbackContent() {
               router.push('/home')
           }
         } else if (activeProfiles.length > 1) {
-          // Multiple profiles, redirect to profile selection
+          // Multiple profiles but no default, redirect to profile selection
           router.push('/select-profile')
         } else {
           // No active profiles, redirect to role selection

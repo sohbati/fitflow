@@ -140,63 +140,20 @@ export function Navigation() {
               </Link>
 
               {isAuthenticated && (
-                <>
-                  <Link
-                    href="/gym-owner"
-                    onClick={handleLinkClick}
-                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      pathname?.startsWith('/gym-owner')
-                        ? 'bg-blue-50 text-blue-600 font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    Gym Owner
-                  </Link>
-
-                  <Link
-                    href="/switch-profile?type=trainer"
-                    onClick={handleLinkClick}
-                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      pathname?.startsWith('/trainer')
-                        ? 'bg-blue-50 text-blue-600 font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Trainer
-                  </Link>
-
-                  <Link
-                    href="/switch-profile?type=trainee"
-                    onClick={handleLinkClick}
-                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      pathname?.startsWith('/trainee')
-                        ? 'bg-blue-50 text-blue-600 font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Trainee
-                  </Link>
-
-                  <Link
-                    href="/select-profile"
-                    onClick={handleLinkClick}
-                    className="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                    Switch Profile
-                  </Link>
-                </>
+                <Link
+                  href="/select-profile"
+                  onClick={handleLinkClick}
+                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                    pathname === '/select-profile'
+                      ? 'bg-blue-50 text-blue-600 font-medium'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <svg className="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
+                  Switch Profile
+                </Link>
               )}
 
               <Link

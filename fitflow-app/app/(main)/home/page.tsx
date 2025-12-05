@@ -104,7 +104,25 @@ export default function HomePage() {
             }
           }
 
-          if (activeProfiles.length === 1) {
+          // Check for default profile first
+          const defaultProfile = activeProfiles.find((p: any) => p.is_default && p.is_active)
+          
+          if (defaultProfile) {
+            // Use default profile
+            localStorage.setItem('selected_profile_id', defaultProfile.id.toString())
+            const profileType = defaultProfile.type
+            switch (profileType) {
+              case 'gym_owner':
+                router.push('/gym-owner')
+                return
+              case 'trainer':
+                router.push('/trainer')
+                return
+              case 'trainee':
+                router.push('/trainee')
+                return
+            }
+          } else if (activeProfiles.length === 1) {
             // Only one profile, automatically select it
             localStorage.setItem('selected_profile_id', activeProfiles[0].id.toString())
             const profileType = activeProfiles[0].type
@@ -120,7 +138,7 @@ export default function HomePage() {
                 return
             }
           } else {
-            // Multiple profiles, redirect to profile selection
+            // Multiple profiles but no default, redirect to profile selection
             router.push('/select-profile')
             return
           }

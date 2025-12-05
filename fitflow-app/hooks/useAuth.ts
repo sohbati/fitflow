@@ -78,8 +78,8 @@ export function useAuth() {
 
   const signOut = () => {
     clearAuth()
-    // Redirect to sign-in page after signing out
-    router.push('/auth/signin')
+    // Redirect to home page after signing out (home page shows login for unauthenticated users)
+    router.push('/home')
   }
 
   const setProfile = (profileId: string) => {
