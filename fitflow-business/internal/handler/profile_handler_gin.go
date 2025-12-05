@@ -3,10 +3,11 @@ package handler
 import (
 	"fitflow-business/internal/model"
 	"fitflow-business/internal/service"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // ProfileHandler handles HTTP requests for profile-related operations
@@ -23,13 +24,13 @@ func NewProfileHandler(profileService service.ProfileService) *ProfileHandler {
 
 // CreateProfileRequest represents the request to create a profile
 type CreateProfileRequest struct {
-	UserID    string  `json:"user_id" binding:"required"`
-	Type      string  `json:"type" binding:"required"`
-	PersonID  int64   `json:"person_id" binding:"required"`
+	UserID     string `json:"user_id" binding:"required"`
+	Type       string `json:"type" binding:"required"`
+	PersonID   int64  `json:"person_id" binding:"required"`
 	GymOwnerID *int64 `json:"gym_owner_id,omitempty"`
 	TrainerID  *int64 `json:"trainer_id,omitempty"`
 	TraineeID  *int64 `json:"trainee_id,omitempty"`
-	IsActive  *bool  `json:"is_active,omitempty"`
+	IsActive   *bool  `json:"is_active,omitempty"`
 }
 
 // CreateProfile handles POST /profiles
@@ -338,9 +339,9 @@ func (h *ProfileHandler) SyncProfiles(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Profiles synced successfully",
+		"message":  "Profiles synced successfully",
 		"profiles": profiles,
-		"count": len(profiles),
+		"count":    len(profiles),
 	})
 }
 
@@ -383,4 +384,3 @@ func (h *ProfileHandler) GetProfilesByType(c *gin.Context) {
 		"offset":   offset,
 	})
 }
-

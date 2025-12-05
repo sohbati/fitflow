@@ -3,22 +3,23 @@ package handler
 import (
 	"fitflow-business/internal/model"
 	"fitflow-business/internal/service"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // PersonHandler handles HTTP requests for person-related operations
 type PersonHandler struct {
-	personService      service.PersonService
+	personService       service.PersonService
 	registrationService service.RegistrationService
 }
 
 // NewPersonHandler creates a new person handler
 func NewPersonHandler(personService service.PersonService, registrationService service.RegistrationService) *PersonHandler {
 	return &PersonHandler{
-		personService:      personService,
+		personService:       personService,
 		registrationService: registrationService,
 	}
 }
@@ -54,17 +55,17 @@ type RegisterGymOwnerRequest struct {
 	UserID string `json:"user_id" binding:"required"` // User ID from IAM service
 
 	// Person fields
-	FirstName    string  `json:"first_name" binding:"required"`
-	LastName     string  `json:"last_name" binding:"required"`
-	Email        *string `json:"email"`
-	PhoneNumber  *string `json:"phone_number"`
-	DateOfBirth  *string `json:"date_of_birth"` // ISO date string
-	Gender       *string `json:"gender"`        // "male", "female", "other"
-	Address      *string `json:"address"`
-	City         *string `json:"city"`
-	Province     *string `json:"province"`
-	Country      *string `json:"country"`
-	PostalCode   *string `json:"postal_code"`
+	FirstName       string  `json:"first_name" binding:"required"`
+	LastName        string  `json:"last_name" binding:"required"`
+	Email           *string `json:"email"`
+	PhoneNumber     *string `json:"phone_number"`
+	DateOfBirth     *string `json:"date_of_birth"` // ISO date string
+	Gender          *string `json:"gender"`        // "male", "female", "other"
+	Address         *string `json:"address"`
+	City            *string `json:"city"`
+	Province        *string `json:"province"`
+	Country         *string `json:"country"`
+	PostalCode      *string `json:"postal_code"`
 	ProfileImageURL *string `json:"profile_image_url"`
 
 	// Gym fields
@@ -162,17 +163,17 @@ type RegisterTrainerRequest struct {
 	UserID string `json:"user_id" binding:"required"`
 
 	// Person fields
-	FirstName    string  `json:"first_name" binding:"required"`
-	LastName     string  `json:"last_name" binding:"required"`
-	Email        *string `json:"email"`
-	PhoneNumber  *string `json:"phone_number"`
-	DateOfBirth  *string `json:"date_of_birth"`
-	Gender       *string `json:"gender"`
-	Address      *string `json:"address"`
-	City         *string `json:"city"`
-	Province     *string `json:"province"`
-	Country      *string `json:"country"`
-	PostalCode   *string `json:"postal_code"`
+	FirstName       string  `json:"first_name" binding:"required"`
+	LastName        string  `json:"last_name" binding:"required"`
+	Email           *string `json:"email"`
+	PhoneNumber     *string `json:"phone_number"`
+	DateOfBirth     *string `json:"date_of_birth"`
+	Gender          *string `json:"gender"`
+	Address         *string `json:"address"`
+	City            *string `json:"city"`
+	Province        *string `json:"province"`
+	Country         *string `json:"country"`
+	PostalCode      *string `json:"postal_code"`
 	ProfileImageURL *string `json:"profile_image_url"`
 }
 
@@ -244,28 +245,28 @@ type RegisterTraineeRequest struct {
 	UserID string `json:"user_id" binding:"required"`
 
 	// Person fields
-	FirstName    string  `json:"first_name" binding:"required"`
-	LastName     string  `json:"last_name" binding:"required"`
-	Email        *string `json:"email"`
-	PhoneNumber  *string `json:"phone_number"`
-	DateOfBirth  *string `json:"date_of_birth"`
-	Gender       *string `json:"gender"`
-	Address      *string `json:"address"`
-	City         *string `json:"city"`
-	Province     *string `json:"province"`
-	Country      *string `json:"country"`
-	PostalCode   *string `json:"postal_code"`
+	FirstName       string  `json:"first_name" binding:"required"`
+	LastName        string  `json:"last_name" binding:"required"`
+	Email           *string `json:"email"`
+	PhoneNumber     *string `json:"phone_number"`
+	DateOfBirth     *string `json:"date_of_birth"`
+	Gender          *string `json:"gender"`
+	Address         *string `json:"address"`
+	City            *string `json:"city"`
+	Province        *string `json:"province"`
+	Country         *string `json:"country"`
+	PostalCode      *string `json:"postal_code"`
 	ProfileImageURL *string `json:"profile_image_url"`
 
 	// Trainee fields
-	HeightCm          *int     `json:"height_cm"`
-	WeightKg          *float64 `json:"weight_kg"`
-	FitnessLevel     *string  `json:"fitness_level"` // "beginner", "intermediate", "advanced"
-	Goals            *string  `json:"goals"`
-	MedicalConditions *string `json:"medical_conditions"`
-	MembershipType   *string  `json:"membership_type"` // "basic", "premium", "vip"
-	MembershipStartDate *string `json:"membership_start_date"`
-	MembershipEndDate   *string `json:"membership_end_date"`
+	HeightCm            *int     `json:"height_cm"`
+	WeightKg            *float64 `json:"weight_kg"`
+	FitnessLevel        *string  `json:"fitness_level"` // "beginner", "intermediate", "advanced"
+	Goals               *string  `json:"goals"`
+	MedicalConditions   *string  `json:"medical_conditions"`
+	MembershipType      *string  `json:"membership_type"` // "basic", "premium", "vip"
+	MembershipStartDate *string  `json:"membership_start_date"`
+	MembershipEndDate   *string  `json:"membership_end_date"`
 }
 
 // RegisterTrainee handles POST /persons/register/trainee
@@ -389,4 +390,3 @@ func (h *PersonHandler) RegisterTrainee(c *gin.Context) {
 		"trainee": registeredTrainee,
 	})
 }
-

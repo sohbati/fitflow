@@ -2,6 +2,7 @@ package router
 
 import (
 	"fitflow-business/internal/handler"
+	"fitflow-business/internal/middleware"
 	"fitflow-business/internal/repository/impl"
 	"fitflow-business/internal/service"
 	"net/http"
@@ -38,7 +39,11 @@ func NewRouter(database *gorm.DB) *Router {
 }
 
 func (r *Router) SetupRoutes() *gin.Engine {
-	router := gin.Default()
+	router := gin.New()
+
+	// Apply global error handler and recovery middleware
+	router.Use(middleware.CustomRecovery())
+	router.Use(middleware.GlobalErrorHandler())
 
 	// Apply CORS middleware to all routes
 	router.Use(corsMiddleware())
@@ -156,7 +161,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 			profiles.PATCH("/:id/activate", profileHandler.ActivateProfile)
 			profiles.PATCH("/:id/deactivate", profileHandler.DeactivateProfile)
 			profiles.DELETE("/:id", profileHandler.DeleteProfile)
-			
+
 			// User-specific profile routes
 			profiles.GET("/user/:user_id", profileHandler.GetProfilesByUserID)
 			profiles.GET("/user/:user_id/default", profileHandler.GetDefaultProfile)

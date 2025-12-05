@@ -48,7 +48,11 @@ func (r *Router) SetupRoutes() *gin.Engine {
 }
 
 func (r *Router) SetupRoutesWithConfig(config *RouterConfig) *gin.Engine {
-	router := gin.Default()
+	router := gin.New()
+
+	// Apply global error handler and recovery middleware
+	router.Use(middleware.CustomRecovery())
+	router.Use(middleware.GlobalErrorHandler())
 
 	// Add CORS middleware if enabled
 	if config.EnableCORS {

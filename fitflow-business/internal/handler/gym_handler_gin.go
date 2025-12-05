@@ -3,9 +3,10 @@ package handler
 import (
 	"fitflow-business/internal/model"
 	"fitflow-business/internal/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // GymHandler handles HTTP requests for gym-related operations

@@ -11,7 +11,8 @@ import (
 
 type ErrorResponse struct {
 	Error   string `json:"error"`
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
+	Code    int    `json:"code,omitempty"`
 }
 
 func JWTAuth(jwtManager *jwt.JWTManager) gin.HandlerFunc {
@@ -21,6 +22,7 @@ func JWTAuth(jwtManager *jwt.JWTManager) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, ErrorResponse{
 				Error:   "missing_token",
 				Message: "Authorization header is required",
+				Code:    http.StatusUnauthorized,
 			})
 			c.Abort()
 			return
@@ -32,6 +34,7 @@ func JWTAuth(jwtManager *jwt.JWTManager) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, ErrorResponse{
 				Error:   "invalid_token_format",
 				Message: "Authorization header must start with 'Bearer '",
+				Code:    http.StatusUnauthorized,
 			})
 			c.Abort()
 			return
@@ -43,6 +46,7 @@ func JWTAuth(jwtManager *jwt.JWTManager) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, ErrorResponse{
 				Error:   "invalid_token",
 				Message: "Invalid or expired token",
+				Code:    http.StatusUnauthorized,
 			})
 			c.Abort()
 			return

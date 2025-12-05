@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fitflow-business/internal/model"
 	"fitflow-business/internal/repository"
+
 	"github.com/google/uuid"
 )
 
