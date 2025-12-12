@@ -50,8 +50,13 @@ func (r *Router) SetupRoutes() *gin.Engine {
 func (r *Router) SetupRoutesWithConfig(config *RouterConfig) *gin.Engine {
 	router := gin.New()
 
-	// Apply global error handler and recovery middleware
+	// Add logger middleware
+	router.Use(gin.Logger())
+
+	// Add recovery middleware (custom panic handler)
 	router.Use(middleware.CustomRecovery())
+
+	// Add global error handler
 	router.Use(middleware.GlobalErrorHandler())
 
 	// Add CORS middleware if enabled

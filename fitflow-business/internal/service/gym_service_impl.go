@@ -37,7 +37,7 @@ func NewGymService(
 func (s *gymService) CreateGym(ctx context.Context, gym *model.Gym) error {
 	// Validate required fields
 	if gym.Name == "" {
-		return errors.New("gym name is required")
+		return errors.New("gym_name_is_required")
 	}
 
 	// Set default values
@@ -54,7 +54,7 @@ func (s *gymService) CreateGym(ctx context.Context, gym *model.Gym) error {
 // GetGymByID retrieves a gym by ID
 func (s *gymService) GetGymByID(ctx context.Context, id int64) (*model.Gym, error) {
 	if id <= 0 {
-		return nil, errors.New("invalid gym ID")
+		return nil, errors.New("invalid_gym_id")
 	}
 	return s.gymRepo.GetGymByID(ctx, id)
 }
@@ -77,10 +77,10 @@ func (s *gymService) GetGyms(ctx context.Context, limit, offset int) ([]*model.G
 // UpdateGym updates an existing gym
 func (s *gymService) UpdateGym(ctx context.Context, gym *model.Gym) error {
 	if gym.ID <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	if gym.Name == "" {
-		return errors.New("gym name is required")
+		return errors.New("gym_name_is_required")
 	}
 
 	return s.gymRepo.UpdateGym(ctx, gym)
@@ -89,7 +89,7 @@ func (s *gymService) UpdateGym(ctx context.Context, gym *model.Gym) error {
 // DeleteGym deletes a gym by ID
 func (s *gymService) DeleteGym(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	return s.gymRepo.DeleteGym(ctx, id)
 }
@@ -97,7 +97,7 @@ func (s *gymService) DeleteGym(ctx context.Context, id int64) error {
 // SearchGyms searches gyms by name or description
 func (s *gymService) SearchGyms(ctx context.Context, query string, limit, offset int) ([]*model.Gym, error) {
 	if query == "" {
-		return nil, errors.New("search query cannot be empty")
+		return nil, errors.New("search_query_cannot_be_empty")
 	}
 	if limit <= 0 {
 		limit = 10
@@ -130,10 +130,10 @@ func (s *gymService) GetVerifiedGyms(ctx context.Context, limit, offset int) ([]
 // CreateGymLocation creates a new gym location
 func (s *gymService) CreateGymLocation(ctx context.Context, location *model.GymLocation) error {
 	if location.GymID <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	if location.LocationType == "" {
-		return errors.New("location type is required")
+		return errors.New("location_type_is_required")
 	}
 
 	return s.gymLocationRepo.CreateGymLocation(ctx, location)
@@ -142,7 +142,7 @@ func (s *gymService) CreateGymLocation(ctx context.Context, location *model.GymL
 // GetGymLocations retrieves all locations for a gym
 func (s *gymService) GetGymLocations(ctx context.Context, gymID int64) ([]*model.GymLocation, error) {
 	if gymID <= 0 {
-		return nil, errors.New("invalid gym ID")
+		return nil, errors.New("invalid_gym_id")
 	}
 	return s.gymLocationRepo.GetGymLocations(ctx, gymID)
 }
@@ -150,10 +150,10 @@ func (s *gymService) GetGymLocations(ctx context.Context, gymID int64) ([]*model
 // UpdateGymLocation updates an existing gym location
 func (s *gymService) UpdateGymLocation(ctx context.Context, location *model.GymLocation) error {
 	if location.ID <= 0 {
-		return errors.New("invalid location ID")
+		return errors.New("invalid_location_id")
 	}
 	if location.LocationType == "" {
-		return errors.New("location type is required")
+		return errors.New("location_type_is_required")
 	}
 
 	return s.gymLocationRepo.UpdateGymLocation(ctx, location)
@@ -162,7 +162,7 @@ func (s *gymService) UpdateGymLocation(ctx context.Context, location *model.GymL
 // DeleteGymLocation deletes a gym location by ID
 func (s *gymService) DeleteGymLocation(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return errors.New("invalid location ID")
+		return errors.New("invalid_location_id")
 	}
 	return s.gymLocationRepo.DeleteGymLocation(ctx, id)
 }
@@ -170,10 +170,10 @@ func (s *gymService) DeleteGymLocation(ctx context.Context, id int64) error {
 // CreateGymOwner creates a new gym owner
 func (s *gymService) CreateGymOwner(ctx context.Context, owner *model.GymOwner) error {
 	if owner.GymID <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	if owner.PersonID <= 0 && owner.Person.ID <= 0 {
-		return errors.New("owner person reference is required")
+		return errors.New("owner_person_reference_is_required")
 	}
 
 	return s.gymOwnerRepo.CreateGymOwner(ctx, owner)
@@ -182,7 +182,7 @@ func (s *gymService) CreateGymOwner(ctx context.Context, owner *model.GymOwner) 
 // GetGymOwners retrieves all owners for a gym
 func (s *gymService) GetGymOwners(ctx context.Context, gymID int64) ([]*model.GymOwner, error) {
 	if gymID <= 0 {
-		return nil, errors.New("invalid gym ID")
+		return nil, errors.New("invalid_gym_id")
 	}
 	return s.gymOwnerRepo.GetGymOwners(ctx, gymID)
 }
@@ -190,7 +190,7 @@ func (s *gymService) GetGymOwners(ctx context.Context, gymID int64) ([]*model.Gy
 // GetGymOwnerByUserID retrieves a gym owner by user ID
 func (s *gymService) GetGymOwnerByUserID(ctx context.Context, userID string) (*model.GymOwner, error) {
 	if userID == "" {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	return s.gymOwnerRepo.GetGymOwnerByUserID(ctx, userID)
 }
@@ -198,10 +198,10 @@ func (s *gymService) GetGymOwnerByUserID(ctx context.Context, userID string) (*m
 // UpdateGymOwner updates an existing gym owner
 func (s *gymService) UpdateGymOwner(ctx context.Context, owner *model.GymOwner) error {
 	if owner.ID <= 0 {
-		return errors.New("invalid owner ID")
+		return errors.New("invalid_owner_id")
 	}
 	if owner.PersonID <= 0 && owner.Person.ID <= 0 {
-		return errors.New("owner person reference is required")
+		return errors.New("owner_person_reference_is_required")
 	}
 
 	return s.gymOwnerRepo.UpdateGymOwner(ctx, owner)
@@ -210,7 +210,7 @@ func (s *gymService) UpdateGymOwner(ctx context.Context, owner *model.GymOwner) 
 // DeleteGymOwner deletes a gym owner by ID
 func (s *gymService) DeleteGymOwner(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return errors.New("invalid owner ID")
+		return errors.New("invalid_owner_id")
 	}
 	return s.gymOwnerRepo.DeleteGymOwner(ctx, id)
 }
@@ -218,7 +218,7 @@ func (s *gymService) DeleteGymOwner(ctx context.Context, id int64) error {
 // CreateTrainer creates a new trainer
 func (s *gymService) CreateTrainer(ctx context.Context, trainer *model.Trainer) error {
 	if trainer.PersonID <= 0 && trainer.Person.ID <= 0 {
-		return errors.New("trainer person reference is required")
+		return errors.New("trainer_person_reference_is_required")
 	}
 
 	return s.trainerRepo.CreateTrainer(ctx, trainer)
@@ -227,7 +227,7 @@ func (s *gymService) CreateTrainer(ctx context.Context, trainer *model.Trainer) 
 // GetTrainerByID retrieves a trainer by ID
 func (s *gymService) GetTrainerByID(ctx context.Context, id int64) (*model.Trainer, error) {
 	if id <= 0 {
-		return nil, errors.New("invalid trainer ID")
+		return nil, errors.New("invalid_trainer_id")
 	}
 	return s.trainerRepo.GetTrainerByID(ctx, id)
 }
@@ -235,7 +235,7 @@ func (s *gymService) GetTrainerByID(ctx context.Context, id int64) (*model.Train
 // GetTrainerByUserID retrieves a trainer by user ID
 func (s *gymService) GetTrainerByUserID(ctx context.Context, userID string) (*model.Trainer, error) {
 	if userID == "" {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	return s.trainerRepo.GetTrainerByUserID(ctx, userID)
 }
@@ -258,10 +258,10 @@ func (s *gymService) GetTrainers(ctx context.Context, limit, offset int) ([]*mod
 // UpdateTrainer updates an existing trainer
 func (s *gymService) UpdateTrainer(ctx context.Context, trainer *model.Trainer) error {
 	if trainer.ID <= 0 {
-		return errors.New("invalid trainer ID")
+		return errors.New("invalid_trainer_id")
 	}
 	if trainer.PersonID <= 0 && trainer.Person.ID <= 0 {
-		return errors.New("trainer person reference is required")
+		return errors.New("trainer_person_reference_is_required")
 	}
 
 	return s.trainerRepo.UpdateTrainer(ctx, trainer)
@@ -270,7 +270,7 @@ func (s *gymService) UpdateTrainer(ctx context.Context, trainer *model.Trainer) 
 // DeleteTrainer deletes a trainer by ID
 func (s *gymService) DeleteTrainer(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return errors.New("invalid trainer ID")
+		return errors.New("invalid_trainer_id")
 	}
 	return s.trainerRepo.DeleteTrainer(ctx, id)
 }
@@ -293,10 +293,10 @@ func (s *gymService) GetRegisteredTrainers(ctx context.Context, limit, offset in
 // AddTrainerToGym adds a trainer to a gym
 func (s *gymService) AddTrainerToGym(ctx context.Context, gymID, trainerID int64) error {
 	if gymID <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	if trainerID <= 0 {
-		return errors.New("invalid trainer ID")
+		return errors.New("invalid_trainer_id")
 	}
 
 	return s.gymTrainerRepo.AddTrainerToGym(ctx, gymID, trainerID)
@@ -305,10 +305,10 @@ func (s *gymService) AddTrainerToGym(ctx context.Context, gymID, trainerID int64
 // RemoveTrainerFromGym removes a trainer from a gym
 func (s *gymService) RemoveTrainerFromGym(ctx context.Context, gymID, trainerID int64) error {
 	if gymID <= 0 {
-		return errors.New("invalid gym ID")
+		return errors.New("invalid_gym_id")
 	}
 	if trainerID <= 0 {
-		return errors.New("invalid trainer ID")
+		return errors.New("invalid_trainer_id")
 	}
 
 	return s.gymTrainerRepo.RemoveTrainerFromGym(ctx, gymID, trainerID)
@@ -317,7 +317,7 @@ func (s *gymService) RemoveTrainerFromGym(ctx context.Context, gymID, trainerID 
 // GetGymTrainers retrieves all trainers for a gym
 func (s *gymService) GetGymTrainers(ctx context.Context, gymID int64) ([]*model.Trainer, error) {
 	if gymID <= 0 {
-		return nil, errors.New("invalid gym ID")
+		return nil, errors.New("invalid_gym_id")
 	}
 	return s.gymTrainerRepo.GetGymTrainers(ctx, gymID)
 }
@@ -325,7 +325,7 @@ func (s *gymService) GetGymTrainers(ctx context.Context, gymID int64) ([]*model.
 // GetTrainerGyms retrieves all gyms for a trainer
 func (s *gymService) GetTrainerGyms(ctx context.Context, trainerID int64) ([]*model.Gym, error) {
 	if trainerID <= 0 {
-		return nil, errors.New("invalid trainer ID")
+		return nil, errors.New("invalid_trainer_id")
 	}
 	return s.gymTrainerRepo.GetTrainerGyms(ctx, trainerID)
 }

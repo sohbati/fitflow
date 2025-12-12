@@ -3,7 +3,9 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"iam-service/internal/middleware"
 	"iam-service/internal/session"
 	"iam-service/internal/user"
 	"iam-service/pkg/crypto"
@@ -97,7 +99,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	var req GoogleLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		fmt.Printf("Google OAuth: Invalid request format: %v\n", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
+		middleware.HandleError(c, errors.New("invalid_request_format"), http.StatusBadRequest)
 		return
 	}
 
@@ -107,7 +109,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	token, err := h.config.Exchange(context.Background(), req.Code)
 	if err != nil {
 		fmt.Printf("Google OAuth: Failed to exchange code for token: %v\n", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to exchange code for token"})
+		middleware.HandleError(c, errors.New("failed_to_exchange_code_for_token"), http.StatusUnauthorized)
 		return
 	}
 
@@ -117,7 +119,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	userInfo, err := h.getGoogleUserInfo(token.AccessToken)
 	if err != nil {
 		fmt.Printf("Google OAuth: Failed to get user info from Google: %v\n", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to get user info from Google"})
+		middleware.HandleError(c, errors.New("failed_to_get_user_info_from_google"), http.StatusUnauthorized)
 		return
 	}
 
@@ -127,7 +129,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	googleProvider, err := h.authProviderService.GetProviderByName(AuthProviderGoogle)
 	if err != nil {
 		fmt.Printf("Google OAuth: Google auth provider not found: %v\n", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Google auth provider not found"})
+		middleware.HandleError(c, errors.New("google_auth_provider_not_found"), http.StatusInternalServerError)
 		return
 	}
 
@@ -157,7 +159,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 				createdUser, err := h.userService.CreateUserFromStruct(newUser)
 				if err != nil {
 					fmt.Printf("Google OAuth: Failed to create user: %v\n", err)
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+					middleware.HandleError(c, errors.New("failed_to_create_user"), http.StatusInternalServerError)
 					return
 				}
 
@@ -186,14 +188,14 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 
 				_, err = h.userAuthService.CreateUserAuth(userAuth)
 				if err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user auth"})
+					middleware.HandleError(c, errors.New("failed_to_create_user_auth"), http.StatusInternalServerError)
 					return
 				}
 
 				// Generate JWT token
 				jwtToken, err := h.jwtManager.GenerateToken(createdUser.ID.String(), createdUser.Email)
 				if err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+					middleware.HandleError(c, errors.New("failed_to_generate_token"), http.StatusInternalServerError)
 					return
 				}
 
@@ -244,7 +246,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 
 		_, err = h.userAuthService.CreateUserAuth(userAuth)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user auth"})
+			middleware.HandleError(c, errors.New("failed_to_create_user_auth"), http.StatusInternalServerError)
 			return
 		}
 
@@ -262,7 +264,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 		if needsUpdate {
 			_, err = h.userService.UpdateUser(existingUser)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
+				middleware.HandleError(c, errors.New("failed_to_update_user"), http.StatusInternalServerError)
 				return
 			}
 		}
@@ -270,7 +272,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 		// Generate JWT token
 		jwtToken, err := h.jwtManager.GenerateToken(existingUser.ID.String(), existingUser.Email)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+			middleware.HandleError(c, errors.New("failed_to_generate_token"), http.StatusInternalServerError)
 			return
 		}
 
@@ -290,7 +292,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	// User auth exists, get the user
 	existingUser, err := h.userService.GetUserByID(existingUserAuth.UserID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "User not found"})
+		middleware.HandleError(c, errors.New("user_not_found"), http.StatusInternalServerError)
 		return
 	}
 
@@ -308,7 +310,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	if needsUpdate {
 		_, err = h.userService.UpdateUser(existingUser)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
+			middleware.HandleError(c, errors.New("failed_to_update_user"), http.StatusInternalServerError)
 			return
 		}
 	}
@@ -330,7 +332,7 @@ func (h *GoogleAuthHandler) GoogleLogin(c *gin.Context) {
 	// Generate JWT token
 	jwtToken, err := h.jwtManager.GenerateToken(existingUser.ID.String(), existingUser.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		middleware.HandleError(c, errors.New("failed_to_generate_token"), http.StatusInternalServerError)
 		return
 	}
 
@@ -450,7 +452,7 @@ func (h *GoogleAuthHandler) GetGoogleAuthURL(c *gin.Context) {
 
 	if h.config == nil {
 		fmt.Printf("[ERROR] OAuth config is nil\n")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "OAuth configuration not initialized"})
+		middleware.HandleError(c, errors.New("oauth_configuration_not_initialized"), http.StatusInternalServerError)
 		return
 	}
 

@@ -151,6 +151,8 @@ export default function HomePage() {
         console.error('Error checking user profiles:', error)
         // Try checking existing roles as fallback
         try {
+          const token = localStorage.getItem('auth_token')
+          if (!token) return
           const businessServiceUrl = process.env.NEXT_PUBLIC_BUSINESS_SERVICE_URL || 'http://localhost:8090'
           await checkExistingRolesAndRedirect(token, user.id, businessServiceUrl)
         } catch (err) {

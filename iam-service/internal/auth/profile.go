@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+	"iam-service/internal/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,28 +24,19 @@ import (
 func (h *Handler) GetMe(c *gin.Context) {
 	userIDStr, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Error:   "unauthorized",
-			Message: "User ID not found in context",
-		})
+		middleware.HandleError(c, errors.New("unauthorized: User ID not found in context"), http.StatusUnauthorized)
 		return
 	}
 
 	userID, err := uuid.Parse(userIDStr.(string))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "invalid_user_id",
-			Message: "Invalid user ID format",
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := h.userService.GetUserByID(userID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, ErrorResponse{
-			Error:   "user_not_found",
-			Message: "User not found",
-		})
+		middleware.HandleError(c, err, http.StatusNotFound)
 		return
 	}
 

@@ -24,14 +24,14 @@ func NewTraineeService(traineeRepo repository.TraineeRepository) TraineeService 
 func (s *traineeService) CreateTrainee(ctx context.Context, trainee *model.Trainee) error {
 	// Validate required fields
 	if !hasPersonReference(trainee) {
-		return errors.New("trainee person reference is required")
+		return errors.New("trainee_person_reference_is_required")
 	}
 
 	// Validate email uniqueness if provided
 	if email := getPersonEmail(trainee); email != "" {
 		existingTrainee, err := s.traineeRepo.GetTraineesByEmail(ctx, email)
 		if err == nil && existingTrainee != nil {
-			return errors.New("email already exists")
+			return errors.New("email_already_exists")
 		}
 	}
 
@@ -39,7 +39,7 @@ func (s *traineeService) CreateTrainee(ctx context.Context, trainee *model.Train
 	if phone := getPersonPhone(trainee); phone != "" {
 		existingTrainee, err := s.traineeRepo.GetTraineesByPhone(ctx, phone)
 		if err == nil && existingTrainee != nil {
-			return errors.New("phone number already exists")
+			return errors.New("phone_number_already_exists")
 		}
 	}
 
@@ -57,7 +57,7 @@ func (s *traineeService) CreateTrainee(ctx context.Context, trainee *model.Train
 // GetTraineeByID retrieves a trainee by ID
 func (s *traineeService) GetTraineeByID(ctx context.Context, id int64) (*model.Trainee, error) {
 	if id <= 0 {
-		return nil, errors.New("invalid trainee ID")
+		return nil, errors.New("invalid_trainee_id")
 	}
 	return s.traineeRepo.GetTraineeByID(ctx, id)
 }
@@ -65,7 +65,7 @@ func (s *traineeService) GetTraineeByID(ctx context.Context, id int64) (*model.T
 // GetTraineeByUserID retrieves a trainee by user ID
 func (s *traineeService) GetTraineeByUserID(ctx context.Context, userID string) (*model.Trainee, error) {
 	if userID == "" {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	return s.traineeRepo.GetTraineeByUserID(ctx, userID)
 }
@@ -88,17 +88,17 @@ func (s *traineeService) GetTrainees(ctx context.Context, limit, offset int) ([]
 // UpdateTrainee updates an existing trainee
 func (s *traineeService) UpdateTrainee(ctx context.Context, trainee *model.Trainee) error {
 	if trainee.ID <= 0 {
-		return errors.New("invalid trainee ID")
+		return errors.New("invalid_trainee_id")
 	}
 	if !hasPersonReference(trainee) {
-		return errors.New("trainee person reference is required")
+		return errors.New("trainee_person_reference_is_required")
 	}
 
 	// Validate email uniqueness if provided
 	if email := getPersonEmail(trainee); email != "" {
 		existingTrainee, err := s.traineeRepo.GetTraineesByEmail(ctx, email)
 		if err == nil && existingTrainee != nil && existingTrainee.ID != trainee.ID {
-			return errors.New("email already exists")
+			return errors.New("email_already_exists")
 		}
 	}
 
@@ -106,7 +106,7 @@ func (s *traineeService) UpdateTrainee(ctx context.Context, trainee *model.Train
 	if phone := getPersonPhone(trainee); phone != "" {
 		existingTrainee, err := s.traineeRepo.GetTraineesByPhone(ctx, phone)
 		if err == nil && existingTrainee != nil && existingTrainee.ID != trainee.ID {
-			return errors.New("phone number already exists")
+			return errors.New("phone_number_already_exists")
 		}
 	}
 
@@ -116,7 +116,7 @@ func (s *traineeService) UpdateTrainee(ctx context.Context, trainee *model.Train
 // DeleteTrainee deletes a trainee by ID
 func (s *traineeService) DeleteTrainee(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return errors.New("invalid trainee ID")
+		return errors.New("invalid_trainee_id")
 	}
 	return s.traineeRepo.DeleteTrainee(ctx, id)
 }
@@ -124,7 +124,7 @@ func (s *traineeService) DeleteTrainee(ctx context.Context, id int64) error {
 // SearchTrainees searches trainees by name, email, or phone
 func (s *traineeService) SearchTrainees(ctx context.Context, query string, limit, offset int) ([]*model.Trainee, error) {
 	if query == "" {
-		return nil, errors.New("search query cannot be empty")
+		return nil, errors.New("search_query_cannot_be_empty")
 	}
 	if limit <= 0 {
 		limit = 10
@@ -142,7 +142,7 @@ func (s *traineeService) SearchTrainees(ctx context.Context, query string, limit
 // GetTraineesByEmail retrieves a trainee by email
 func (s *traineeService) GetTraineesByEmail(ctx context.Context, email string) (*model.Trainee, error) {
 	if email == "" {
-		return nil, errors.New("email cannot be empty")
+		return nil, errors.New("email_cannot_be_empty")
 	}
 	return s.traineeRepo.GetTraineesByEmail(ctx, email)
 }
@@ -150,7 +150,7 @@ func (s *traineeService) GetTraineesByEmail(ctx context.Context, email string) (
 // GetTraineesByPhone retrieves a trainee by phone number
 func (s *traineeService) GetTraineesByPhone(ctx context.Context, phone string) (*model.Trainee, error) {
 	if phone == "" {
-		return nil, errors.New("phone number cannot be empty")
+		return nil, errors.New("phone_number_cannot_be_empty")
 	}
 	return s.traineeRepo.GetTraineesByPhone(ctx, phone)
 }
@@ -173,7 +173,7 @@ func (s *traineeService) GetActiveTrainees(ctx context.Context, limit, offset in
 // GetTraineesByMembershipType retrieves trainees by membership type
 func (s *traineeService) GetTraineesByMembershipType(ctx context.Context, membershipType model.MembershipType, limit, offset int) ([]*model.Trainee, error) {
 	if membershipType == "" {
-		return nil, errors.New("membership type cannot be empty")
+		return nil, errors.New("membership_type_cannot_be_empty")
 	}
 	if limit <= 0 {
 		limit = 10
@@ -191,7 +191,7 @@ func (s *traineeService) GetTraineesByMembershipType(ctx context.Context, member
 // GetTraineesByFitnessLevel retrieves trainees by fitness level
 func (s *traineeService) GetTraineesByFitnessLevel(ctx context.Context, fitnessLevel model.FitnessLevel, limit, offset int) ([]*model.Trainee, error) {
 	if fitnessLevel == "" {
-		return nil, errors.New("fitness level cannot be empty")
+		return nil, errors.New("fitness_level_cannot_be_empty")
 	}
 	if limit <= 0 {
 		limit = 10
@@ -209,7 +209,7 @@ func (s *traineeService) GetTraineesByFitnessLevel(ctx context.Context, fitnessL
 // GetExpiringMemberships retrieves trainees with memberships expiring within specified days
 func (s *traineeService) GetExpiringMemberships(ctx context.Context, days int, limit, offset int) ([]*model.Trainee, error) {
 	if days < 0 {
-		return nil, errors.New("days cannot be negative")
+		return nil, errors.New("days_cannot_be_negative")
 	}
 	if limit <= 0 {
 		limit = 10
@@ -242,7 +242,7 @@ func (s *traineeService) GetExpiredMemberships(ctx context.Context, limit, offse
 // UpdateMembershipStatus updates the active status of a trainee
 func (s *traineeService) UpdateMembershipStatus(ctx context.Context, id int64, isActive bool) error {
 	if id <= 0 {
-		return errors.New("invalid trainee ID")
+		return errors.New("invalid_trainee_id")
 	}
 	return s.traineeRepo.UpdateMembershipStatus(ctx, id, isActive)
 }
@@ -251,7 +251,7 @@ func (s *traineeService) UpdateMembershipStatus(ctx context.Context, id int64, i
 func (s *traineeService) CalculateAge(ctx context.Context, trainee *model.Trainee) (int, error) {
 	dob := getPersonDOB(trainee)
 	if dob == nil {
-		return 0, errors.New("date of birth is required to calculate age")
+		return 0, errors.New("date_of_birth_is_required_to_calculate_age")
 	}
 
 	now := time.Now()
@@ -268,11 +268,11 @@ func (s *traineeService) CalculateAge(ctx context.Context, trainee *model.Traine
 // CalculateBMI calculates the BMI of a trainee
 func (s *traineeService) CalculateBMI(ctx context.Context, trainee *model.Trainee) (float64, error) {
 	if trainee.HeightCm == nil || trainee.WeightKg == nil {
-		return 0, errors.New("height and weight are required to calculate BMI")
+		return 0, errors.New("height_and_weight_are_required_to_calculate_bmi")
 	}
 
 	if *trainee.HeightCm <= 0 || *trainee.WeightKg <= 0 {
-		return 0, errors.New("height and weight must be positive values")
+		return 0, errors.New("height_and_weight_must_be_positive_values")
 	}
 
 	// Convert height from cm to meters

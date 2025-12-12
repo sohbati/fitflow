@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"net/http"
-
+	"iam-service/internal/middleware"
 	"iam-service/internal/user"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,10 +35,7 @@ type AuthResponse struct {
 func (h *Handler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "validation_error",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
@@ -53,10 +50,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	response, err := localAuthHandler.Login(localAuthReq)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Error:   "authentication_failed",
-			Message: "Invalid username or password",
-		})
+		middleware.HandleError(c, errors.New("authentication_failed"), http.StatusUnauthorized)
 		return
 	}
 

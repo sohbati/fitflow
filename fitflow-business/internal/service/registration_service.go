@@ -49,19 +49,19 @@ func NewRegistrationService(
 func (s *registrationService) RegisterGymOwner(ctx context.Context, userID uuid.UUID, person *model.Person, gym *model.Gym, briefBio *string) (*model.GymOwner, error) {
 	// Validate inputs
 	if userID == uuid.Nil {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	if person == nil {
-		return nil, errors.New("person is required")
+		return nil, errors.New("person_is_required")
 	}
 	if gym == nil {
-		return nil, errors.New("gym is required")
+		return nil, errors.New("gym_is_required")
 	}
 	if person.FirstName == "" || person.LastName == "" {
-		return nil, errors.New("first name and last name are required")
+		return nil, errors.New("first_name_and_last_name_are_required")
 	}
 	if gym.Name == "" {
-		return nil, errors.New("gym name is required")
+		return nil, errors.New("gym_name_is_required")
 	}
 
 	// Set user ID
@@ -70,7 +70,7 @@ func (s *registrationService) RegisterGymOwner(ctx context.Context, userID uuid.
 	// Check if person already exists for this user
 	existingPerson, err := s.personService.GetPersonByUserID(ctx, userID)
 	if err == nil && existingPerson != nil {
-		return nil, errors.New("person already exists for this user")
+		return nil, errors.New("person_already_exists_for_this_user")
 	}
 
 	// Create person
@@ -110,13 +110,13 @@ func (s *registrationService) RegisterGymOwner(ctx context.Context, userID uuid.
 func (s *registrationService) RegisterTrainer(ctx context.Context, userID uuid.UUID, person *model.Person) (*model.Trainer, error) {
 	// Validate inputs
 	if userID == uuid.Nil {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	if person == nil {
-		return nil, errors.New("person is required")
+		return nil, errors.New("person_is_required")
 	}
 	if person.FirstName == "" || person.LastName == "" {
-		return nil, errors.New("first name and last name are required")
+		return nil, errors.New("first_name_and_last_name_are_required")
 	}
 
 	// Set user ID
@@ -137,7 +137,7 @@ func (s *registrationService) RegisterTrainer(ctx context.Context, userID uuid.U
 	// Check if trainer already exists for this person
 	existingTrainer, err := s.trainerRepo.GetTrainerByPersonID(ctx, person.ID)
 	if err == nil && existingTrainer != nil {
-		return nil, errors.New("trainer already exists for this person")
+		return nil, errors.New("trainer_already_exists_for_this_person")
 	}
 
 	// Create trainer
@@ -163,16 +163,16 @@ func (s *registrationService) RegisterTrainer(ctx context.Context, userID uuid.U
 func (s *registrationService) RegisterTrainee(ctx context.Context, userID uuid.UUID, person *model.Person, trainee *model.Trainee) (*model.Trainee, error) {
 	// Validate inputs
 	if userID == uuid.Nil {
-		return nil, errors.New("user ID is required")
+		return nil, errors.New("user_id_is_required")
 	}
 	if person == nil {
-		return nil, errors.New("person is required")
+		return nil, errors.New("person_is_required")
 	}
 	if person.FirstName == "" || person.LastName == "" {
-		return nil, errors.New("first name and last name are required")
+		return nil, errors.New("first_name_and_last_name_are_required")
 	}
 	if trainee == nil {
-		return nil, errors.New("trainee is required")
+		return nil, errors.New("trainee_is_required")
 	}
 
 	// Set user ID
@@ -193,7 +193,7 @@ func (s *registrationService) RegisterTrainee(ctx context.Context, userID uuid.U
 	// Check if trainee already exists for this person
 	existingTrainee, err := s.traineeRepo.GetTraineeByPersonID(ctx, person.ID)
 	if err == nil && existingTrainee != nil {
-		return nil, errors.New("trainee already exists for this person")
+		return nil, errors.New("trainee_already_exists_for_this_person")
 	}
 
 	// Set person ID for trainee

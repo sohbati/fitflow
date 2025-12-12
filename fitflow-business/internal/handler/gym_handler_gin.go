@@ -25,12 +25,12 @@ func NewGymHandler(gymService service.GymService) *GymHandler {
 func (h *GymHandler) CreateGym(c *gin.Context) {
 	var gym model.Gym
 	if err := c.ShouldBindJSON(&gym); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		c.Error(err).SetType(gin.ErrorTypeBind)
 		return
 	}
 
 	if err := h.gymService.CreateGym(c.Request.Context(), &gym); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
@@ -41,13 +41,13 @@ func (h *GymHandler) CreateGym(c *gin.Context) {
 func (h *GymHandler) GetGym(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid gym ID"})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
 	gym, err := h.gymService.GetGymByID(c.Request.Context(), id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
@@ -61,7 +61,7 @@ func (h *GymHandler) GetGyms(c *gin.Context) {
 
 	gyms, err := h.gymService.GetGyms(c.Request.Context(), limit, offset)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 

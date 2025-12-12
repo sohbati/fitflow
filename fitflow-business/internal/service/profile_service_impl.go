@@ -44,18 +44,18 @@ func (s *profileService) CreateProfile(ctx context.Context, profile *model.Profi
 	// Check if person exists
 	person, err := s.personRepo.GetPersonByID(ctx, profile.PersonID)
 	if err != nil {
-		return errors.New("person not found")
+		return errors.New("person_not_found")
 	}
 
 	// Verify user_id matches
 	if person.UserID != profile.UserID {
-		return errors.New("user_id does not match person's user_id")
+		return errors.New("user_id_does_not_match_person_user_id")
 	}
 
 	// Check if profile type already exists for this user (skip if creating from sync)
 	existing, _ := s.profileRepo.GetProfileByUserIDAndType(ctx, profile.UserID, profile.Type)
 	if existing != nil {
-		return errors.New("profile of this type already exists for this user")
+		return errors.New("profile_of_this_type_already_exists_for_this_user")
 	}
 
 	// If this is the first profile for the user, set it as default
@@ -126,11 +126,11 @@ func (s *profileService) SetDefaultProfile(ctx context.Context, userID uuid.UUID
 	// Verify the profile belongs to the user
 	profile, err := s.profileRepo.GetProfileByID(ctx, profileID)
 	if err != nil {
-		return errors.New("profile not found")
+		return errors.New("profile_not_found")
 	}
 
 	if profile.UserID != userID {
-		return errors.New("profile does not belong to user")
+		return errors.New("profile_does_not_belong_to_user")
 	}
 
 	return s.profileRepo.SetDefaultProfile(ctx, userID, profileID)
@@ -229,31 +229,31 @@ func (s *profileService) CreateTraineeProfile(ctx context.Context, userID uuid.U
 func (s *profileService) ValidateProfile(ctx context.Context, profile *model.Profile) error {
 	// Validate profile type
 	if !model.IsValidProfileType(profile.Type) {
-		return errors.New("invalid profile type")
+		return errors.New("invalid_profile_type")
 	}
 
 	// Validate that the appropriate ID is set based on type
 	switch profile.Type {
 	case model.ProfileTypeGymOwner:
 		if profile.GymOwnerID == nil {
-			return errors.New("gym_owner_id is required for gym_owner profile")
+			return errors.New("gym_owner_id_is_required_for_gym_owner_profile")
 		}
 		if profile.TrainerID != nil || profile.TraineeID != nil {
-			return errors.New("only gym_owner_id should be set for gym_owner profile")
+			return errors.New("only_gym_owner_id_should_be_set_for_gym_owner_profile")
 		}
 	case model.ProfileTypeTrainer:
 		if profile.TrainerID == nil {
-			return errors.New("trainer_id is required for trainer profile")
+			return errors.New("trainer_id_is_required_for_trainer_profile")
 		}
 		if profile.GymOwnerID != nil || profile.TraineeID != nil {
-			return errors.New("only trainer_id should be set for trainer profile")
+			return errors.New("only_trainer_id_should_be_set_for_trainer_profile")
 		}
 	case model.ProfileTypeTrainee:
 		if profile.TraineeID == nil {
-			return errors.New("trainee_id is required for trainee profile")
+			return errors.New("trainee_id_is_required_for_trainee_profile")
 		}
 		if profile.GymOwnerID != nil || profile.TrainerID != nil {
-			return errors.New("only trainee_id should be set for trainee profile")
+			return errors.New("only_trainee_id_should_be_set_for_trainee_profile")
 		}
 	}
 
@@ -273,7 +273,7 @@ func (s *profileService) SyncProfilesFromExistingRoles(ctx context.Context, user
 	// Get person by user ID
 	person, err := s.personRepo.GetPersonByUserID(ctx, userID)
 	if err != nil {
-		return nil, errors.New("person not found for user")
+		return nil, errors.New("person_not_found_for_user")
 	}
 
 	var createdProfiles []*model.Profile

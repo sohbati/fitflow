@@ -15,26 +15,23 @@ type ErrorResponse struct {
 	Code    int    `json:"code"`
 }
 
-// GlobalErrorHandler is a middleware that catches all errors and panics
-// It processes errors after handlers complete and before response is sent
+// GlobalErrorHandler is similar to Spring Boot's @ControllerAdvice
+// It catches all errors from handlers and formats them consistently
 func GlobalErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Process request
+		// Process the request
 		c.Next()
 
-		// Check for errors set by handlers using c.Error()
+		// Check for errors set by handlers
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last()
 			
-			// Determine status code based on error type and message
-			statusCode := determineStatusCode(err)
+			// Determine HTTP status code and format error response
+			statusCode, errorKey := handleError(err)
 			
-			// Get error message
-			errorMsg := err.Error()
-			
-			// Return error response
+			// Return standardized error response
 			c.JSON(statusCode, ErrorResponse{
-				Error: errorMsg,
+				Error: errorKey,
 				Code:  statusCode,
 			})
 			c.Abort()
@@ -43,18 +40,18 @@ func GlobalErrorHandler() gin.HandlerFunc {
 	}
 }
 
-// CustomRecovery is a custom recovery middleware that catches panics
+// CustomRecovery handles panics (similar to Spring Boot's exception handling)
 func CustomRecovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Printf("Panic recovered: %v", err)
 				
-				errorMsg := "Internal server error"
+				errorMsg := "internal_server_error"
 				if str, ok := err.(string); ok {
-					errorMsg = str
+					errorMsg = toUnderscoreKey(str)
 				} else if e, ok := err.(error); ok {
-					errorMsg = e.Error()
+					errorMsg = toUnderscoreKey(e.Error())
 				}
 
 				c.JSON(http.StatusInternalServerError, ErrorResponse{
@@ -68,51 +65,87 @@ func CustomRecovery() gin.HandlerFunc {
 	}
 }
 
-// determineStatusCode determines the HTTP status code based on error type and message
-func determineStatusCode(err *gin.Error) int {
-	// Handle binding errors
+// handleError processes errors and determines status code and error key
+// Similar to Spring Boot's exception handler methods
+func handleError(err *gin.Error) (int, string) {
+	errorMsg := err.Error()
+	
+	// Handle binding/validation errors
 	if err.Type == gin.ErrorTypeBind {
+		return http.StatusBadRequest, toUnderscoreKey(errorMsg)
+	}
+	
+	// Handle public errors (errors from service layer)
+	if err.Type == gin.ErrorTypePublic {
+		errorKey := toUnderscoreKey(errorMsg)
+		statusCode := determineStatusCode(errorKey)
+		return statusCode, errorKey
+	}
+	
+	// Default: internal server error
+	return http.StatusInternalServerError, toUnderscoreKey(errorMsg)
+}
+
+// determineStatusCode determines HTTP status code based on error key
+func determineStatusCode(errorKey string) int {
+	errorKeyLower := strings.ToLower(errorKey)
+	
+	// Not found errors (404)
+	if strings.Contains(errorKeyLower, "not_found") ||
+		strings.Contains(errorKeyLower, "does_not_exist") {
+		return http.StatusNotFound
+	}
+	
+	// Validation errors (400)
+	if strings.Contains(errorKeyLower, "required") ||
+		strings.Contains(errorKeyLower, "invalid") ||
+		strings.Contains(errorKeyLower, "cannot_be_empty") ||
+		strings.Contains(errorKeyLower, "format") ||
+		strings.Contains(errorKeyLower, "must_be") {
 		return http.StatusBadRequest
 	}
 	
-	// Handle public errors (errors set by handlers)
-	if err.Type == gin.ErrorTypePublic {
-		errorMsg := strings.ToLower(err.Error())
-		
-		// Not found errors
-		if strings.Contains(errorMsg, "not found") ||
-		   strings.Contains(errorMsg, "record not found") ||
-		   strings.Contains(errorMsg, "does not exist") {
-			return http.StatusNotFound
-		}
-		
-		// Validation errors
-		if strings.Contains(errorMsg, "required") ||
-		   strings.Contains(errorMsg, "invalid") ||
-		   strings.Contains(errorMsg, "cannot be empty") {
-			return http.StatusBadRequest
-		}
-		
-		// Conflict errors
-		if strings.Contains(errorMsg, "already exists") ||
-		   strings.Contains(errorMsg, "duplicate") {
-			return http.StatusConflict
-		}
-		
-		// Unauthorized errors
-		if strings.Contains(errorMsg, "unauthorized") ||
-		   strings.Contains(errorMsg, "forbidden") ||
-		   strings.Contains(errorMsg, "permission") {
-			return http.StatusUnauthorized
-		}
+	// Conflict errors (409)
+	if strings.Contains(errorKeyLower, "already_exists") ||
+		strings.Contains(errorKeyLower, "duplicate") {
+		return http.StatusConflict
 	}
 	
-	// Default to internal server error
+	// Unauthorized errors (401)
+	if strings.Contains(errorKeyLower, "unauthorized") ||
+		strings.Contains(errorKeyLower, "forbidden") ||
+		strings.Contains(errorKeyLower, "permission") {
+		return http.StatusUnauthorized
+	}
+	
+	// Default: internal server error (500)
 	return http.StatusInternalServerError
 }
 
-// HandleError is a helper function for handlers to use
-// It adds an error to the context with appropriate type
+// toUnderscoreKey converts error message to underscore format
+func toUnderscoreKey(message string) string {
+	// If already in underscore format, return as-is
+	if !strings.Contains(message, " ") {
+		return message
+	}
+	
+	// Convert to lowercase and replace spaces with underscores
+	message = strings.ToLower(strings.TrimSpace(message))
+	message = strings.ReplaceAll(message, " ", "_")
+	
+	// Remove multiple consecutive underscores
+	for strings.Contains(message, "__") {
+		message = strings.ReplaceAll(message, "__", "_")
+	}
+	
+	// Remove leading/trailing underscores
+	message = strings.Trim(message, "_")
+	
+	return message
+}
+
+// HandleError is a helper for handlers to add errors to context
+// Handlers should use this instead of directly calling c.JSON for errors
 func HandleError(c *gin.Context, err error, statusCode int) {
 	if statusCode == 0 {
 		statusCode = http.StatusInternalServerError

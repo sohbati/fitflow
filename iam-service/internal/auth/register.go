@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+	"iam-service/internal/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,10 +34,7 @@ type RegisterRequest struct {
 func (h *Handler) Register(c *gin.Context) {
 	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "validation_error",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
@@ -56,14 +55,12 @@ func (h *Handler) Register(c *gin.Context) {
 	response, err := localAuthHandler.Register(localAuthReq)
 	if err != nil {
 		status := http.StatusInternalServerError
-		if err.Error() == "email already exists" {
+		if err.Error() == "email already exists" ||
+			err.Error() == "mobile number already exists" ||
+			err.Error() == "username already exists" {
 			status = http.StatusConflict
 		}
-
-		c.JSON(status, ErrorResponse{
-			Error:   "creation_failed",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, status)
 		return
 	}
 

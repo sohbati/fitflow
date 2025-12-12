@@ -41,7 +41,7 @@ func NewRouter(database *gorm.DB) *Router {
 func (r *Router) SetupRoutes() *gin.Engine {
 	router := gin.New()
 
-	// Apply global error handler and recovery middleware
+	// Apply global error handler and recovery (similar to @ControllerAdvice in Spring Boot)
 	router.Use(middleware.CustomRecovery())
 	router.Use(middleware.GlobalErrorHandler())
 

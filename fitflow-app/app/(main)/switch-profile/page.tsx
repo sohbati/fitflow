@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
@@ -13,7 +13,7 @@ interface Profile {
   is_default: boolean
 }
 
-export default function SwitchProfilePage() {
+function SwitchProfileContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isAuthenticated, setProfile } = useAuth()
@@ -41,6 +41,11 @@ export default function SwitchProfilePage() {
   const checkAndSwitchProfile = async () => {
     setChecking(true)
     try {
+      if (!user?.id) {
+        router.push('/auth/signin')
+        return
+      }
+
       const token = localStorage.getItem('auth_token')
       if (!token) {
         router.push('/auth/signin')
@@ -114,5 +119,22 @@ export default function SwitchProfilePage() {
   }
 
   return null
+}
+
+export default function SwitchProfilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <SwitchProfileContent />
+    </Suspense>
+  )
 }
 

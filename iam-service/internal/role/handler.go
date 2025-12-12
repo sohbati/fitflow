@@ -1,6 +1,7 @@
 package role
 
 import (
+	"iam-service/internal/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,10 +43,7 @@ func NewHandler(roleService Service) *Handler {
 func (h *Handler) CreateRole(c *gin.Context) {
 	var req CreateRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "validation_error",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
@@ -55,10 +53,7 @@ func (h *Handler) CreateRole(c *gin.Context) {
 		if err.Error() == "role already exists" {
 			status = http.StatusConflict
 		}
-		c.JSON(status, ErrorResponse{
-			Error:   "creation_failed",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, status)
 		return
 	}
 
@@ -84,19 +79,13 @@ func (h *Handler) GetRole(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "invalid_id",
-			Message: "Invalid role ID format",
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	role, err := h.roleService.GetRoleByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, ErrorResponse{
-			Error:   "role_not_found",
-			Message: "Role not found",
-		})
+		middleware.HandleError(c, err, http.StatusNotFound)
 		return
 	}
 
@@ -118,10 +107,7 @@ func (h *Handler) GetRole(c *gin.Context) {
 func (h *Handler) GetAllRoles(c *gin.Context) {
 	roles, err := h.roleService.GetAllRoles()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{
-			Error:   "fetch_failed",
-			Message: "Failed to fetch roles",
-		})
+		middleware.HandleError(c, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -149,19 +135,13 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "invalid_id",
-			Message: "Invalid role ID format",
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	var req UpdateRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "validation_error",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
@@ -173,10 +153,7 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 		} else if err.Error() == "role already exists" {
 			status = http.StatusConflict
 		}
-		c.JSON(status, ErrorResponse{
-			Error:   "update_failed",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, status)
 		return
 	}
 
@@ -202,10 +179,7 @@ func (h *Handler) DeleteRole(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Error:   "invalid_id",
-			Message: "Invalid role ID format",
-		})
+		middleware.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
@@ -215,10 +189,7 @@ func (h *Handler) DeleteRole(c *gin.Context) {
 		if err.Error() == "role not found" {
 			status = http.StatusNotFound
 		}
-		c.JSON(status, ErrorResponse{
-			Error:   "delete_failed",
-			Message: err.Error(),
-		})
+		middleware.HandleError(c, err, status)
 		return
 	}
 

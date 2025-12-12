@@ -37,14 +37,14 @@ type CreateProfileRequest struct {
 func (h *ProfileHandler) CreateProfile(c *gin.Context) {
 	var req CreateProfileRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		c.Error(err).SetType(gin.ErrorTypeBind)
 		return
 	}
 
 	// Parse user ID
 	userID, err := uuid.Parse(req.UserID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (h *ProfileHandler) CreateProfile(c *gin.Context) {
 	}
 
 	if err := h.profileService.CreateProfile(c.Request.Context(), profile); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 

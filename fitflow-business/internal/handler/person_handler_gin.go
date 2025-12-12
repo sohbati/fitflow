@@ -84,14 +84,14 @@ type RegisterGymOwnerRequest struct {
 func (h *PersonHandler) RegisterGymOwner(c *gin.Context) {
 	var req RegisterGymOwnerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		c.Error(err).SetType(gin.ErrorTypeBind)
 		return
 	}
 
 	// Parse user ID from request
 	userUUID, err := uuid.Parse(req.UserID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
@@ -148,7 +148,7 @@ func (h *PersonHandler) RegisterGymOwner(c *gin.Context) {
 	// Register gym owner
 	gymOwner, err := h.registrationService.RegisterGymOwner(c.Request.Context(), userUUID, person, gym, req.BriefBio)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
 
